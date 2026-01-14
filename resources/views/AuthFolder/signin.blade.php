@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,9 +12,9 @@
             --pup-maroon: #800000;
             --pup-gold: #FFD700;
             --pup-dark: #4a0000;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
-            --shadow-lg: 0 8px 24px rgba(0,0,0,0.2);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
 
         * {
@@ -263,6 +264,7 @@
                 opacity: 0;
                 transform: translateX(-50px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -274,6 +276,7 @@
                 opacity: 0;
                 transform: translateX(50px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -281,9 +284,12 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px);
             }
+
             50% {
                 transform: translateY(-10px);
             }
@@ -345,6 +351,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="landing-container">
         <!-- Brand Section -->
@@ -416,7 +423,7 @@
 
             <div class="signup-link">
                 <p>Don't have an account?</p>
-                <a href="signup.html">Sign Up Here!</a>
+                <a href="{{ route('signup') }}">Sign Up Here!</a>
             </div>
 
             <div class="terms-notice">
@@ -432,7 +439,7 @@
 
         function selectRole(role) {
             currentRole = role;
-            
+
             // Update active state
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -443,7 +450,7 @@
             const usernameLabel = document.getElementById('usernameLabel');
             const usernameInput = document.getElementById('username');
 
-            switch(role) {
+            switch (role) {
                 case 'student':
                     usernameLabel.textContent = 'Student Number';
                     usernameInput.placeholder = 'SN-XXXXXXXX';
@@ -469,7 +476,7 @@
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const toggleIcon = document.getElementById('passwordToggleIcon');
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 toggleIcon.classList.remove('bi-eye');
@@ -483,7 +490,7 @@
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
@@ -492,15 +499,19 @@
                 alert('Invalid Student Number format. Please use SN-XXXXXXXX');
                 return;
             }
-            
+
             if (currentRole === 'faculty' && !username.match(/^FN-\d{8}$/)) {
                 alert('Invalid Faculty Number format. Please use FN-XXXXXXXX');
                 return;
             }
 
             // Here you would normally send to backend
-            console.log('Login attempt:', { role: currentRole, username, password });
-            
+            console.log('Login attempt:', {
+                role: currentRole,
+                username,
+                password
+            });
+
             // Simulate login success
             alert(`Login successful as ${currentRole}!`);
             // Redirect based on role
@@ -511,7 +522,7 @@
         document.getElementById('username').addEventListener('input', function(e) {
             if (currentRole !== 'admin') {
                 let value = e.target.value.toUpperCase();
-                
+
                 // Remove any non-digit characters except the prefix
                 if (currentRole === 'student') {
                     if (!value.startsWith('SN-')) {
@@ -522,11 +533,12 @@
                         value = 'FN-' + value.replace(/[^0-9]/g, '');
                     }
                 }
-                
+
                 // Limit to 11 characters (XX-XXXXXXXX)
                 e.target.value = value.substring(0, 11);
             }
         });
     </script>
 </body>
+
 </html>
