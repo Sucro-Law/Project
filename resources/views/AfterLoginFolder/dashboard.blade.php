@@ -1,8 +1,5 @@
 @extends('layout.main')
 
-@push('styles')
-@vite(['resources/css/dashboard.css'])
-@endpush
 
 @section('content')
 

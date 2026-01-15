@@ -1,4 +1,3 @@
-    
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="pup-logo">
@@ -24,37 +23,38 @@
                 </div>
             </div>
         </div>
-
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="{{ route('dashboard') }}" class="nav-link active">
-                    <i class="bi bi-house-door-fill"></i>
-                    Home
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="bi bi-building"></i>
-                    Organization
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="bi bi-calendar-event"></i>
-                    Events
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="bi bi-gear"></i>
-                    Settings
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="bi bi-box-arrow-right"></i>
-                    Log out
-                </a>
-            </li>
-        </ul>
+        <div class="height">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ route('dashboard') }}" class="nav-link active">
+                        <i class="bi bi-house-door-fill"></i>
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-building"></i>
+                        Organization
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-calendar-event"></i>
+                        Events
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-gear"></i>
+                        Settings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Log out
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>

@@ -69,7 +69,7 @@ textarea:focus-visible {
 
 /* Main content wrapper */
 .main-content {
-    margin-left: var(--sidebar-width);
+    /* margin-left: var(--sidebar-width); */
     min-height: 100vh;
     transition: margin-left 0.3s ease-in-out !important;
     position: relative;
