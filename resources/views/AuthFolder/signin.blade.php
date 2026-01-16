@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Student Organization Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -349,6 +350,11 @@
             cursor: pointer;
             user-select: none;
         }
+
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
@@ -371,6 +377,9 @@
                 <p>Sign in to start your session</p>
             </div>
 
+            <!-- Error Display -->
+            <div id="errorAlert" class="alert alert-danger" style="display: none;"></div>
+
             <!-- Role Selector -->
             <div class="role-selector">
                 <div class="role-btn active" data-role="student" onclick="selectRole('student')">
@@ -389,13 +398,16 @@
 
             <!-- Login Form -->
             <form id="loginForm">
+                @csrf
+                <input type="hidden" name="role" id="roleInput" value="student">
+
                 <div class="form-group">
                     <label for="username" class="form-label" id="usernameLabel">Student Number</label>
                     <div class="input-group">
                         <span class="input-group-text">
                             <i class="bi bi-person"></i>
                         </span>
-                        <input type="text" class="form-control" id="username" placeholder="SN-XXXXXXXX" required>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="SN-XXXXXXXX" required>
                     </div>
                 </div>
 
@@ -405,7 +417,7 @@
                         <span class="input-group-text">
                             <i class="bi bi-lock-fill"></i>
                         </span>
-                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
                         <span class="input-group-text password-toggle" onclick="togglePassword()">
                             <i class="bi bi-eye" id="passwordToggleIcon"></i>
                         </span>
@@ -439,6 +451,7 @@
 
         function selectRole(role) {
             currentRole = role;
+            document.getElementById('roleInput').value = role;
 
             // Update active state
             document.querySelectorAll('.role-btn').forEach(btn => {
@@ -488,7 +501,16 @@
             }
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const username = document.getElementById('username').value;
@@ -496,26 +518,39 @@
 
             // Basic validation for school ID format
             if (currentRole === 'student' && !username.match(/^SN-\d{8}$/)) {
-                alert('Invalid Student Number format. Please use SN-XXXXXXXX');
+                showError('Invalid Student Number format. Please use SN-XXXXXXXX');
                 return;
             }
 
             if (currentRole === 'faculty' && !username.match(/^FN-\d{8}$/)) {
-                alert('Invalid Faculty Number format. Please use FN-XXXXXXXX');
+                showError('Invalid Faculty Number format. Please use FN-XXXXXXXX');
                 return;
             }
 
-            // Here you would normally send to backend
-            console.log('Login attempt:', {
-                role: currentRole,
-                username,
-                password
-            });
+            // Prepare form data
+            const formData = new FormData(this);
 
-            // Simulate login success
-            alert(`Login successful as ${currentRole}!`);
-            // Redirect based on role
-            // window.location.href = `dashboard-${currentRole}.html`;
+            try {
+                const response = await fetch('{{ route("login.submit") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    showError(data.message || 'Login failed. Please check your credentials.');
+                }
+            } catch (error) {
+                showError('An error occurred. Please try again.');
+                console.error('Login error:', error);
+            }
         });
 
         // Add input mask for student/faculty numbers

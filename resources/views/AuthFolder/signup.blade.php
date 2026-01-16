@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Sign Up - Student Organization Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -398,6 +399,11 @@
         .form-control.is-valid {
             border-color: #28a745;
         }
+
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -409,6 +415,10 @@
             <h2>Student Organization<br>Management</h2>
             <p>Sign Up Application</p>
         </div>
+
+        <!-- Error Display -->
+        <div id="errorAlert" class="alert alert-danger" style="display: none;"></div>
+        <div id="successAlert" class="alert alert-success" style="display: none;"></div>
 
         <!-- Role Selector -->
         <div class="role-selector">
@@ -424,6 +434,9 @@
 
         <!-- Sign Up Form -->
         <form id="signupForm">
+            @csrf
+            <input type="hidden" name="role" id="roleInput" value="student">
+
             <div class="form-section">
                 <div class="section-title">Account Information</div>
                 
@@ -433,7 +446,7 @@
                         <span class="input-group-text">
                             <i class="bi bi-card-text"></i>
                         </span>
-                        <input type="text" class="form-control" id="schoolId" placeholder="SN-XXXXXXXX" required>
+                        <input type="text" class="form-control" id="schoolId" name="school_id" placeholder="SN-XXXXXXXX" required>
                     </div>
                     <div class="invalid-feedback">Please enter a valid school ID format</div>
                 </div>
@@ -445,16 +458,16 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
+                        <input type="text" class="form-control" id="firstName" name="first_name" placeholder="First Name" required>
                         <div class="invalid-feedback">First name is required</div>
                     </div>
                     <div class="form-group">
                         <label for="middleName" class="form-label">Middle Name</label>
-                        <input type="text" class="form-control" id="middleName" placeholder="Middle Name">
+                        <input type="text" class="form-control" id="middleName" name="middle_name" placeholder="Middle Name">
                     </div>
                     <div class="form-group">
                         <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+                        <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Last Name" required>
                         <div class="invalid-feedback">Last name is required</div>
                     </div>
                 </div>
@@ -465,7 +478,7 @@
                         <span class="input-group-text">
                             <i class="bi bi-envelope-fill"></i>
                         </span>
-                        <input type="email" class="form-control" id="email" placeholder="Email@gmail.com" required>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email@gmail.com" required>
                     </div>
                     <div class="invalid-feedback">Please enter a valid email address</div>
                 </div>
@@ -476,7 +489,7 @@
                         <span class="input-group-text">
                             <i class="bi bi-lock-fill"></i>
                         </span>
-                        <input type="password" class="form-control" id="password" placeholder="Create a strong password" required>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Create a strong password" required>
                         <span class="input-group-text password-toggle" onclick="togglePassword('password', 'passwordToggleIcon')">
                             <i class="bi bi-eye" id="passwordToggleIcon"></i>
                         </span>
@@ -496,7 +509,7 @@
                         <span class="input-group-text">
                             <i class="bi bi-lock-fill"></i>
                         </span>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter your password" required>
+                        <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" placeholder="Re-enter your password" required>
                         <span class="input-group-text password-toggle" onclick="togglePassword('confirmPassword', 'confirmPasswordToggleIcon')">
                             <i class="bi bi-eye" id="confirmPasswordToggleIcon"></i>
                         </span>
@@ -530,7 +543,7 @@
 
         <div class="signin-link">
             <p>Already have an account?</p>
-            <a href="index.html">Sign In Here!</a>
+            <a href="{{ route('login') }}">Sign In Here!</a>
         </div>
     </div>
 
@@ -540,6 +553,7 @@
 
         function selectRole(role) {
             currentRole = role;
+            document.getElementById('roleInput').value = role;
             
             // Update active state
             document.querySelectorAll('.role-btn').forEach(btn => {
@@ -573,6 +587,23 @@
                 toggleIcon.classList.remove('bi-eye-slash');
                 toggleIcon.classList.add('bi-eye');
             }
+        }
+
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+            window.scrollTo(0, 0);
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successAlert = document.getElementById('successAlert');
+            successAlert.textContent = message;
+            successAlert.style.display = 'block';
+            window.scrollTo(0, 0);
         }
 
         // Password strength checker
@@ -629,7 +660,7 @@
         });
 
         // Form validation
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             let isValid = true;
@@ -700,22 +731,40 @@
             }
 
             if (isValid) {
-                // Collect form data
-                const formData = {
-                    role: currentRole,
-                    schoolId: schoolId.value,
-                    firstName: firstName.value,
-                    middleName: document.getElementById('middleName').value,
-                    lastName: lastName.value,
-                    email: email.value,
-                    password: password.value
-                };
+                const formData = new FormData(this);
 
-                console.log('Registration data:', formData);
-                
-                // Simulate successful registration
-                alert('Registration successful! Please check your email for verification.');
-                // window.location.href = 'index.html';
+                try {
+                    const response = await fetch('{{ route("signup.submit") }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        showSuccess(data.message);
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 1500);
+                    } else {
+                        if (data.errors) {
+                            let errorMessage = 'Please fix the following errors:\n';
+                            Object.values(data.errors).forEach(error => {
+                                errorMessage += '- ' + error[0] + '\n';
+                            });
+                            showError(errorMessage);
+                        } else {
+                            showError(data.message || 'Registration failed. Please try again.');
+                        }
+                    }
+                } catch (error) {
+                    showError('An error occurred. Please try again.');
+                    console.error('Signup error:', error);
+                }
             }
         });
 
