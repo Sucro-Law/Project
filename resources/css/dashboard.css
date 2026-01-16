@@ -26,9 +26,10 @@
        background: linear-gradient(180deg, var(--pup-maroon) 0%, var(--pup-dark) 100%);
        color: white;
        padding: 20px;
-       overflow-y: auto;
+       overflow-y: scroll;
        z-index: 1000;
        transition: all 0.3s ease;
+
    }
 
    .sidebar-header {
@@ -36,6 +37,18 @@
        padding: 20px 0;
        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
        margin-bottom: 30px;
+   }
+
+   .close-sidebar-btn {
+       position: absolute;
+       right: 15px;
+       top: 15px;
+       background: none;
+       border: none;
+       font-size: 1.5rem;
+       cursor: pointer;
+       display: block;
+       /* Show on mobile */
    }
 
    .pup-logo {
@@ -121,7 +134,7 @@
    }
 
    .height {
-       overflow-y: scroll;
+       
        height: 100px;
    }
 
@@ -170,15 +183,19 @@
        padding: 20px 30px;
        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
        display: flex;
-       justify-content: space-between;
        align-items: center;
+       gap: 20px;
+   }
+
+   .welcome-text {
+       margin-right: auto;
    }
 
    .welcome-text h2 {
        color: var(--pup-maroon);
        font-size: 1.8rem;
        font-weight: 700;
-       margin-bottom: 5px;
+       margin: 0;
    }
 
    .welcome-text p {

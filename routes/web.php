@@ -32,7 +32,7 @@ Route::get('/orgDetail', function () {
 
 // Reference URLs (for development)
 Route::get('/dashboard2', function () {
-    return view('pureHTML.dash1');
+    return view('pureHTML.referencedash1');
 });
 
 Route::get('/orgDetailRef', function () {
