@@ -429,7 +429,7 @@
                 </button>
 
                 <div class="forgot-password">
-                    <a href="#">I forgot my password</a>
+                    <a href="{{ route('password.request') }}">I forgot my password</a>
                 </div>
             </form>
 
