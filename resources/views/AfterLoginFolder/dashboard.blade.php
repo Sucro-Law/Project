@@ -5,7 +5,52 @@
 
 <div class="content-area">
     <!-- Events Section -->
-    <div class="section-title">Events</div>
+
+
+  
+    <!-- Organizations Section -->
+    <div class="section-title">Organizations</div>
+    <div class="org-cards">
+        <div class="org-card">
+            <div class="org-header">
+                <div class="org-logo">GDG</div>
+                <div class="org-info-header">
+                    <h3>Google Developer Groups on Campus – PUP</h3>
+                    <span class="org-status">ACTIVE • 2018</span>
+                </div>
+            </div>
+            <div class="org-description">
+                An organization is a group of people who work together, like a neighborhood association, a charity, a union, or a corporation.
+            </div>
+            <div class="org-footer">
+                <div class="org-members">
+                    <i class="bi bi-people-fill"></i> 23 Members
+                </div>
+                <a href="{{ route('orgDetail') }}" class="btn-view-org">View Organization</a>
+            </div>
+        </div>
+
+        <div class="org-card">
+            <div class="org-header">
+                <div class="org-logo">AWS</div>
+                <div class="org-info-header">
+                    <h3>Amazon Web Services – PUP</h3>
+                    <span class="org-status">ACTIVE • 2020</span>
+                </div>
+            </div>
+            <div class="org-description">
+                Learn cloud computing and modern infrastructure with AWS technologies and tools.
+            </div>
+            <div class="org-footer">
+                <div class="org-members">
+                    <i class="bi bi-people-fill"></i> 18 Members
+                </div>
+                <a href="#" class="btn-view-org">View Organization</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title" style="margin-top: 50px;">Events</div>
     <div class="events-grid">
         <div class="event-card">
             <div class="event-image">
@@ -47,52 +92,10 @@
             </div>
         </div>
     </div>
-
-    <div class="view-more-btn">
+      <div class="view-more-btn">
         <a href="#" class="btn-view-more">View more...</a>
     </div>
 
-    <!-- Organizations Section -->
-    <div class="section-title" style="margin-top: 50px;">Organizations</div>
-    <div class="org-cards">
-        <div class="org-card">
-            <div class="org-header">
-                <div class="org-logo">GDG</div>
-                <div class="org-info-header">
-                    <h3>Google Developer Groups on Campus – PUP</h3>
-                    <span class="org-status">ACTIVE • 2018</span>
-                </div>
-            </div>
-            <div class="org-description">
-                An organization is a group of people who work together, like a neighborhood association, a charity, a union, or a corporation.
-            </div>
-            <div class="org-footer">
-                <div class="org-members">
-                    <i class="bi bi-people-fill"></i> 23 Members
-                </div>
-                <a href="{{ route('orgDetail') }}" class="btn-view-org">View Organization</a>
-            </div>
-        </div>
-
-        <div class="org-card">
-            <div class="org-header">
-                <div class="org-logo">AWS</div>
-                <div class="org-info-header">
-                    <h3>Amazon Web Services – PUP</h3>
-                    <span class="org-status">ACTIVE • 2020</span>
-                </div>
-            </div>
-            <div class="org-description">
-                Learn cloud computing and modern infrastructure with AWS technologies and tools.
-            </div>
-            <div class="org-footer">
-                <div class="org-members">
-                    <i class="bi bi-people-fill"></i> 18 Members
-                </div>
-                <a href="#" class="btn-view-org">View Organization</a>
-            </div>
-        </div>
-    </div>
 </div>
 
 

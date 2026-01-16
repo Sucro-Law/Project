@@ -27,8 +27,9 @@
 
 <body>
     <div class="dashboard">
+        @include('Layout.header')
         <div class="main-content">
-            @include('Layout.header')
+            
             @yield('content')
             @include('Layout.sidebar')
         </div>

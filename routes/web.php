@@ -36,7 +36,7 @@ Route::get('/orgDetail', function () {
 
 #----REFERENCES URL--
 Route::get('/dashboard2', function () {
-    return view('pureHTML.dash1');
+    return view('pureHTML.referencedash1');
 });
 
 Route::get('/orgDetailRef', function () {
