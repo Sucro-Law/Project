@@ -32,9 +32,19 @@ Route::get('/membership', function () {
     return view('afterloginfolder.memberform');
 })->name('membership');
 
-Route::get('/orgDetail', function () {
+
+
+
+Route::get('/organization/detail', function () {
     return view('afterloginfolder.orgDetail');
 })->name('orgDetail');
+
+
+
+
+
+
+
 
 // Reference URLs (for development)
 Route::get('/dashboard2', function () {

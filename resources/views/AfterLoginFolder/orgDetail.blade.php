@@ -8,7 +8,6 @@
 
 @section('content')
 
-
 <div class="container-custom">
     <!-- Organization Header -->
     <div class="org-header-card">
@@ -44,6 +43,11 @@
             </div>
 
             <div class="org-actions">
+
+                <button class="btn-secondary-custom" style="background-color: #28a745; color: white; border: none;" onclick="openModal('memberAdmissionModal')">
+                    <i class="bi bi-person-plus"></i> ADD MEMBER
+                </button>
+
                 <button class="btn-primary-custom" onclick="openModal('membershipModal')">
                     MEMBERSHIP FORM
                 </button>
@@ -56,10 +60,28 @@
 
     <!-- Tabs -->
     <div class="custom-tabs">
-        <button class="tab-btn active" onclick="showTab('about')">About us</button>
-        <button class="tab-btn" onclick="showTab('officers')">Officers</button>
-        <button class="tab-btn" onclick="showTab('members')">Members</button>
-        <button class="tab-btn" onclick="showTab('events')">Events</button>
+        <div class="tabs-left">
+            <button class="tab-btn active" onclick="showTab('about')">About us</button>
+            <button class="tab-btn" onclick="showTab('officers')">Officers</button>
+            <button class="tab-btn" onclick="showTab('members')">Members</button>
+            <button class="tab-btn" onclick="showTab('alumni')">Alumni</button>
+            <button class="tab-btn" onclick="showTab('events')">Events</button>
+        </div>
+
+        <!-- IF ROLE IS EQUAL TO OFFICER OR ADVISER, PUT THIS ON THE TAB SECTION -->
+        <div class="tabs-right">
+            <button class="tab-btn" onclick="openModal('pendingMembers')">
+                <span class="pending-badge" title="Pending member requests">
+                    <i class="bi bi-person-plus-fill"></i>
+                    <span class="badge-count">3</span>
+            </button>
+            <button class="tab-btn" onclick="openModal('pendingEvents')">
+                <span class="pending-badge" title="Pending event approvals">
+                    <i class="bi bi-clock-history"></i>
+                    <span class="badge-count">2</span>
+            </button>
+        </div>
+
     </div>
 
     <!-- About Tab -->
@@ -123,9 +145,33 @@
         </div>
     </div>
 
+    <!-- Alumni Tab -->
+    <div id="alumni" class="tab-content">
+        <div class="about-section">
+            <div class="section-title">Alumni (50)</div>
+            <div class="members-list">
+                <div class="member-item">1. Cayona, Chrisel Franzel</div>
+                <div class="member-item">2. Mondragon, Ken John Vianney</div>
+                <div class="member-item">3. Member Name</div>
+                <div class="member-item">4. Member Name</div>
+                <div class="member-item">5. Member Name</div>
+                <div class="member-item">6. Member Name</div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Events Tab -->
     <div id="events" class="tab-content">
-        <div class="about-section">
+
+        <div class="create-event-trigger" onclick="openModal('eventPostingModal')">
+            <div class="trigger-avatar">
+                <div class="org-logo-small">GDG</div>
+            </div>
+            <div class="trigger-input">Create Event</div>
+        </div>
+
+        <div class="events-list">
             <div class="section-title">Events</div>
             <div class="events-list">
                 <div class="event-item">
@@ -154,7 +200,10 @@
                             19 Likes
                         </div>
                     </div>
-                    <div style="margin-top: 15px;">
+                    <div class="event-action-group">
+                        <button class="btn-view-attendees" title="See Attendees" onclick="openModal('attendeesModal')">
+                            <i class="bi bi-eye-fill"></i>
+                        </button>
                         <button class="btn-rsvp" onclick="openModal('rsvpModal')">RSVP</button>
                     </div>
                 </div>
@@ -181,6 +230,348 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <!-- Attendees Modal -->
+    <div class="modal-overlay" id="attendeesModal">
+        <div class="modal-content" style="padding: 0; width: 400px; border: 3px solid #500000;">
+            <div style="background: #500000; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-weight: bold;">ATTENDEES</h3>
+                <button class="modal-close-btn" style="color: white; position: static;" onclick="closeModal('attendeesModal')">X</button>
+            </div>
+            <div class="attendees-list-container">
+                @for ($i = 1; $i <= 10; $i++)
+                    <div class="attendee-row">{{ $i }}. Member {{ $i }}</div>
+            @endfor
+        </div>
+    </div>
+</div>
+
+<!-- Member Admission Modal -->
+<div class="modal-overlay" id="memberAdmissionModal">
+    <div class="modal-content" style="padding: 0; max-width: 700px; border-radius: 8px;">
+        <div class="admission-header">
+            <h4 style="margin: 0;">Google Developer Groups on Campus – PUP</h4>
+            <button class="modal-close-btn" style="color: white; top: 10px;" onclick="closeModal('memberAdmissionModal')">X</button>
+        </div>
+        <div class="admission-body text-center">
+            <h2 class="admission-title">MEMBER ADMISSION</h2>
+
+            <form>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="School Number">
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-select">
+                            <option>MEMBER/OFFICER</option>
+                            <option>Member</option>
+                            <option>Officer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><input type="text" class="form-control" placeholder="First Name"></div>
+                    <div class="col-md-4"><input type="text" class="form-control" placeholder="Middle Name"></div>
+                    <div class="col-md-4"><input type="text" class="form-control" placeholder="Last Name"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6"><input type="email" class="form-control" placeholder="Email@gmail.com"></div>
+                    <div class="col-md-6"><input type="text" class="form-control" placeholder="Role (IF OFFICER)"></div>
+                </div>
+                <button type="button" class="btn-primary-custom" style="width: 100%; background: #800000; height: 50px;">ADD MEMBER</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Event Posting Modal -->
+<div class="modal-overlay" id="eventPostingModal">
+    <div class="modal-content-event">
+        <button class="modal-close-btn" onclick="closeModal('eventPostingModal')">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <h2 class="event-posting-title">EVENT POSTING</h2>
+
+        <form id="eventPostingForm">
+            <div class="posting-grid">
+                <div class="full-width">
+                    <input type="text" class="posting-input" placeholder="Title" required>
+                </div>
+
+                <div class="posting-left">
+                    <div class="image-upload-box">
+                        <label for="eventImage" class="upload-label">
+                            <i class="bi bi-plus-lg"></i>
+                            <span>Insert Image</span>
+                        </label>
+                        <input type="file" id="eventImage" hidden>
+                    </div>
+
+                    <div class="details-section">
+                        <label>Details:</label>
+                        <input type="date" class="posting-input-small" placeholder="Date">
+                        <input type="text" class="posting-input-small" placeholder="Event's Place">
+                    </div>
+                </div>
+
+                <div class="posting-right">
+                    <textarea class="posting-textarea" placeholder="Description"></textarea>
+                </div>
+            </div>
+
+            <div class="posting-footer">
+                <button type="submit" class="btn-submit-event">SUBMIT</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Pending Members Modal -->
+<div class="modal-overlay" id="pendingMembers">
+    <div class="modal-content-pending">
+        <button class="modal-close-btn" onclick="closeModal('pendingMembers')">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <h2 class="modal-title-pending">Pending Members</h2>
+
+        <div class="accordion" id="pendingMembersAccordion">
+            <!-- Member 1 -->
+            <div class="accordion-item member-accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#member1">
+                        <span class="member-header-info">
+                            <strong>Name:</strong> Juan Dela Cruz
+                            <span class="divider">|</span>
+                            <strong>School ID:</strong> SN-12456784
+                        </span>
+                    </button>
+                </h2>
+                <div id="member1" class="accordion-collapse collapse"
+                    data-bs-parent="#pendingMembersAccordion">
+                    <div class="accordion-body">
+                        <div class="member-details-container">
+                            <div class="member-info-box">
+                                <div class="info-row">
+                                    <strong>Full Name:</strong>
+                                    <span class="text-maroon">Juan Dela Cruz</span>
+                                </div>
+                                <div class="info-row">
+                                    <strong>School ID:</strong>
+                                    <span class="text-maroon">SN-12456784</span>
+                                </div>
+                                <div class="info-row">
+                                    <strong>Role:</strong> Member
+                                </div>
+                                <div class="info-row">
+                                    <strong>Position:</strong> Member
+                                </div>
+                            </div>
+                            <div class="member-action-buttons">
+                                <button class="btn-accept">ACCEPT</button>
+                                <button class="btn-decline">DECLINE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Member 2 -->
+            <div class="accordion-item member-accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#member2">
+                        <span class="member-header-info">
+                            <strong>Name:</strong> Maria Santos
+                            <span class="divider">|</span>
+                            <strong>School ID:</strong> SN-12456785
+                        </span>
+                    </button>
+                </h2>
+                <div id="member2" class="accordion-collapse collapse"
+                    data-bs-parent="#pendingMembersAccordion">
+                    <div class="accordion-body">
+                        <div class="member-details-container">
+                            <div class="member-info-box">
+                                <div class="info-row">
+                                    <strong>Full Name:</strong>
+                                    <span class="text-maroon">Maria Santos</span>
+                                </div>
+                                <div class="info-row">
+                                    <strong>School ID:</strong>
+                                    <span class="text-maroon">SN-12456785</span>
+                                </div>
+                                <div class="info-row">
+                                    <strong>Role:</strong> Officer
+                                </div>
+                                <div class="info-row">
+                                    <strong>Position:</strong> Secretary
+                                </div>
+                            </div>
+                            <div class="member-action-buttons">
+                                <button class="btn-accept">ACCEPT</button>
+                                <button class="btn-decline">DECLINE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Member 3 -->
+            <div class="accordion-item member-accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#member3">
+                        <span class="member-header-info">
+                            <strong>Name:</strong> Pedro Reyes
+                            <span class="divider">|</span>
+                            <strong>School ID:</strong> SN-12456786
+                        </span>
+                    </button>
+                </h2>
+                <div id="member3" class="accordion-collapse collapse"
+                    data-bs-parent="#pendingMembersAccordion">
+                    <div class="accordion-body">
+                        <div class="member-details-container">
+                            <div class="member-info-box">
+                                <div class="info-row">
+                                    <strong>Full Name:</strong>
+                                    <span class="text-maroon">Pedro Reyes</span>
+                                </div>
+                                <div class="info-row">
+                                    <strong>School ID:</strong>
+                                    <span class="text-maroon">SN-12456786</span>
+                                </div>
+                                <div class="info-row">
+                                    <strong>Role:</strong> Member
+                                </div>
+                                <div class="info-row">
+                                    <strong>Position:</strong> Member
+                                </div>
+                            </div>
+                            <div class="member-action-buttons">
+                                <button class="btn-accept">ACCEPT</button>
+                                <button class="btn-decline">DECLINE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pending Events Modal -->
+<div class="modal-overlay" id="pendingEvents">
+    <div class="modal-content-pending">
+        <button class="modal-close-btn" onclick="closeModal('pendingEvents')">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <h2 class="modal-title-pending">Pending Events</h2>
+
+        <div class="accordion" id="pendingEventsAccordion">
+
+            <!-- Event 1 -->
+            <div class="accordion-item event-accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#event1">
+                        <div class="event-header-info">
+                            <strong>Title:</strong> <span class="fw-normal">2026: AHHH EHHHH</span><br>
+                            <small class="text-muted">Submitted by: Mommy Oni</small>
+                        </div>
+                    </button>
+                </h2>
+                <div id="event1" class="accordion-collapse collapse"
+                    data-bs-parent="#pendingEventsAccordion">
+                    <div class="accordion-body">
+                        <div class="event-details-container">
+                            <input type="text" class="event-title-input"
+                                value="2026: AHHH EHHHH" readonly>
+
+                            <div class="event-content-row">
+                                <div class="event-visual-column">
+                                    <div class="event-image-preview">
+                                        <img src="{{ asset('image/computer.jpg') }}" alt="Event Image">
+                                    </div>
+                                    <div class="event-details-inputs">
+                                        <label class="input-label">Details:</label>
+                                        <input type="text" class="detail-input" value="02/15/26" readonly>
+                                        <input type="text" class="detail-input" value="PUP Main" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="event-description-column">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                </div>
+                            </div>
+
+                            <p class="waiting-verification">-- Waiting for Verification --</p>
+
+                            <div class="event-action-buttons">
+                                <button class="btn-approve">APPROVE</button>
+                                <button class="btn-reject">REJECT</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event 2 -->
+            <div class="accordion-item event-accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#event2">
+                        <div class="event-header-info">
+                            <strong>Title:</strong> <span class="fw-normal">2026: Web Development Workshop</span><br>
+                            <small class="text-muted">Submitted by: Mr. Treasurer</small>
+                        </div>
+                    </button>
+                </h2>
+                <div id="event2" class="accordion-collapse collapse show"
+                    data-bs-parent="#pendingEventsAccordion">
+                    <div class="accordion-body">
+                        <div class="event-details-container">
+                            <input type="text" class="event-title-input"
+                                value="2026: Web Development Workshop" readonly>
+
+                            <div class="event-content-row">
+                                <div class="event-visual-column">
+                                    <div class="event-image-preview">
+                                        <img src="{{ asset('image/computer.jpg') }}" alt="Workshop Image">
+                                    </div>
+                                    <div class="event-details-inputs">
+                                        <label class="input-label">Details:</label>
+                                        <input type="text" class="detail-input" value="01/18/26" readonly>
+                                        <input type="text" class="detail-input" value="PUP South" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="event-description-column">
+                                    <p>Building the web of tomorrow—one line of code at a time. 💻</p>
+                                    <p>From fundamentals to modern tools, this workshop empowers aspiring
+                                        developers to design, build, and deploy impactful web applications. 🚀</p>
+                                </div>
+                            </div>
+
+                            <p class="waiting-verification">-- Waiting for Verification --</p>
+
+                            <div class="event-action-buttons">
+                                <button class="btn-approve">APPROVE</button>
+                                <button class="btn-reject">REJECT</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -300,6 +691,10 @@
     </div>
 </div>
 
+</div>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function showTab(tabName) {
@@ -338,5 +733,16 @@
             }
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var accordionElement = document.getElementById('pendingMembersAccordion');
+        // This force-initializes the accordion if it's being stubborn
+        var accordion = new bootstrap.Collapse(accordionElement, {
+            toggle: false
+        });
+    });
 </script>
+
+
+
 @endsection
