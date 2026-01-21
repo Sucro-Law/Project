@@ -19,6 +19,12 @@ Route::post('/signup', [AuthController::class, 'signup'])->name('signup.submit')
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Forgot/Reset Password routes
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
 // Dashboard and other pages
 Route::get('/dashboard', [OrgController::class, 'index'])->name('dashboard');
 
