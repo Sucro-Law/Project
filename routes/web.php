@@ -34,7 +34,7 @@ Route::get('/membership', function () {
     return view('Pages.memberform');
 })->name('membership');
 
-Route::get('/orgDetail', function () {
+Route::get('/organization/detail', function () {
     return view('Pages.orgDetail');
 })->name('orgDetail');
 
