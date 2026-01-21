@@ -118,14 +118,17 @@ body {
     width: 35px;
     height: 35px;
     background: linear-gradient(135deg, var(--pup-maroon) 0%, var(--pup-dark) 100%);
-    border-radius: 50%; /* Perfect circle */
+    border-radius: 50%;
+    /* Perfect circle */
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 0.8rem; /* Scaled down to fit 35px */
+    font-size: 0.8rem;
+    /* Scaled down to fit 35px */
     font-weight: bold;
-    flex-shrink: 0; /* Prevents squishing in flex containers */
+    flex-shrink: 0;
+    /* Prevents squishing in flex containers */
 }
 
 .org-main-info h1 {
@@ -469,9 +472,11 @@ body {
     background: white;
     padding: 40px 30px;
     border-radius: 8px;
-    width: 90%; max-width: 650px;
+    width: 90%;
+    max-width: 650px;
     position: relative;
-    border-top: 10px solid #4a0000; /* Dark Maroon accent */
+    border-top: 10px solid #4a0000;
+    /* Dark Maroon accent */
 }
 
 .modal-title-custom {
@@ -483,9 +488,13 @@ body {
 
 .modal-close-btn {
     position: absolute;
-    top: 10px; right: 10px;
-    background: #4a0000; color: white;
-    border: none; padding: 5px 10px; cursor: pointer;
+    top: 10px;
+    right: 10px;
+    background: #4a0000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
 }
 
 .modal-close {
@@ -618,7 +627,7 @@ body {
     overflow-y: auto;
     position: relative;
     border-top: 8px solid #4a0000;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 .modal-title-pending {
@@ -646,6 +655,7 @@ body {
     background: #800000;
     transform: scale(1.1);
 }
+
 .member-accordion-item,
 .event-accordion-item {
     border: 2px solid #000 !important;
@@ -688,7 +698,7 @@ body {
 }
 
 /* Prevent text selection issues */
-.accordion-button > * {
+.accordion-button>* {
     pointer-events: none;
 }
 
@@ -881,145 +891,214 @@ body {
 
 
 
-    .create-event-trigger {
-        display: flex;
-        align-items: center;
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: 15px;
-        padding: 15px 20px;
-        width: 100%;
-        max-width: 400px;
-        margin-bottom: 25px;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        transition: transform 0.2s ease;
-    }
+.create-event-trigger {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 15px 20px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 25px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
 
 
-    .create-event-trigger:hover {
-        background-color: #fafafa;
-        transform: translateY(-1px);
-    }
+.create-event-trigger:hover {
+    background-color: #fafafa;
+    transform: translateY(-1px);
+}
 
-    .trigger-avatar img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 15px;
-    }
+.trigger-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
 
-    .trigger-input {
-        color: #888;
-        font-size: 0.9rem;
-        flex-grow: 1;
-        border: 1px solid #e0e0e0;
-        padding: 4px 15px;
-        border-radius: 20px;
-        background-color: #fdfdfd;
-    }
+.trigger-input {
+    color: #888;
+    font-size: 0.9rem;
+    flex-grow: 1;
+    border: 1px solid #e0e0e0;
+    padding: 4px 15px;
+    border-radius: 20px;
+    background-color: #fdfdfd;
+}
 
-    .modal-content-event {
-        background: white;
-        width: 90%;
-        max-width: 800px;
-        padding: 30px;
-        border-radius: 50px;
-        position: relative;
-    }
+.modal-content-event {
+    background: white;
+    width: 90%;
+    max-width: 800px;
+    padding: 30px;
+    border-radius: 50px;
+    position: relative;
+}
 
-    .event-posting-title {
-        text-align: center;
-        color: #800000;
-        font-weight: 800;
-        margin-bottom: 20px;
-    }
+.event-posting-title {
+    text-align: center;
+    color: #800000;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
 
-    .posting-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
+.posting-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
 
-    .full-width {
-        grid-column: 1 / span 2;
-    }
+.full-width {
+    grid-column: 1 / span 2;
+}
 
-    .posting-input,
-    .posting-textarea,
-    .posting-input-small {
-        width: 100%;
-        border: 1px solid #333;
-        padding: 10px;
-        border-radius: 8px;
-    }
+.posting-input,
+.posting-textarea,
+.posting-input-small {
+    width: 100%;
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 8px;
+}
 
-    .posting-textarea {
-        height: 100%;
-        min-height: 200px;
-    }
+.posting-textarea {
+    height: 100%;
+    min-height: 200px;
+}
 
-    .image-upload-box {
-        border: 1px solid #333;
-        height: 150px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 8px;
-        margin-bottom: 15px;
-    }
+.image-upload-box {
+    border: 1px solid #333;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
 
-    .upload-label {
-        text-align: center;
-        cursor: pointer;
-        color: #800000;
-    }
+.upload-label {
+    text-align: center;
+    cursor: pointer;
+    color: #800000;
+}
 
-    .upload-label i {
-        font-size: 2.5rem;
-        display: block;
-    }
+.upload-label i {
+    font-size: 2.5rem;
+    display: block;
+}
 
-    .posting-footer {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 20px;
-    }
+.posting-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
 
-    .btn-submit-event {
-        background: #800000;
-        color: white;
-        padding: 10px 40px;
-        border: none;
-        border-radius: 5px;
-        font-weight: bold;
-    }
+.btn-submit-event {
+    background: #800000;
+    color: white;
+    padding: 10px 40px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
 
+/* New Eye Icon Styling */
+.event-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.event-action-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-view-attendees {
+    background: none;
+    border: 2px solid #800000;
+    color: #800000;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-view-attendees:hover {
+    background: #800000;
+    color: white;
+}
+
+/* Modal Styling for Attendees (Image 1) */
+.attendees-list-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.attendee-row {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+/* Modal Styling for Member Admission (Image 2) */
+.admission-header {
+    background-color: #800000;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+}
+
+.admission-body {
+    padding: 30px;
+    background: white;
+}
+
+.admission-title {
+    border-bottom: 2px solid #800000;
+    display: inline-block;
+    margin-bottom: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
 
 @media (max-width: 768px) {
     .modal-content-pending {
         width: 95%;
         padding: 25px 20px;
     }
-    
+
     .member-details-container {
         flex-direction: column;
     }
-    
+
     .member-action-buttons {
         flex-direction: row;
         min-width: auto;
     }
-    
+
     .event-content-row {
         flex-direction: column;
     }
-    
+
     .event-visual-column,
     .event-description-column {
         flex: 1;
     }
-    
+
     .event-action-buttons {
         flex-direction: column;
     }
@@ -1029,11 +1108,11 @@ body {
     .modal-title-pending {
         font-size: 1.4rem;
     }
-    
+
     .member-header-info {
         font-size: 0.85rem;
     }
-    
+
     .accordion-button {
         padding: 12px 15px;
     }
