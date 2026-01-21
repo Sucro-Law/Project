@@ -8,12 +8,8 @@
 
 @section('content')
 
-
 <style>
-
-
 </style>
-
 
 <div class="container-custom">
     <!-- Organization Header -->
@@ -69,13 +65,15 @@
             <button class="tab-btn" onclick="showTab('alumni')">Alumni</button>
             <button class="tab-btn" onclick="showTab('events')">Events</button>
         </div>
+
+        <!-- IF ROLE IS EQUAL TO OFFICER OR ADVISER, PUT THIS ON THE TAB SECTION -->
         <div class="tabs-right">
-            <button class="tab-btn">
+            <button class="tab-btn" onclick="openModal('pendingMembers')">
                 <span class="pending-badge" title="Pending member requests">
                     <i class="bi bi-person-plus-fill"></i>
                     <span class="badge-count">3</span>
             </button>
-            <button class="tab-btn">
+            <button class="tab-btn" onclick="openModal('pendingEvents')">
                 <span class="pending-badge" title="Pending event approvals">
                     <i class="bi bi-clock-history"></i>
                     <span class="badge-count">2</span>
@@ -161,8 +159,18 @@
 
 
     <!-- Events Tab -->
+
+
     <div id="events" class="tab-content">
-        <div class="about-section">
+
+        <div class="create-event-trigger" onclick="openModal('eventPostingModal')">
+            <div class="trigger-avatar">
+                <div class="org-logo-small">GDG</div>
+            </div>
+            <div class="trigger-input">Create Event</div>
+        </div>
+
+        <div class="events-list">
             <div class="section-title">Events</div>
             <div class="events-list">
                 <div class="event-item">
@@ -220,160 +228,457 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Membership Modal -->
-<div class="modal-overlay" id="membershipModal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('membershipModal')">
-            <i class="bi bi-x-lg"></i>
-        </button>
-        <h2 class="modal-title">MEMBERSHIP FORM</h2>
-        <p style="color: #666; margin-bottom: 25px;">Google Developer Groups on Campus – PUP</p>
 
-        <form id="membershipForm">
-            <div class="form-group">
-                <label class="form-label">School Number</label>
-                <input type="text" class="form-control" placeholder="SN-XXXXXXXX" required>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
-                <div class="form-group">
-                    <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Middle Name</label>
-                    <input type="text" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Email Address</label>
-                <input type="email" class="form-control" placeholder="Email@gmail.com" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Position</label>
-                <select class="form-select" required>
-                    <option value="">MEMBER/OFFICER</option>
-                    <option value="member">Member</option>
-                    <option value="officer">Officer</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Role (IF OFFICER)</label>
-                <input type="text" class="form-control" placeholder="e.g., Secretary, Treasurer">
-            </div>
-
-            <div class="certification-text">
-                I hereby certify that the information provided in this form is true, complete,
-                and accurate to the best of my knowledge. I understand that any misrepresentation
-                or material omission made on this form may result in the rejection of my application.
-            </div>
-
-            <button type="submit" class="btn-primary-custom" style="width: 100%;">
-                SUBMIT APPLICATION
+    <div class="modal-overlay" id="eventPostingModal">
+        <div class="modal-content-event">
+            <button class="modal-close-btn" onclick="closeModal('eventPostingModal')">
+                <i class="bi bi-x-lg"></i>
             </button>
-        </form>
+
+            <h2 class="event-posting-title">EVENT POSTING</h2>
+
+            <form id="eventPostingForm">
+                <div class="posting-grid">
+                    <div class="full-width">
+                        <input type="text" class="posting-input" placeholder="Title" required>
+                    </div>
+
+                    <div class="posting-left">
+                        <div class="image-upload-box">
+                            <label for="eventImage" class="upload-label">
+                                <i class="bi bi-plus-lg"></i>
+                                <span>Insert Image</span>
+                            </label>
+                            <input type="file" id="eventImage" hidden>
+                        </div>
+
+                        <div class="details-section">
+                            <label>Details:</label>
+                            <input type="date" class="posting-input-small" placeholder="Date">
+                            <input type="text" class="posting-input-small" placeholder="Event's Place">
+                        </div>
+                    </div>
+
+                    <div class="posting-right">
+                        <textarea class="posting-textarea" placeholder="Description"></textarea>
+                    </div>
+                </div>
+
+                <div class="posting-footer">
+                    <button type="submit" class="btn-submit-event">SUBMIT</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- RSVP Modal -->
-<div class="modal-overlay" id="rsvpModal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('rsvpModal')">
-            <i class="bi bi-x-lg"></i>
-        </button>
-        <h2 class="modal-title">EVENT RSVP FORM</h2>
-        <p style="color: #666; margin-bottom: 25px;">Google Developer Groups on Campus – PUP</p>
-
-        <form id="rsvpForm">
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                <h4 style="color: var(--pup-maroon); margin-bottom: 10px;">Event: 2026: Web Development Workshop</h4>
-                <p style="margin: 0; color: #666;"><strong>Details:</strong></p>
-                <p style="margin: 5px 0; color: #666;">Date: 01/18/26</p>
-                <p style="margin: 5px 0; color: #666;">Event's Place: PUP South</p>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">School Number</label>
-                <input type="text" class="form-control" placeholder="SN-XXXXXXXX" required>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
-                <div class="form-group">
-                    <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Middle Name</label>
-                    <input type="text" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Email Address</label>
-                <input type="email" class="form-control" placeholder="Email@gmail.com" required>
-            </div>
-
-            <div class="certification-text">
-                I acknowledge that this RSVP is a confirmation of my attendance.
-            </div>
-
-            <button type="submit" class="btn-primary-custom" style="width: 100%;">
-                SUBMIT RSVP
+    <!-- Pending Members Modal -->
+    <div class="modal-overlay" id="pendingMembers">
+        <div class="modal-content-pending">
+            <button class="modal-close-btn" onclick="closeModal('pendingMembers')">
+                <i class="bi bi-x-lg"></i>
             </button>
-        </form>
+            <h2 class="modal-title-pending">Pending Members</h2>
+
+            <div class="accordion" id="pendingMembersAccordion">
+
+                <!-- Member 1 -->
+                <div class="accordion-item member-accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#member1">
+                            <span class="member-header-info">
+                                <strong>Name:</strong> Juan Dela Cruz
+                                <span class="divider">|</span>
+                                <strong>School ID:</strong> SN-12456784
+                            </span>
+                        </button>
+                    </h2>
+                    <div id="member1" class="accordion-collapse collapse"
+                        data-bs-parent="#pendingMembersAccordion">
+                        <div class="accordion-body">
+                            <div class="member-details-container">
+                                <div class="member-info-box">
+                                    <div class="info-row">
+                                        <strong>Full Name:</strong>
+                                        <span class="text-maroon">Juan Dela Cruz</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <strong>School ID:</strong>
+                                        <span class="text-maroon">SN-12456784</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <strong>Role:</strong> Member
+                                    </div>
+                                    <div class="info-row">
+                                        <strong>Position:</strong> Member
+                                    </div>
+                                </div>
+                                <div class="member-action-buttons">
+                                    <button class="btn-accept">ACCEPT</button>
+                                    <button class="btn-decline">DECLINE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Member 2 -->
+                <div class="accordion-item member-accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#member2">
+                            <span class="member-header-info">
+                                <strong>Name:</strong> Maria Santos
+                                <span class="divider">|</span>
+                                <strong>School ID:</strong> SN-12456785
+                            </span>
+                        </button>
+                    </h2>
+                    <div id="member2" class="accordion-collapse collapse"
+                        data-bs-parent="#pendingMembersAccordion">
+                        <div class="accordion-body">
+                            <div class="member-details-container">
+                                <div class="member-info-box">
+                                    <div class="info-row">
+                                        <strong>Full Name:</strong>
+                                        <span class="text-maroon">Maria Santos</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <strong>School ID:</strong>
+                                        <span class="text-maroon">SN-12456785</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <strong>Role:</strong> Officer
+                                    </div>
+                                    <div class="info-row">
+                                        <strong>Position:</strong> Secretary
+                                    </div>
+                                </div>
+                                <div class="member-action-buttons">
+                                    <button class="btn-accept">ACCEPT</button>
+                                    <button class="btn-decline">DECLINE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Member 3 -->
+                <div class="accordion-item member-accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#member3">
+                            <span class="member-header-info">
+                                <strong>Name:</strong> Pedro Reyes
+                                <span class="divider">|</span>
+                                <strong>School ID:</strong> SN-12456786
+                            </span>
+                        </button>
+                    </h2>
+                    <div id="member3" class="accordion-collapse collapse"
+                        data-bs-parent="#pendingMembersAccordion">
+                        <div class="accordion-body">
+                            <div class="member-details-container">
+                                <div class="member-info-box">
+                                    <div class="info-row">
+                                        <strong>Full Name:</strong>
+                                        <span class="text-maroon">Pedro Reyes</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <strong>School ID:</strong>
+                                        <span class="text-maroon">SN-12456786</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <strong>Role:</strong> Member
+                                    </div>
+                                    <div class="info-row">
+                                        <strong>Position:</strong> Member
+                                    </div>
+                                </div>
+                                <div class="member-action-buttons">
+                                    <button class="btn-accept">ACCEPT</button>
+                                    <button class="btn-decline">DECLINE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-</div>
+    <div class="modal-overlay" id="pendingEvents">
+        <div class="modal-content-pending">
+            <button class="modal-close-btn" onclick="closeModal('pendingEvents')">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h2 class="modal-title-pending">Pending Events</h2>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function showTab(tabName) {
-        // Hide all tabs
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
+            <div class="accordion" id="pendingEventsAccordion">
+
+                <!-- Event 1 -->
+                <div class="accordion-item event-accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#event1">
+                            <div class="event-header-info">
+                                <strong>Title:</strong> <span class="fw-normal">2026: AHHH EHHHH</span><br>
+                                <small class="text-muted">Submitted by: Mommy Oni</small>
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="event1" class="accordion-collapse collapse"
+                        data-bs-parent="#pendingEventsAccordion">
+                        <div class="accordion-body">
+                            <div class="event-details-container">
+                                <input type="text" class="event-title-input"
+                                    value="2026: AHHH EHHHH" readonly>
+
+                                <div class="event-content-row">
+                                    <div class="event-visual-column">
+                                        <div class="event-image-preview">
+                                            <img src="{{ asset('image/computer.jpg') }}" alt="Event Image">
+                                        </div>
+                                        <div class="event-details-inputs">
+                                            <label class="input-label">Details:</label>
+                                            <input type="text" class="detail-input" value="02/15/26" readonly>
+                                            <input type="text" class="detail-input" value="PUP Main" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="event-description-column">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                    </div>
+                                </div>
+
+                                <p class="waiting-verification">-- Waiting for Verification --</p>
+
+                                <div class="event-action-buttons">
+                                    <button class="btn-approve">APPROVE</button>
+                                    <button class="btn-reject">REJECT</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="accordion-item event-accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#event2">
+                            <div class="event-header-info">
+                                <strong>Title:</strong> <span class="fw-normal">2026: Web Development Workshop</span><br>
+                                <small class="text-muted">Submitted by: Mr. Treasurer</small>
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="event2" class="accordion-collapse collapse show"
+                        data-bs-parent="#pendingEventsAccordion">
+                        <div class="accordion-body">
+                            <div class="event-details-container">
+                                <input type="text" class="event-title-input"
+                                    value="2026: Web Development Workshop" readonly>
+
+                                <div class="event-content-row">
+                                    <div class="event-visual-column">
+                                        <div class="event-image-preview">
+                                            <img src="{{ asset('image/computer.jpg') }}" alt="Workshop Image">
+                                        </div>
+                                        <div class="event-details-inputs">
+                                            <label class="input-label">Details:</label>
+                                            <input type="text" class="detail-input" value="01/18/26" readonly>
+                                            <input type="text" class="detail-input" value="PUP South" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="event-description-column">
+                                        <p>Building the web of tomorrow—one line of code at a time. 💻</p>
+                                        <p>From fundamentals to modern tools, this workshop empowers aspiring
+                                            developers to design, build, and deploy impactful web applications. 🚀</p>
+                                    </div>
+                                </div>
+
+                                <p class="waiting-verification">-- Waiting for Verification --</p>
+
+                                <div class="event-action-buttons">
+                                    <button class="btn-approve">APPROVE</button>
+                                    <button class="btn-reject">REJECT</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Membership Modal -->
+    <div class="modal-overlay" id="membershipModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('membershipModal')">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h2 class="modal-title">MEMBERSHIP FORM</h2>
+            <p style="color: #666; margin-bottom: 25px;">Google Developer Groups on Campus – PUP</p>
+
+            <form id="membershipForm">
+                <div class="form-group">
+                    <label class="form-label">School Number</label>
+                    <input type="text" class="form-control" placeholder="SN-XXXXXXXX" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Middle Name</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" placeholder="Email@gmail.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Position</label>
+                    <select class="form-select" required>
+                        <option value="">MEMBER/OFFICER</option>
+                        <option value="member">Member</option>
+                        <option value="officer">Officer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Role (IF OFFICER)</label>
+                    <input type="text" class="form-control" placeholder="e.g., Secretary, Treasurer">
+                </div>
+
+                <div class="certification-text">
+                    I hereby certify that the information provided in this form is true, complete,
+                    and accurate to the best of my knowledge. I understand that any misrepresentation
+                    or material omission made on this form may result in the rejection of my application.
+                </div>
+
+                <button type="submit" class="btn-primary-custom" style="width: 100%;">
+                    SUBMIT APPLICATION
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- RSVP Modal -->
+    <div class="modal-overlay" id="rsvpModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('rsvpModal')">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h2 class="modal-title">EVENT RSVP FORM</h2>
+            <p style="color: #666; margin-bottom: 25px;">Google Developer Groups on Campus – PUP</p>
+
+            <form id="rsvpForm">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="color: var(--pup-maroon); margin-bottom: 10px;">Event: 2026: Web Development Workshop</h4>
+                    <p style="margin: 0; color: #666;"><strong>Details:</strong></p>
+                    <p style="margin: 5px 0; color: #666;">Date: 01/18/26</p>
+                    <p style="margin: 5px 0; color: #666;">Event's Place: PUP South</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">School Number</label>
+                    <input type="text" class="form-control" placeholder="SN-XXXXXXXX" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Middle Name</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" placeholder="Email@gmail.com" required>
+                </div>
+
+                <div class="certification-text">
+                    I acknowledge that this RSVP is a confirmation of my attendance.
+                </div>
+
+                <button type="submit" class="btn-primary-custom" style="width: 100%;">
+                    SUBMIT RSVP
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal(this.id);
+                }
+            });
         });
 
-        // Remove active from all buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            var accordionElement = document.getElementById('pendingMembersAccordion');
+            // This force-initializes the accordion if it's being stubborn
+            var accordion = new bootstrap.Collapse(accordionElement, {
+                toggle: false
+            });
         });
+    </script>
 
-        // Show selected tab
-        document.getElementById(tabName).classList.add('active');
 
-        // Add active to clicked button
-        event.target.classList.add('active');
-    }
 
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('show');
-        document.body.style.overflow = 'auto';
-    }
-
-    // Close modal when clicking outside
-    document.querySelectorAll('.modal-overlay').forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal(this.id);
-            }
-        });
-    });
-</script>
-@endsection
+    @endsection
