@@ -204,6 +204,18 @@ body {
     border-bottom: 2px solid #e0e0e0;
 }
 
+.tabs-left {
+    display: flex;
+    gap: 20px;
+}
+
+.tabs-right {
+    margin-left: auto;
+    display: flex;
+    gap: 15px;
+}
+
+
 .tab-btn {
     background: none;
     border: none;
@@ -495,6 +507,24 @@ body {
     border-radius: 10px;
     margin-bottom: 20px;
 }
+
+.pending-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 6px;
+    color: #b30000;
+    font-size: 14px;
+}
+
+.icon-btn {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #b30000;
+}
+
 
 @media (max-width: 992px) {
     .org-header-content {

@@ -9,6 +9,12 @@
 @section('content')
 
 
+<style>
+
+
+</style>
+
+
 <div class="container-custom">
     <!-- Organization Header -->
     <div class="org-header-card">
@@ -56,10 +62,26 @@
 
     <!-- Tabs -->
     <div class="custom-tabs">
-        <button class="tab-btn active" onclick="showTab('about')">About us</button>
-        <button class="tab-btn" onclick="showTab('officers')">Officers</button>
-        <button class="tab-btn" onclick="showTab('members')">Members</button>
-        <button class="tab-btn" onclick="showTab('events')">Events</button>
+        <div class="tabs-left">
+            <button class="tab-btn active" onclick="showTab('about')">About us</button>
+            <button class="tab-btn" onclick="showTab('officers')">Officers</button>
+            <button class="tab-btn" onclick="showTab('members')">Members</button>
+            <button class="tab-btn" onclick="showTab('alumni')">Alumni</button>
+            <button class="tab-btn" onclick="showTab('events')">Events</button>
+        </div>
+        <div class="tabs-right">
+            <button class="tab-btn">
+                <span class="pending-badge" title="Pending member requests">
+                    <i class="bi bi-person-plus-fill"></i>
+                    <span class="badge-count">3</span>
+            </button>
+            <button class="tab-btn">
+                <span class="pending-badge" title="Pending event approvals">
+                    <i class="bi bi-clock-history"></i>
+                    <span class="badge-count">2</span>
+            </button>
+        </div>
+
     </div>
 
     <!-- About Tab -->
@@ -122,6 +144,21 @@
             </div>
         </div>
     </div>
+
+    <div id="alumni" class="tab-content">
+        <div class="about-section">
+            <div class="section-title">Alumni (50)</div>
+            <div class="members-list">
+                <div class="member-item">1. Cayona, Chrisel Franzel</div>
+                <div class="member-item">2. Mondragon, Ken John Vianney</div>
+                <div class="member-item">3. Member Name</div>
+                <div class="member-item">4. Member Name</div>
+                <div class="member-item">5. Member Name</div>
+                <div class="member-item">6. Member Name</div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Events Tab -->
     <div id="events" class="tab-content">
