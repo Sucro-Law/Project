@@ -333,8 +333,8 @@
         .input-group-text {
             background: white;
             border: 2px solid #e0e0e0;
-            border-right: none;
-            border-radius: 10px 0 0 10px;
+            color: #666;
+            transition: all 0.3s ease;
         }
 
         .input-group .form-control {

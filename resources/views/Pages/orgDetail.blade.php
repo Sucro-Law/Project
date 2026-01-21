@@ -1,19 +1,10 @@
 @extends('layout.main')
 
-@section('title', 'Organization Details')
-
 @push('styles')
-@vite(['resources/css/orgdesc.css'])
+@vite(['resources/css/pages.css'])
 @endpush
 
 @section('content')
-
-
-<style>
-
-
-</style>
-
 
 <div class="container-custom">
     <!-- Organization Header -->
@@ -50,7 +41,7 @@
             </div>
 
             <div class="org-actions">
-                <button class="btn-primary-custom" onclick="openModal('membershipModal')">
+                <button class="btn-primary" onclick="openModal('membershipModal')">
                     MEMBERSHIP FORM
                 </button>
                 <a href="#" class="btn-secondary-custom">
@@ -224,7 +215,7 @@
 
 <!-- Membership Modal -->
 <div class="modal-overlay" id="membershipModal">
-    <div class="modal-content">
+    <div class="org-modal-content">
         <button class="modal-close" onclick="closeModal('membershipModal')">
             <i class="bi bi-x-lg"></i>
         </button>
@@ -240,15 +231,15 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" required>
+                    <input type="text" class="form-control" placeholder="First Name" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Middle Name</label>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" placeholder="Middle Name">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" required>
+                    <input type="text" class="form-control" placeholder="Last Name" required>
                 </div>
             </div>
 
@@ -277,7 +268,7 @@
                 or material omission made on this form may result in the rejection of my application.
             </div>
 
-            <button type="submit" class="btn-primary-custom" style="width: 100%;">
+            <button type="submit" class="btn-primary" style="width: 100%;">
                 SUBMIT APPLICATION
             </button>
         </form>
@@ -286,7 +277,7 @@
 
 <!-- RSVP Modal -->
 <div class="modal-overlay" id="rsvpModal">
-    <div class="modal-content">
+    <div class="org-modal-content">
         <button class="modal-close" onclick="closeModal('rsvpModal')">
             <i class="bi bi-x-lg"></i>
         </button>
@@ -309,15 +300,15 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" required>
+                    <input type="text" class="form-control" placeholder="First Name" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Middle Name</label>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" placeholder="Middle Name">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" required>
+                    <input type="text" class="form-control" placeholder="Last Name" required>
                 </div>
             </div>
 
@@ -330,7 +321,7 @@
                 I acknowledge that this RSVP is a confirmation of my attendance.
             </div>
 
-            <button type="submit" class="btn-primary-custom" style="width: 100%;">
+            <button type="submit" class="btn-primary" style="width: 100%;">
                 SUBMIT RSVP
             </button>
         </form>

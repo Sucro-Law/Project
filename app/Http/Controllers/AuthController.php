@@ -19,7 +19,7 @@ class AuthController extends Controller
      */
     public function showLogin()
     {
-        return view('authfolder.signin');
+        return view('auth.signin');
     }
 
     /**
@@ -27,7 +27,7 @@ class AuthController extends Controller
      */
     public function showSignup()
     {
-        return view('authfolder.signup');
+        return view('auth.signup');
     }
 
     /**
@@ -182,7 +182,7 @@ class AuthController extends Controller
      */
     public function showForgotPassword()
     {
-        return view('authfolder.forgot-password');
+        return view('auth.forgot-password');
     }
 
     /**
@@ -259,7 +259,7 @@ class AuthController extends Controller
             return redirect()->route('login')->with('error', 'Invalid password reset link.');
         }
 
-        return view('authfolder.reset-password', [
+        return view('auth.reset-password', [
             'token' => $token,
             'email' => $email
         ]);

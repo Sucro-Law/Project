@@ -2,7 +2,7 @@
        --pup-maroon: #800000;
        --pup-gold: #FFD700;
        --pup-dark: #4a0000;
-       --sidebar-width: 280px;
+       --sidebar-width: 320px;
    }
 
    * {
@@ -26,8 +26,8 @@
        background: linear-gradient(180deg, var(--pup-maroon) 0%, var(--pup-dark) 100%);
        color: white;
        padding: 20px;
-       overflow-y: scroll;
-       z-index: 1000;
+       overflow-y: auto;
+       z-index: 1050;
        transition: all 0.3s ease;
 
    }
@@ -52,8 +52,8 @@
    }
 
    .pup-logo {
-       width: 60px;
-       height: 60px;
+       width: 70px;
+       height: 70px;
        background: white;
        border-radius: 12px;
        display: flex;
@@ -82,14 +82,14 @@
    }
 
    .user-avatar {
-       width: 60px;
-       height: 60px;
+       width: 70px;
+       height: 70px;
        background: white;
        border-radius: 50%;
        display: flex;
        align-items: center;
        justify-content: center;
-       margin: 0 auto 12px;
+       margin: 0 auto 15px;
        font-size: 1.5rem;
        color: var(--pup-maroon);
        font-weight: bold;
@@ -120,7 +120,8 @@
        border-radius: 20px;
        font-size: 0.75rem;
        display: inline-block;
-       margin: 3px;
+       margin: 2px 0;
+       width: 100%;
    }
 
    .org-info {
@@ -134,41 +135,49 @@
    }
 
    .height {
-       
-       height: 100px;
+       padding: 0 20px;
+       height: auto;
    }
 
    .nav-menu {
        list-style: none;
+       padding: 0;
+       margin-top: 20px;
    }
 
    .nav-item {
-       margin-bottom: 8px;
+       margin-bottom: 10px;
+       width: 100%;
    }
 
-   .nav-link {
-       display: flex;
+   .sidebar .nav-menu .nav-item .nav-link {
+       display: flex !important;
        align-items: center;
-       padding: 12px 15px;
+       padding: 15px 20px !important;
        color: white;
        text-decoration: none;
        border-radius: 10px;
-       transition: all 0.3s ease;
+       transition: all 0.2s ease;
        font-size: 0.95rem;
+       width: 100%;
    }
 
-   .nav-link:hover {
-       background: rgba(255, 255, 255, 0.1);
+   .sidebar .nav-menu .nav-item .nav-link:hover {
+       background: rgba(255, 255, 255, 0.1) !important;
        transform: translateX(5px);
    }
 
-   .nav-link.active {
-       background: rgba(255, 255, 255, 0.2);
+   .sidebar .nav-menu .nav-item .nav-link.active {
+       background: rgba(255, 255, 255, 0.2) !important;
    }
 
-   .nav-link i {
+   .sidebar .nav-menu .nav-item .nav-link i {
        margin-right: 12px;
        font-size: 1.2rem;
+       width: 23px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
    }
 
    /* Main Content */
@@ -181,9 +190,10 @@
    .top-bar {
        background: white;
        padding: 20px 30px;
-       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.10);
        display: flex;
        align-items: center;
+       justify-content: flex-start;
        gap: 20px;
    }
 
@@ -217,7 +227,8 @@
        border: 2px solid #e0e0e0;
        border-radius: 25px;
        padding: 10px 20px 10px 45px;
-       width: 300px;
+       width: 100%;
+       min-width: 300px;
        transition: all 0.3s ease;
    }
 
@@ -278,21 +289,41 @@
    }
 
    /* Content Area */
+   .container-custom {
+       padding: 10px 20px;
+   }
+
    .content-area {
+       background-color: transparent;
        padding: 30px;
    }
 
    .section-title {
        color: maroon !important;
-       font-size: 1.5rem;
+       font-size: 1.8rem;
        font-weight: 700;
-       margin-bottom: 20px;
+       margin-bottom: 25px;
+       text-decoration: none;
+       display: inline-flex;
+       align-items: center;
+       gap: 10px;
+       transition: all 0.2s ease;
+   }
+
+   .section-title i {
+       font-size: 1.4rem;
+       transition: transform 0.2s ease;
+   }
+
+   .section-title:hover {
+       color: var(--pup-dark) !important;
+       text-decoration: none;
    }
 
    /* Event Cards */
    .events-grid {
        display: grid;
-       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+       grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
        gap: 25px;
        margin-bottom: 30px;
    }
@@ -304,10 +335,13 @@
        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
        transition: all 0.3s ease;
        cursor: pointer;
+       display: flex;
+       flex-direction: column;
+       height: 100%;
    }
 
    .event-card:hover {
-       transform: translateY(-5px);
+       transform: translateY(-3px);
        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
    }
 
@@ -336,7 +370,10 @@
    }
 
    .event-content {
-       padding: 20px;
+       padding: 25px;
+       display: flex;
+       flex-direction: column;
+       flex-grow: 1;
    }
 
    .event-title {
@@ -351,6 +388,7 @@
        font-size: 0.9rem;
        line-height: 1.6;
        margin-bottom: 15px;
+       flex-grow: 1;
    }
 
    .event-meta {
@@ -359,6 +397,7 @@
        align-items: center;
        padding-top: 15px;
        border-top: 1px solid #f0f0f0;
+       margin-top: auto;
    }
 
    .event-author {
@@ -400,16 +439,19 @@
    /* Organizations Section */
    .org-cards {
        display: grid;
-       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-       gap: 20px;
+       grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+       gap: 25px;
    }
 
    .org-card {
        background: white;
        border-radius: 15px;
-       padding: 25px;
+       padding: 30px;
        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
        transition: all 0.3s ease;
+       display: flex;
+       flex-direction: column;
+       height: 100%;
    }
 
    .org-card:hover {
@@ -425,8 +467,8 @@
    }
 
    .org-logo {
-       width: 60px;
-       height: 60px;
+       width: 65px;
+       height: 65px;
        background: linear-gradient(135deg, var(--pup-maroon) 0%, var(--pup-dark) 100%);
        border-radius: 12px;
        display: flex;
@@ -435,19 +477,25 @@
        color: white;
        font-weight: bold;
        font-size: 1.5rem;
+       flex-shrink: 0;
    }
 
    .org-info-header h3 {
        font-size: 1.1rem;
        font-weight: 700;
        color: #333;
-       margin-bottom: 3px;
+       margin-bottom: 5px;
    }
 
    .org-status {
+       display: inline-block;
+       background: #d4edda;
        font-size: 0.75rem;
-       color: #28a745;
+       color: #155724;
        font-weight: 600;
+       padding: 3px 12px;
+       border-radius: 12px;
+       margin-bottom: 8px;
    }
 
    .org-description {
@@ -455,12 +503,15 @@
        color: #666;
        line-height: 1.5;
        margin-bottom: 15px;
+       flex-grow: 1;
    }
 
    .org-footer {
        display: flex;
        justify-content: space-between;
        align-items: center;
+       margin-top: auto;
+       padding-top: 10px;
    }
 
    .org-members {
@@ -544,6 +595,7 @@
    }
 
    .main-content {
+       background-color: #f5f5f5 !important;
        margin-left: 0;
    }
 
@@ -552,6 +604,10 @@
    }
 
    @media (max-width: 1200px) {
+       :root {
+           --sidebar-width: 370px;
+       }
+
        .sidebar {
            transform: translateX(-100%);
        }
@@ -570,9 +626,20 @@
    }
 
    @media (max-width: 768px) {
+       :root {
+           --sidebar-width: 60%;
+       }
+
        .top-bar {
            flex-direction: column;
+           align-items: flex-start !important;
            gap: 15px;
+       }
+
+       .mobile-menu-btn {
+           width: 35px;
+           height: 35px;
+           margin-right: 0;
        }
 
        .top-actions {
@@ -602,6 +669,7 @@
        justify-content: center;
        cursor: pointer;
        margin-right: 15px;
+       flex-shrink: 0;
    }
 
    /* @media (max-width: 1200px) {

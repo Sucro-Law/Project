@@ -25,16 +25,22 @@ Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name(
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
-// Dashboard and other pages
+// Pages
 Route::get('/dashboard', [OrgController::class, 'index'])->name('dashboard');
+Route::get('/organization', [OrgController::class, 'organization'])->name('organization');
+Route::get('/events', [OrgController::class, 'events'])->name('events');
 
 Route::get('/membership', function () {
-    return view('afterloginfolder.memberform');
+    return view('Pages.memberform');
 })->name('membership');
 
 Route::get('/orgDetail', function () {
-    return view('afterloginfolder.orgDetail');
+    return view('Pages.orgDetail');
 })->name('orgDetail');
+
+Route::get('/settings', function () {
+    return view('Pages.settings');
+})->name('settings');
 
 // Reference URLs (for development)
 Route::get('/dashboard2', function () {

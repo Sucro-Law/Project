@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,9 +13,9 @@
             --pup-maroon: #800000;
             --pup-gold: #FFD700;
             --pup-dark: #4a0000;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
-            --shadow-lg: 0 8px 24px rgba(0,0,0,0.2);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
 
         * {
@@ -160,40 +161,35 @@
             font-size: 0.85rem;
         }
 
-        .form-control, .form-select {
+        .input-group-text {
+            background: white;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 12px 15px;
-            font-size: 0.9rem;
+            color: #666;
             transition: all 0.3s ease;
-            width: 100%;
         }
 
-        .form-control:focus, .form-select:focus {
+        .input-group:focus-within .input-group-text,
+        .input-group:focus-within .form-control {
+            border-color: var(--pup-maroon);
+            outline: none;
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
             border-color: var(--pup-maroon);
             box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.1);
             outline: none;
         }
 
-        .input-group-text {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-right: none;
-            border-radius: 10px 0 0 10px;
-        }
-
-        .input-group .form-control {
-            border-left: none;
-            border-radius: 0 10px 10px 0;
-        }
-
         .input-group:focus-within .input-group-text {
             border-color: var(--pup-maroon);
-        }
-
-        .password-toggle {
-            cursor: pointer;
-            user-select: none;
         }
 
         .certification-box {
@@ -346,6 +342,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -353,9 +350,12 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px);
             }
+
             50% {
                 transform: translateY(-5px);
             }
@@ -392,7 +392,7 @@
             border-color: #dc3545;
         }
 
-        .form-control.is-invalid ~ .invalid-feedback {
+        .form-control.is-invalid~.invalid-feedback {
             display: block;
         }
 
@@ -406,6 +406,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="signup-container">
         <div class="signup-header">
@@ -439,7 +440,7 @@
 
             <div class="form-section">
                 <div class="section-title">Account Information</div>
-                
+
                 <div class="form-group">
                     <label for="schoolId" class="form-label" id="schoolIdLabel">School Number</label>
                     <div class="input-group">
@@ -454,7 +455,7 @@
 
             <div class="form-section">
                 <div class="section-title">Personal Information</div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName" class="form-label">First Name</label>
@@ -521,16 +522,16 @@
             <!-- Certification Box -->
             <div class="certification-box">
                 <p class="certification-text">
-                    I hereby certify that the information provided in this form is true, complete, 
-                    and accurate to the best of my knowledge. I understand that any misrepresentation 
+                    I hereby certify that the information provided in this form is true, complete,
+                    and accurate to the best of my knowledge. I understand that any misrepresentation
                     or material omission made on this form may result in the rejection of my application.
                 </p>
-                
+
                 <div class="custom-checkbox">
                     <input type="checkbox" id="agreeTerms" required>
                     <label for="agreeTerms">
-                        By using this service, you understood and agree to the 
-                        <a href="#">PUP Online Services Terms of Use</a> and 
+                        By using this service, you understood and agree to the
+                        <a href="#">PUP Online Services Terms of Use</a> and
                         <a href="#">Privacy Statement</a>
                     </label>
                 </div>
@@ -554,7 +555,7 @@
         function selectRole(role) {
             currentRole = role;
             document.getElementById('roleInput').value = role;
-            
+
             // Update active state
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -577,7 +578,7 @@
         function togglePassword(inputId, iconId) {
             const passwordInput = document.getElementById(inputId);
             const toggleIcon = document.getElementById(iconId);
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 toggleIcon.classList.remove('bi-eye');
@@ -611,7 +612,7 @@
             const password = e.target.value;
             const strengthContainer = document.getElementById('passwordStrength');
             const strengthText = document.getElementById('strengthText');
-            
+
             if (password.length === 0) {
                 strengthContainer.className = 'password-strength';
                 strengthText.textContent = '-';
@@ -619,14 +620,14 @@
             }
 
             let strength = 0;
-            
+
             if (password.length >= 8) strength++;
             if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
             if (password.match(/[0-9]/)) strength++;
             if (password.match(/[^a-zA-Z0-9]/)) strength++;
 
             strengthContainer.className = 'password-strength';
-            
+
             if (strength <= 1) {
                 strengthContainer.classList.add('strength-weak');
                 strengthText.textContent = 'Weak';
@@ -651,25 +652,25 @@
         document.getElementById('schoolId').addEventListener('input', function(e) {
             let value = e.target.value.toUpperCase();
             const prefix = currentRole === 'student' ? 'SN-' : 'FN-';
-            
+
             if (!value.startsWith(prefix)) {
                 value = prefix + value.replace(/[^0-9]/g, '');
             }
-            
+
             e.target.value = value.substring(0, 11);
         });
 
         // Form validation
         document.getElementById('signupForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             let isValid = true;
-            
+
             // School ID validation
             const schoolId = document.getElementById('schoolId');
             const prefix = currentRole === 'student' ? 'SN-' : 'FN-';
             const regex = new RegExp(`^${prefix}\\d{8}$`);
-            
+
             if (!regex.test(schoolId.value)) {
                 schoolId.classList.add('is-invalid');
                 isValid = false;
@@ -681,7 +682,7 @@
             // Name validation
             const firstName = document.getElementById('firstName');
             const lastName = document.getElementById('lastName');
-            
+
             if (firstName.value.trim().length < 2) {
                 firstName.classList.add('is-invalid');
                 isValid = false;
@@ -689,7 +690,7 @@
                 firstName.classList.remove('is-invalid');
                 firstName.classList.add('is-valid');
             }
-            
+
             if (lastName.value.trim().length < 2) {
                 lastName.classList.add('is-invalid');
                 isValid = false;
@@ -701,7 +702,7 @@
             // Email validation
             const email = document.getElementById('email');
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
+
             if (!emailRegex.test(email.value)) {
                 email.classList.add('is-invalid');
                 isValid = false;
@@ -713,7 +714,7 @@
             // Password validation
             const password = document.getElementById('password');
             const confirmPassword = document.getElementById('confirmPassword');
-            
+
             if (password.value.length < 8) {
                 password.classList.add('is-invalid');
                 isValid = false;
@@ -721,7 +722,7 @@
                 password.classList.remove('is-invalid');
                 password.classList.add('is-valid');
             }
-            
+
             if (password.value !== confirmPassword.value) {
                 confirmPassword.classList.add('is-invalid');
                 isValid = false;
@@ -776,4 +777,5 @@
         });
     </script>
 </body>
+
 </html>

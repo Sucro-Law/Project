@@ -37,25 +37,25 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('organization') }}" class="nav-link">
                     <i class="bi bi-building"></i>
                     Organization
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('events') }}" class="nav-link">
                     <i class="bi bi-calendar-event"></i>
                     Events
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('settings') }}" class="nav-link">
                     <i class="bi bi-gear"></i>
                     Settings
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('login') }}" class="nav-link">
                     <i class="bi bi-box-arrow-right"></i>
                     Log out
                 </a>
