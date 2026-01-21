@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('memberships', function (Blueprint $table) {
-            $table->id('membership_id');
-            $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
-            $table->foreignId('org_id')->constrained('organizations', 'org_id')->onDelete('cascade');
+            $table->string('membership_id', 20)->primary();
+            $table->string('user_id', 20);
+            $table->string('org_id', 20);
             $table->string('academic_year', 20);
             $table->enum('membership_role', ['Officer', 'Member'])->default('Member');
             $table->date('joined_at')->useCurrent();
-            $table->enum('status', ['Pending', 'Active', 'Alumni', 'Rejected'])->default('Pending');
-            
-            // Unique constraint: A user can only join an org once
+            $table->enum('status', ['Pending', 'Active', 'Rejected', 'Alumni'])->default('Pending');
+
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('org_id')->references('org_id')->on('organizations')->onDelete('cascade')->onUpdate('cascade');
             $table->unique(['user_id', 'org_id']);
         });
     }
