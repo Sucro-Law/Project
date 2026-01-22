@@ -214,6 +214,25 @@ body {
     background: transparent;
 }
 
+.btn-add-member {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-add-member:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    color: white;
+}
+
 /* Tabs */
 .custom-tabs {
     display: flex;
@@ -547,9 +566,25 @@ body {
 .pending-badge {
     display: inline-flex;
     align-items: center;
-    margin-left: 6px;
+    gap: 5px;
+}
+
+.pending-badge i {
     color: #b30000;
-    font-size: 14px;
+    font-size: 20px;
+}
+
+.badge-count {
+    color: #b30000;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.tabs-right {
+    display: flex;
+    align-items: center;
+    gap: 1px;
 }
 
 .icon-btn {
@@ -610,13 +645,13 @@ body {
 .modal-content-pending {
     background: white;
     padding: 35px 30px;
-    border-radius: 12px;
+    border-radius: 18px;
     width: 90%;
     max-width: 700px;
     max-height: 85vh;
     overflow-y: auto;
     position: relative;
-    border-top: 8px solid #4a0000;
+    border-top: 10px solid #4a0000;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 

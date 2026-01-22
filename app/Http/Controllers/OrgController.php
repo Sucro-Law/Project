@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Organization;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class OrgController extends Controller
 {
@@ -57,9 +60,19 @@ class OrgController extends Controller
 
         return view('Pages.organization', compact('organizations'));
     }
-    
+
     public function events()
     {
         return view('Pages.events');
+    }
+
+    public function show($id)
+    {
+        $organization = Organization::find($id);
+
+        $user = Auth::user(); 
+        $role = $user ? $user->account_type : 'guest';
+
+        return view('pages.orgdetail', compact('organization', 'role'));
     }
 }

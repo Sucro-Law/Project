@@ -29,14 +29,16 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 Route::get('/dashboard', [OrgController::class, 'index'])->name('dashboard');
 Route::get('/organization', [OrgController::class, 'organization'])->name('organization');
 Route::get('/events', [OrgController::class, 'events'])->name('events');
+Route::get('/organization/detail/{id}', [OrgController::class, 'show'])->name('orgDetail');
 
 Route::get('/membership', function () {
     return view('Pages.memberform');
 })->name('membership');
 
+/*
 Route::get('/organization/detail', function () {
     return view('Pages.orgDetail');
-})->name('orgDetail');
+})->name('orgDetail');*/
 
 Route::get('/profile', function () {
     return view('Pages.profile');
