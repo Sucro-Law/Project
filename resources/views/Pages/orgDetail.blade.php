@@ -41,9 +41,15 @@
             </div>
 
             <div class="org-actions">
+                @if($role === 'officer' || $role === 'adviser')
+                <button class="btn-add-member" onclick="openModal('memberAdmissionModal')">
+                    <i class="bi bi-person-plus"></i> ADD MEMBER
+                </button>
+                @else
                 <button class="btn-primary-custom" onclick="openModal('membershipModal')">
                     MEMBERSHIP FORM
                 </button>
+                @endif
                 <a href="#" class="btn-secondary-custom">
                     <i class="bi bi-share me-1"></i> Share
                 </a>
@@ -61,16 +67,18 @@
             <button class="tab-btn" onclick="showTab('events')">Events</button>
         </div>
         <div class="tabs-right">
-            <button class="tab-btn">
+            @if($role === 'officer' || $role === 'adviser')
+            <button class="tab-btn" onclick="openModal('pendingMembers')">
                 <span class="pending-badge" title="Pending member requests">
                     <i class="bi bi-person-plus-fill"></i>
                     <span class="badge-count">3</span>
             </button>
-            <button class="tab-btn">
+            <button class="tab-btn" onclick="openModal('pendingEvents')">
                 <span class="pending-badge" title="Pending event approvals">
                     <i class="bi bi-clock-history"></i>
                     <span class="badge-count">2</span>
             </button>
+            @endif
         </div>
 
     </div>
@@ -153,13 +161,14 @@
 
     <!-- Events Tab -->
     <div id="events" class="tab-content">
-
+        @if($role === 'officer' || $role === 'adviser')
         <div class="create-event-trigger" onclick="openModal('eventPostingModal')">
             <div class="trigger-avatar">
                 <div class="org-logo-small me-2">GDG</div>
             </div>
             <div class="trigger-input">Create Event</div>
         </div>
+        @endif
 
         <div class="events-list">
             <div class="section-title">Events</div>
@@ -191,9 +200,11 @@
                         </div>
                     </div>
                     <div class="event-action-group">
+                        @if($role === 'officer' || $role === 'adviser')
                         <button class="btn-view-attendees" title="See Attendees" onclick="openModal('attendeesModal')">
                             <i class="bi bi-eye-fill"></i>
                         </button>
+                        @endif
                         <button class="btn-rsvp" onclick="openModal('rsvpModal')">RSVP</button>
                     </div>
                 </div>
@@ -509,10 +520,12 @@
 
                             <p class="waiting-verification">-- Waiting for Verification --</p>
 
+                            @if($role === 'adviser')
                             <div class="event-action-buttons">
                                 <button class="btn-approve">APPROVE</button>
                                 <button class="btn-reject">REJECT</button>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -557,10 +570,12 @@
 
                             <p class="waiting-verification">-- Waiting for Verification --</p>
 
+                            @if($role === 'adviser')
                             <div class="event-action-buttons">
                                 <button class="btn-approve">APPROVE</button>
                                 <button class="btn-reject">REJECT</button>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -625,7 +640,7 @@
                 or material omission made on this form may result in the rejection of my application.
             </div>
 
-            <button type="submit" class="btn-primary-custom" style="width: 100%;">
+            <button type="submit" class="btn-primary-custom">
                 SUBMIT APPLICATION
             </button>
         </form>
