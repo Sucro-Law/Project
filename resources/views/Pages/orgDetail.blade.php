@@ -217,6 +217,10 @@
                             <i class="bi bi-person-circle"></i>
                             Author: Mr. Adviser
                         </div>
+                        <div class="event-detail-item">
+                            <i class="bi bi-heart-fill"></i>
+                            24 Likes
+                        </div>
                     </div>
                 </div>
             </div>

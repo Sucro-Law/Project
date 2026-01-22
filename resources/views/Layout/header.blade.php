@@ -15,7 +15,7 @@
             <i class="bi bi-bell-fill"></i>
             <span class="notification-badge">2</span>
         </div>
-        <div class="user-menu" id="userMenuTrigger"> <span>FN MN. LN</span>
+        <div class="user-menu" id="userMenuTrigger"> <span>FN MI. LN</span>
             <i class="bi bi-chevron-down"></i>
         </div>
     </div>
@@ -23,7 +23,7 @@
 
 
 <div class="user-dropdown" id="userDropdown">
-    <a href="#" class="dropdown-item">Profile</a>
+    <a href="{{ route('profile') }}" class="dropdown-item">Profile</a>
     <a href="{{ route('settings') }}" class="dropdown-item">Settings</a>
     <div class="dropdown-divider"></div>
     <a href="#" class="dropdown-item logout">Logout</a>

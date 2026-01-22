@@ -38,6 +38,10 @@ Route::get('/organization/detail', function () {
     return view('Pages.orgDetail');
 })->name('orgDetail');
 
+Route::get('/profile', function () {
+    return view('Pages.profile');
+})->name('profile');
+
 Route::get('/settings', function () {
     return view('Pages.settings');
 })->name('settings');

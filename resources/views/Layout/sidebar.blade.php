@@ -13,15 +13,13 @@
 
     <div class="user-profile">
         <div class="user-avatar">FL</div>
-        <div class="user-name">FN MN. LN</div>
-
+        <div class="user-name">FN MI. LN</div>
 
         <!-- User Organizations List -->
         <div class="user-org-list">
             <div class="user-org-title">Organization/s Joined:</div>
             <div>
                 <span class="org-badge">Google Developer Groups on Campus – PUP</span>
-
             </div>
             <div class="org-info">
                 <div>Position: Member</div>
@@ -30,7 +28,7 @@
             </div>
 
             <div>
-                <span class="org-badge" style="margin-top: 30px;">Amazon Web Services – PUP</span>
+                <span class="org-badge mt-2">Amazon Web Services – PUP</span>
             </div>
             <div class="org-info">
                 <div>Position: Member</div>

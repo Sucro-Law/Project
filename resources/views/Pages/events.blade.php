@@ -38,7 +38,7 @@
         padding: 35px 25px;
         color: white;
         position: relative;
-        min-height: 220px;
+        min-height: 230px;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -132,6 +132,62 @@
         padding: 12px;
         border-radius: 25px;
         font-weight: 600;
+    }
+
+    .btn-like-event {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border: none;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-like-event:hover {
+        background: white;
+        color: #ff4d4d;
+        transform: scale(1.1);
+    }
+
+    .btn-like-event.active {
+        background: white;
+        color: #ff4d4d;
+    }
+
+    .speaker-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 15px;
+        padding: 12px;
+        background: #fcf6f6;
+        border-radius: 12px;
+        min-height: 65px;
+        border: 1px solid #f0f0f0;
+        width: 100%;
+    }
+
+    .speaker-avatar {
+        width: 35px;
+        height: 35px;
+        background: var(--pup-maroon);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        flex-shrink: 0;
     }
 
     .modal-overlay {
@@ -231,13 +287,27 @@
                     <div class="event-icon">🚀</div>
                     <h3 class="event-title mb-2">2026: Web Development Workshop</h3>
                     <div class="event-org">Google Developer Groups on Campus – PUP</div>
+
+                    <button class="btn-like-event">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
                 </div>
                 <div class="p-4 d-flex flex-column flex-grow-1">
-                    <div>
-                        <span class="badge status-upcoming mb-3">UPCOMING</span>
-                        <p class="text-muted small mb-3">
-                            Building the web of tomorrow—one line of code at a time. From fundamentals to modern tools, this workshop empowers developers.
-                        </p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge status-upcoming">UPCOMING</span>
+                        <span class="small text-muted"><i class="bi bi-people me-1"></i> 19 Liked</span>
+                    </div>
+
+                    <p class="text-muted small mb-3">
+                        Building the web of tomorrow—one line of code at a time. From fundamentals to modern tools, this workshop empowers developers.
+                    </p>
+
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">JK</div>
+                        <div>
+                            <div class="small fw-bold" style="color: #333;">Mr. Josef Velayo</div>
+                            <div class="text-muted" style="font-size: 10px;">Lead Speaker / GDG Lead</div>
+                        </div>
                     </div>
 
                     <div class="mt-auto">
@@ -266,20 +336,33 @@
                     <div class="event-icon">💡</div>
                     <h3 class="event-title mb-2">This is how you do it!</h3>
                     <div class="event-org">Institute of Bachelors in IT Studies</div>
+
+                    <button class="btn-like-event">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
                 </div>
                 <div class="p-4 d-flex flex-column flex-grow-1">
-                    <div>
-                        <span class="badge status-ended mb-3">ENDED</span>
-                        <p class="text-muted small mb-3">
-                            Are you ready to step out of your comfort zone? Join us for an exciting session where we explore new possibilities.
-                        </p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge status-ended">ENDED</span>
+                        <span class="small text-muted"><i class="bi bi-people me-1"></i> 24 Liked</span>
+                    </div>
+                    <p class="text-muted small mb-3">
+                        Are you ready to step out of your comfort zone? Join us for an exciting session where we explore new possibilities.
+                    </p>
+
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">KG</div>
+                        <div>
+                            <div class="small fw-bold" style="color: #333;">Ms. Keliya Gamayo</div>
+                            <div class="text-muted" style="font-size: 10px;">Lead Speaker / IBITS Lead</div>
+                        </div>
                     </div>
 
                     <div class="mt-auto">
                         <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
                             <div class="detail-item d-flex align-items-center gap-2">
                                 <i class="bi bi-calendar3"></i>
-                                <span class="small text-secondary">January 18, 2026</span>
+                                <span class="small text-secondary">December 12, 2025</span>
                             </div>
                             <div class="detail-item d-flex align-items-center gap-2">
                                 <i class="bi bi-geo-alt-fill"></i>
@@ -299,13 +382,27 @@
                     <div class="event-icon">☁️</div>
                     <h3 class="event-title mb-2">AWS Cloud Fundamentals</h3>
                     <div class="event-org">Amazon Web Services – PUP</div>
+
+                    <button class="btn-like-event">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
                 </div>
                 <div class="p-4 d-flex flex-column flex-grow-1">
-                    <div>
-                        <span class="badge status-upcoming mb-3">UPCOMING</span>
-                        <p class="text-muted small mb-3">
-                            Dive into the world of cloud computing with AWS. Learn the fundamentals of cloud infrastructure and scalable services.
-                        </p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge status-upcoming">UPCOMING</span>
+                        <span class="small text-muted"><i class="bi bi-people me-1"></i> 53 Liked</span>
+                    </div>
+
+                    <p class="text-muted small mb-3">
+                        Dive into the world of cloud computing with AWS. Learn the fundamentals of cloud infrastructure and scalable services.
+                    </p>
+
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">FC</div>
+                        <div>
+                            <div class="small fw-bold" style="color: #333;">Ms. Franzel Cayona</div>
+                            <div class="text-muted" style="font-size: 10px;">Lead Speaker / AWS Lead</div>
+                        </div>
                     </div>
 
                     <div class="mt-auto">

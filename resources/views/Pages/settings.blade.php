@@ -145,6 +145,31 @@
         box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
     }
 
+    .btn-edit {
+        background: linear-gradient(135deg, var(--pup-maroon) 0%, var(--pup-dark) 100%);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+    }
+
+    .btn-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+        color: white;
+    }
+
+    .btn-edit i {
+        font-size: 15px;
+    }
+
     .modal-content {
         border-radius: 20px;
         border: none;
@@ -158,10 +183,15 @@
     <div class="settings-container">
         <div class="alert alert-success d-none mb-4" id="successMessage"
             style="border-radius: 30px; font-weight: 600; font-size: 14px;">
-            <i class="bi bi-check-circle-fill me-2"></i> Personal Information successfully saved!
+            <i class="bi bi-check-circle-fill me-2"></i> Successfully saved!
         </div>
 
-        <h2 class="info-title">Personal Information</h2>
+        <div class="d-flex justify-content-between align-items-center info-title">
+            <h2 class="m-0" style="font-size: 22px; font-weight: 700;">Personal Information</h2>
+            <button type="button" class="btn-edit" id="editProfileBtn">
+                <i class="bi bi-pencil-square me-2"></i>Edit Profile
+            </button>
+        </div>
 
         <form id="settingsForm">
             <div class="row g-4">
@@ -169,7 +199,6 @@
                     <label class="form-label">School Number</label>
                     <input type="text" class="form-control" value="SN-XXXXXXXXXX" disabled>
                 </div>
-
                 <div class="col-md-6">
                     <label class="form-label">Account Type</label>
                     <input type="text" class="form-control" value="Student" disabled>
@@ -177,17 +206,15 @@
 
                 <div class="col-md-4">
                     <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="firstName" value="FN" placeholder="First Name">
+                    <input type="text" class="form-control editable-field" id="firstName" value="FN" readonly>
                 </div>
-
                 <div class="col-md-4">
                     <label class="form-label">Middle Name</label>
-                    <input type="text" class="form-control" id="middleName" value="MN" placeholder="Middle Name">
+                    <input type="text" class="form-control editable-field" id="middleName" value="MN" readonly>
                 </div>
-
                 <div class="col-md-4">
                     <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="lastName" value="LN" placeholder="Last Name">
+                    <input type="text" class="form-control editable-field" id="lastName" value="LN" readonly>
                 </div>
 
                 <div class="col-12">
@@ -196,41 +223,43 @@
                         <span class="input-group-text bg-white" style="border-radius: 12px 0 0 12px; border-right: none; color: #666;">
                             <i class="bi bi-envelope-fill"></i>
                         </span>
-                        <input type="email" class="form-control" id="email" value="FNLN@gmail.com" placeholder="Email@gmail.com"
+                        <input type="email" class="form-control editable-field" id="email" value="FNLN@gmail.com" readonly
                             style="border-left: none; border-radius: 0 12px 12px 0;">
                     </div>
                 </div>
 
-                <div class="col-12">
-                    <label class="form-label">New Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input type="password" class="form-control" id="password" placeholder="Create a strong password" oninput="checkStrength(this.value)">
-                        <span class="input-group-text password-toggle" onclick="togglePassword('password', 'toggleIcon1')">
-                            <i class="bi bi-eye" id="toggleIcon1"></i>
-                        </span>
-                    </div>
-                    <div class="password-strength" id="passwordStrength">
-                        <div class="strength-bar">
-                            <div class="strength-fill" id="strengthFill"></div>
+                <div id="securitySection" class="d-none">
+                    <div class="col-12 mt-4">
+                        <label class="form-label">New Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                            <input type="password" class="form-control editable-field" id="password" placeholder="Create a strong password" oninput="checkStrength(this.value)">
+                            <span class="input-group-text password-toggle" onclick="togglePassword('password', 'toggleIcon1')">
+                                <i class="bi bi-eye" id="toggleIcon1"></i>
+                            </span>
                         </div>
-                        <small class="text-muted">Strength: <span id="strengthText">-</span></small>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <small class="text-muted">Strength: <span id="strengthText">-</span></small>
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-12">
-                    <label class="form-label">Confirm New Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter your password">
-                        <span class="input-group-text password-toggle" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
-                            <i class="bi bi-eye" id="toggleIcon2"></i>
-                        </span>
+                    <div class="col-12 mt-3">
+                        <label class="form-label">Confirm New Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                            <input type="password" class="form-control editable-field" id="confirmPassword" placeholder="Re-enter your password">
+                            <span class="input-group-text password-toggle" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
+                                <i class="bi bi-eye" id="toggleIcon2"></i>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="d-flex gap-3 mt-5">
+            <div class="d-flex gap-3 mt-5 d-none" id="editActionButtons">
                 <button type="button" class="btn-primary-custom" id="updateBtn">Update Information</button>
                 <button type="button" class="btn-outline-custom" id="cancelBtn">Cancel</button>
             </div>
@@ -258,41 +287,62 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const editActionButtons = document.getElementById('editActionButtons');
+    const securitySection = document.getElementById('securitySection');
+    const editableFields = document.querySelectorAll('.editable-field');
+
     const updateBtn = document.getElementById('updateBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     const confirmYes = document.getElementById('confirmYes');
     const successMessage = document.getElementById('successMessage');
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
 
-    let originalValues = {
-        firstName: document.getElementById('firstName').value,
-        middleName: document.getElementById('middleName').value,
-        lastName: document.getElementById('lastName').value,
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value
-    };
+    let originalValues = {};
 
-    updateBtn.addEventListener('click', () => confirmModal.show());
+    function saveOriginalValues() {
+        originalValues = {
+            firstName: document.getElementById('firstName').value,
+            middleName: document.getElementById('middleName').value,
+            lastName: document.getElementById('lastName').value,
+            email: document.getElementById('email').value,
+            password: ""
+        };
+    }
+
+    function toggleEditMode(isEditing) {
+        if (isEditing) {
+            saveOriginalValues();
+            editProfileBtn.classList.add('d-none');
+            editActionButtons.classList.remove('d-none');
+            securitySection.classList.remove('d-none');
+            editableFields.forEach(field => field.removeAttribute('readonly'));
+        } else {
+            editProfileBtn.classList.remove('d-none');
+            editActionButtons.classList.add('d-none');
+            securitySection.classList.add('d-none');
+            editableFields.forEach(field => field.setAttribute('readonly', true));
+        }
+    }
+
+    editProfileBtn.addEventListener('click', () => toggleEditMode(true));
 
     cancelBtn.addEventListener('click', function() {
         document.getElementById('firstName').value = originalValues.firstName;
         document.getElementById('middleName').value = originalValues.middleName;
         document.getElementById('lastName').value = originalValues.lastName;
         document.getElementById('email').value = originalValues.email;
-        document.getElementById('password').value = originalValues.password;
+        document.getElementById('password').value = "";
+        document.getElementById('confirmPassword').value = "";
+        toggleEditMode(false);
     });
 
-    confirmYes.addEventListener('click', function() {
-        originalValues = {
-            firstName: document.getElementById('firstName').value,
-            middleName: document.getElementById('middleName').value,
-            lastName: document.getElementById('lastName').value,
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value
-        };
+    updateBtn.addEventListener('click', () => confirmModal.show());
 
+    confirmYes.addEventListener('click', function() {
         confirmModal.hide();
         successMessage.classList.remove('d-none');
+        toggleEditMode(false);
 
         setTimeout(() => {
             successMessage.classList.add('d-none');
@@ -302,21 +352,15 @@
     function togglePassword(inputId, iconId) {
         const input = document.getElementById(inputId);
         const icon = document.getElementById(iconId);
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.replace("bi-eye", "bi-eye-slash");
-        } else {
-            input.type = "password";
-            icon.classList.replace("bi-eye-slash", "bi-eye");
-        }
+        input.type = input.type === "password" ? "text" : "password";
+        icon.classList.toggle("bi-eye");
+        icon.classList.toggle("bi-eye-slash");
     }
 
     function checkStrength(password) {
         const fill = document.getElementById('strengthFill');
         const text = document.getElementById('strengthText');
-
         fill.className = 'strength-fill';
-
         if (password.length === 0) {
             text.innerText = '-';
             fill.style.width = '0%';

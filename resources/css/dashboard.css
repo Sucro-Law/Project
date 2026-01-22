@@ -463,16 +463,11 @@
        font-weight: 600;
    }
 
-   .view-more-btn {
-       text-align: center;
-       margin-top: 20px;
-   }
-
    .btn-view-more {
        background: white;
        color: var(--pup-maroon);
        border: 2px solid var(--pup-maroon);
-       padding: 12px 40px;
+       padding: 12px 30px;
        border-radius: 25px;
        font-weight: 600;
        text-decoration: none;

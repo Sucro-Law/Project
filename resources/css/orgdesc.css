@@ -429,8 +429,8 @@ body {
     background: var(--pup-maroon);
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 15px;
+    padding: 10px 20px;
+    border-radius: 20px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;

@@ -53,6 +53,9 @@
                 </div>
             </div>
         </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ route('organization') }}" class="btn-view-more">View more...</a>
+        </div>
 
         <!-- Events Section -->
         <div class="section-header" style="margin-top: 50px;">
@@ -72,7 +75,7 @@
                         This is how you do it! Building the web of tomorrow—one line of code at a time. 💻
                     </div>
                     <div class="event-meta">
-                        <div class="event-author">– GDG</div>
+                        <div class="event-author">– Google Developer Groups on Campus</div>
                         <div class="event-likes">
                             <i class="bi bi-heart-fill"></i>
                             19
@@ -92,7 +95,7 @@
                         Are you ready to step out of your comfort zone?
                     </div>
                     <div class="event-meta">
-                        <div class="event-author">– Mr. President</div>
+                        <div class="event-author">– Amazon Web Services</div>
                         <div class="event-likes">
                             <i class="bi bi-heart-fill"></i>
                             24
@@ -100,11 +103,10 @@
                     </div>
                 </div>
             </div>
+        </div> 
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ route('events') }}" class="btn-view-more">View more...</a>
         </div>
-        <div class="view-more-btn">
-            <a href="#" class="btn-view-more">View more...</a>
-        </div>
-
     </div>
 </div>
 
