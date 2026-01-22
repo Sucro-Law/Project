@@ -8,9 +8,9 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/dashboard.css',
-                'resources/css/layout.css',
+                /*'resources/css/layout.css',*/
                 'resources/css/orgdesc.css',
-                'resources/css/pages.css',
+                /*'resources/css/pages.css',*/
                 'resources/js/app.js',
             ],
             refresh: true,

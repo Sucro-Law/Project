@@ -135,7 +135,7 @@ body {
     font-size: 2rem;
     font-weight: 700;
     color: var(--pup-maroon);
-    margin-bottom: 10px;
+    margin-bottom: 13px;
 }
 
 .org-status-badge {
@@ -144,11 +144,11 @@ body {
     gap: 8px;
     background: #d4edda;
     color: #155724;
-    padding: 8px 20px;
+    padding: 6px 15px;
     border-radius: 20px;
     font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .org-meta-info {
@@ -199,7 +199,7 @@ body {
     background: white;
     color: var(--pup-maroon);
     border: 2px solid var(--pup-maroon);
-    padding: 12px 30px;
+    padding: 12px 18px;
     border-radius: 25px;
     font-weight: 600;
     cursor: pointer;
@@ -209,8 +209,9 @@ body {
 }
 
 .btn-secondary-custom:hover {
-    background: var(--pup-maroon);
-    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+    background: transparent;
 }
 
 /* Tabs */
@@ -270,7 +271,7 @@ body {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--pup-maroon);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .adviser-info {
@@ -428,8 +429,8 @@ body {
     background: var(--pup-maroon);
     color: white;
     border: none;
-    padding: 10px 25px;
-    border-radius: 20px;
+    padding: 10px 15px;
+    border-radius: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -484,17 +485,6 @@ body {
     color: #4a0000;
     margin-bottom: 25px;
     font-family: sans-serif;
-}
-
-.modal-close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #4a0000;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
 }
 
 .modal-close {
@@ -890,7 +880,6 @@ body {
 }
 
 
-
 .create-event-trigger {
     display: flex;
     align-items: center;
@@ -906,11 +895,11 @@ body {
     transition: transform 0.2s ease;
 }
 
-
+/*
 .create-event-trigger:hover {
     background-color: #fafafa;
     transform: translateY(-1px);
-}
+}*/
 
 .trigger-avatar img {
     width: 40px;
@@ -934,7 +923,7 @@ body {
     width: 90%;
     max-width: 800px;
     padding: 30px;
-    border-radius: 50px;
+    border-radius: 30px;
     position: relative;
 }
 
@@ -997,12 +986,22 @@ body {
 }
 
 .btn-submit-event {
-    background: #800000;
+    background: linear-gradient(135deg, var(--pup-maroon) 0%, var(--pup-dark) 100%);
     color: white;
     padding: 10px 40px;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
     font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-submit-event:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+    color: white;
 }
 
 /* New Eye Icon Styling */

@@ -1,7 +1,7 @@
 @extends('layout.main')
 
 @push('styles')
-@vite(['resources/css/pages.css'])
+@vite(['resources/css/orgdesc.css'])
 @endpush
 
 @section('content')
@@ -16,7 +16,7 @@
                 <h1>Google Developer Groups on Campus – PUP</h1>
                 <div>
                     <span class="org-status-badge">
-                        <i class="bi bi-circle-fill" style="font-size: 0.6rem;"></i>
+                        <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i>
                         ACTIVE
                     </span>
                 </div>
@@ -45,7 +45,7 @@
                     MEMBERSHIP FORM
                 </button>
                 <a href="#" class="btn-secondary-custom">
-                    <i class="bi bi-share"></i> Share
+                    <i class="bi bi-share me-1"></i> Share
                 </a>
             </div>
         </div>
@@ -60,15 +60,13 @@
             <button class="tab-btn" onclick="showTab('alumni')">Alumni</button>
             <button class="tab-btn" onclick="showTab('events')">Events</button>
         </div>
-
-        <!-- IF ROLE IS EQUAL TO OFFICER OR ADVISER, PUT THIS ON THE TAB SECTION -->
         <div class="tabs-right">
-            <button class="tab-btn" onclick="openModal('pendingMembers')">
+            <button class="tab-btn">
                 <span class="pending-badge" title="Pending member requests">
                     <i class="bi bi-person-plus-fill"></i>
                     <span class="badge-count">3</span>
             </button>
-            <button class="tab-btn" onclick="openModal('pendingEvents')">
+            <button class="tab-btn">
                 <span class="pending-badge" title="Pending event approvals">
                     <i class="bi bi-clock-history"></i>
                     <span class="badge-count">2</span>
@@ -138,7 +136,6 @@
         </div>
     </div>
 
-    <!-- Alumni Tab -->
     <div id="alumni" class="tab-content">
         <div class="about-section">
             <div class="section-title">Alumni (50)</div>
@@ -159,7 +156,7 @@
 
         <div class="create-event-trigger" onclick="openModal('eventPostingModal')">
             <div class="trigger-avatar">
-                <div class="org-logo-small">GDG</div>
+                <div class="org-logo-small me-2">GDG</div>
             </div>
             <div class="trigger-input">Create Event</div>
         </div>
@@ -229,10 +226,10 @@
 
     <!-- Attendees Modal -->
     <div class="modal-overlay" id="attendeesModal">
-        <div class="modal-content" style="padding: 0; width: 400px; border: 3px solid #500000;">
+        <div class="modal-content" style="padding: 0; width: 400px; border: 3px solid #500000; background: white; border-radius: 8px;">
             <div style="background: #500000; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="margin: 0; font-weight: bold;">ATTENDEES</h3>
-                <button class="modal-close-btn" style="color: white; position: static;" onclick="closeModal('attendeesModal')">X</button>
+                <button class="modal-close" style="color: white; position: static;" onclick="closeModal('attendeesModal')">X</button>
             </div>
             <div class="attendees-list-container">
                 @for ($i = 1; $i <= 10; $i++)
@@ -247,7 +244,7 @@
     <div class="modal-content" style="padding: 0; max-width: 700px; border-radius: 8px;">
         <div class="admission-header">
             <h4 style="margin: 0;">Google Developer Groups on Campus – PUP</h4>
-            <button class="modal-close-btn" style="color: white; top: 10px;" onclick="closeModal('memberAdmissionModal')">X</button>
+            <button class="modal-close" style="color: white; top: 10px;" onclick="closeModal('memberAdmissionModal')">X</button>
         </div>
         <div class="admission-body text-center">
             <h2 class="admission-title">MEMBER ADMISSION</h2>
@@ -285,7 +282,7 @@
 <!-- Event Posting Modal -->
 <div class="modal-overlay" id="eventPostingModal">
     <div class="modal-content-event">
-        <button class="modal-close-btn" onclick="closeModal('eventPostingModal')">
+        <button class="modal-close" onclick="closeModal('eventPostingModal')">
             <i class="bi bi-x-lg"></i>
         </button>
 
@@ -307,8 +304,8 @@
                     </div>
 
                     <div class="details-section">
-                        <label>Details:</label>
-                        <input type="date" class="posting-input-small" placeholder="Date">
+                        <label class="mb-1">Details:</label>
+                        <input type="date" class="posting-input-small mb-2" placeholder="Date">
                         <input type="text" class="posting-input-small" placeholder="Event's Place">
                     </div>
                 </div>
@@ -328,7 +325,7 @@
 <!-- Pending Members Modal -->
 <div class="modal-overlay" id="pendingMembers">
     <div class="modal-content-pending">
-        <button class="modal-close-btn" onclick="closeModal('pendingMembers')">
+        <button class="modal-close" onclick="closeModal('pendingMembers')">
             <i class="bi bi-x-lg"></i>
         </button>
         <h2 class="modal-title-pending">Pending Members</h2>
@@ -463,7 +460,7 @@
 <!-- Pending Events Modal -->
 <div class="modal-overlay" id="pendingEvents">
     <div class="modal-content-pending">
-        <button class="modal-close-btn" onclick="closeModal('pendingEvents')">
+        <button class="modal-close" onclick="closeModal('pendingEvents')">
             <i class="bi bi-x-lg"></i>
         </button>
         <h2 class="modal-title-pending">Pending Events</h2>
@@ -571,7 +568,7 @@
 
 <!-- Membership Modal -->
 <div class="modal-overlay" id="membershipModal">
-    <div class="org-modal-content">
+    <div class="modal-content">
         <button class="modal-close" onclick="closeModal('membershipModal')">
             <i class="bi bi-x-lg"></i>
         </button>
@@ -624,7 +621,7 @@
                 or material omission made on this form may result in the rejection of my application.
             </div>
 
-            <button type="submit" class="btn-primary" style="width: 100%;">
+            <button type="submit" class="btn-primary-custom" style="width: 100%;">
                 SUBMIT APPLICATION
             </button>
         </form>
@@ -633,7 +630,7 @@
 
 <!-- RSVP Modal -->
 <div class="modal-overlay" id="rsvpModal">
-    <div class="org-modal-content">
+    <div class="modal-content">
         <button class="modal-close" onclick="closeModal('rsvpModal')">
             <i class="bi bi-x-lg"></i>
         </button>
@@ -677,16 +674,12 @@
                 I acknowledge that this RSVP is a confirmation of my attendance.
             </div>
 
-            <button type="submit" class="btn-primary" style="width: 100%;">
+            <button type="submit" class="btn-primary-custom" style="width: 100%;">
                 SUBMIT RSVP
             </button>
         </form>
     </div>
 </div>
-
-</div>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -726,16 +719,5 @@
             }
         });
     });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var accordionElement = document.getElementById('pendingMembersAccordion');
-        // This force-initializes the accordion if it's being stubborn
-        var accordion = new bootstrap.Collapse(accordionElement, {
-            toggle: false
-        });
-    });
 </script>
-
-
-
 @endsection

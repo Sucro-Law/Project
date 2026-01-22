@@ -1,3 +1,5 @@
+/*
+
 :root {
     --pup-maroon: #800000;
     --pup-gold: #FFD700;
@@ -16,7 +18,7 @@ body {
     background: #f5f5f5;
 }
 
-/* Dashboard Page */
+/* Dashboard Page 
 .dash-container-custom {
     padding: 10px 20px;
 }
@@ -48,7 +50,7 @@ body {
     text-decoration: none;
 }
 
-/* Event Cards */
+/* Event Cards 
 .events-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
@@ -164,7 +166,7 @@ body {
     color: white;
 }
 
-/* Organization Cards */
+/* Organization Cards 
 .org-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
@@ -278,7 +280,7 @@ body {
     flex-shrink: 0;
 }
 
-/* Organization Page */
+/* Organization Page *
 .container-custom {
     max-width: 1400px;
     margin: 0 auto;
@@ -349,7 +351,7 @@ body {
     margin-bottom: 8px;
 }
 
-.org-status-badge {
+.status-badge {
     background: #d4edda;
     color: #155724;
     padding: 5px 14px;
@@ -452,7 +454,7 @@ body {
     gap: 5px;
 }
 
-/* Organization Detail */
+/* Organization Detail *
 .org-header-card {
     background: white;
     border-radius: 20px;
@@ -488,7 +490,7 @@ body {
     margin-bottom: 10px;
 }
 
-.org-status-badge {
+.status-badge {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -564,7 +566,7 @@ body {
     background: transparent;
 }
 
-/* Tabs */
+/* Tabs *
 .custom-tabs {
     display: flex;
     gap: 10px;
@@ -609,7 +611,7 @@ body {
     display: block;
 }
 
-/* About Section */
+/* About Section *
 .about-section {
     background: white;
     border-radius: 15px;
@@ -666,7 +668,7 @@ body {
     font-size: 1rem;
 }
 
-/* Officers & Members */
+/* Officers & Members *
 .officers-grid,
 .members-list {
     display: grid;
@@ -704,7 +706,7 @@ body {
     color: #333;
 }
 
-/* Events Section */
+/* Events Section *
 .events-list {
     display: grid;
     gap: 20px;
@@ -790,7 +792,7 @@ body {
     background: var(--pup-dark);
 }
 
-/* Modal */
+/* Modal *
 .modal-overlay {
     display: none;
     position: fixed;
@@ -893,7 +895,7 @@ body {
     color: #b30000;
 }
 
-/* Event Page */
+/* Event Page *
 .event-card {
     background: white;
     border-radius: 20px;
@@ -951,7 +953,7 @@ body {
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        height: 3.2em;*/
+        height: 3.2em;*
 }
 
 .event-org {
@@ -993,7 +995,7 @@ body {
     font-weight: 600;
 }
 
-/* Settings Page */
+/* Settings Page *
 .settings-container {
     width: 100%;
     max-width: 100%;
@@ -1135,7 +1137,7 @@ body {
     /*
     .search-bar {
         width: 100%;
-    } */
+    } *
 
     .officer-item {
         grid-template-columns: 1fr;
@@ -1186,4 +1188,4 @@ body {
         flex-direction: column;
         gap: 10px;
     }
-}
+} */

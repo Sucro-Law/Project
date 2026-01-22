@@ -1,10 +1,224 @@
 @extends('layout.main')
 
-@push('styles')
-@vite(['resources/css/pages.css'])
-@endpush
-
 @section('content')
+
+<style>
+    .container-custom {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .page-title {
+        color: maroon !important;
+        font-size: 35px;
+        font-weight: 700;
+        margin-bottom: 30px;
+    }
+
+    .event-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: none;
+    }
+
+    .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .event-banner {
+        background: linear-gradient(135deg, var(--pup-maroon) 0%, var(--pup-dark) 100%);
+        padding: 35px 25px;
+        color: white;
+        position: relative;
+        min-height: 220px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    .event-date-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: white;
+        color: var(--pup-maroon);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+    }
+
+    .event-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #ffffff !important;
+        margin-bottom: 12px;
+        line-height: 1.3;
+        letter-spacing: 0.5px;
+        /*display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        height: 3.2em;*/
+    }
+
+    .event-org {
+        font-size: 12px;
+        opacity: 0.85;
+        font-weight: 500;
+    }
+
+    .badge.status-upcoming {
+        background: #fff3cd;
+        color: #856404;
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .badge.status-ended {
+        background: #fee2e2;
+        color: #991b1b;
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .detail-item i {
+        color: var(--pup-maroon);
+        width: 20px;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--pup-maroon) 0%, var(--pup-dark) 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #f3f4f6;
+        border: none;
+        color: #6b7280;
+        padding: 12px;
+        border-radius: 25px;
+        font-weight: 600;
+    }
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-overlay.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #999;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--pup-maroon);
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 0.9rem;
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 0.95rem;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        outline: none;
+        border-color: var(--pup-maroon);
+        box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.1);
+    }
+
+    .certification-text {
+        font-size: 0.85rem;
+        color: #666;
+        line-height: 1.6;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+</style>
 
 <div class="container-custom">
     <h1 class="page-title">Events</h1>
@@ -38,7 +252,7 @@
                             </div>
                         </div>
                         <div style="margin-top: 15px;">
-                            <button class="btn-primary w-100" onclick="openModal('rsvpModal')">RSVP</button>
+                            <button class="btn btn-primary w-100" onclick="openModal('rsvpModal')">RSVP</button>
                         </div>
                     </div>
                 </div>
@@ -72,7 +286,7 @@
                                 <span class="small text-secondary">PUP South Campus</span>
                             </div>
                         </div>
-                        <button class="btn-secondary w-100" disabled>Event Ended</button>
+                        <button class="btn btn-secondary w-100" disabled>Event Ended</button>
                     </div>
                 </div>
             </div>
@@ -106,7 +320,7 @@
                             </div>
                         </div>
                         <div style="margin-top: 15px;">
-                            <button class="btn-primary w-100" onclick="openModal('rsvpModal')">RSVP</button>
+                            <button class="btn btn-primary w-100" onclick="openModal('rsvpModal')">RSVP</button>
                         </div>
                     </div>
                 </div>
@@ -117,7 +331,7 @@
 
 <!-- RSVP Modal -->
 <div class="modal-overlay" id="rsvpModal">
-    <div class="org-modal-content">
+    <div class="modal-content">
         <button class="modal-close" onclick="closeModal('rsvpModal')">
             <i class="bi bi-x-lg"></i>
         </button>
@@ -161,7 +375,7 @@
                 I acknowledge that this RSVP is a confirmation of my attendance.
             </div>
 
-            <button type="submit" class="btn-primary w-100">
+            <button type="submit" class="btn btn-primary w-100">
                 SUBMIT RSVP
             </button>
         </form>
