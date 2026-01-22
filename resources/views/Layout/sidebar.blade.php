@@ -15,11 +15,22 @@
         <div class="user-avatar">FL</div>
         <div class="user-name">FN MN. LN</div>
 
+
+        <!-- User Organizations List -->
         <div class="user-org-list">
             <div class="user-org-title">Organization/s Joined:</div>
             <div>
                 <span class="org-badge">Google Developer Groups on Campus – PUP</span>
-                <span class="org-badge">Amazon Web Services – PUP</span>
+
+            </div>
+            <div class="org-info">
+                <div>Position: Member</div>
+                <div>Academic Year: 2026-2027</div>
+                <div>Date Joined: January 7, 2026</div>
+            </div>
+
+            <div>
+                <span class="org-badge" style="margin-top: 30px;">Amazon Web Services – PUP</span>
             </div>
             <div class="org-info">
                 <div>Position: Member</div>
@@ -63,3 +74,4 @@
         </ul>
     </div>
 </div>
+

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id('event_id');
-            $table->foreignId('org_id')->constrained('organizations', 'org_id')->onDelete('cascade');
+            $table->string('event_id', 20)->primary();
+            $table->string('org_id', 20);
             $table->string('title', 150);
             $table->text('description')->nullable();
             $table->dateTime('event_date');
@@ -21,17 +21,21 @@ return new class extends Migration
             $table->string('venue', 100)->nullable();
             $table->enum('status', ['Pending', 'Upcoming', 'Ongoing', 'Done', 'Cancelled'])->default('Pending');
             $table->timestamp('created_at')->useCurrent();
+            $table->string('created_by', 20)->nullable();
 
-            $table->foreignId('created_by')->nullable()->constrained('users', 'user_id')->nullOnDelete();
+            $table->foreign('org_id')->references('org_id')->on('organizations')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('created_by')->references('user_id')->on('users')->nullOnDelete()->onUpdate('cascade');
         });
 
         Schema::create('event_attendance', function (Blueprint $table) {
-            $table->id('attendance_id');
-            $table->foreignId('event_id')->constrained('events', 'event_id')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
+            $table->string('attendance_id', 20)->primary();
+            $table->string('event_id', 20);
+            $table->string('user_id', 20);
             $table->enum('status', ['RSVP', 'Walk-in', 'Present', 'Absent', 'Excused'])->default('RSVP');
             $table->text('remarks')->nullable();
 
+            $table->foreign('event_id')->references('event_id')->on('events')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->unique(['event_id', 'user_id']);
         });
     }

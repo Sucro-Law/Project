@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('org_advisers', function (Blueprint $table) {
-            $table->string('adviser_id', 20)->primary();
-            $table->string('org_id', 20);
+        Schema::create('officer_history', function (Blueprint $table) {
+            $table->string('history_id', 20)->primary();
             $table->string('user_id', 20);
-            $table->timestamp('assigned_at')->useCurrent();
+            $table->string('org_id', 20);
+            $table->string('position', 50)->nullable();
+            $table->date('term_start')->nullable();
+            $table->date('term_end')->nullable();
+            $table->timestamp('archived_at')->useCurrent();
 
-            $table->foreign('org_id')->references('org_id')->on('organizations')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unique(['org_id', 'user_id']);
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('org_advisers');
+        Schema::dropIfExists('officer_history');
     }
 };
