@@ -1,7 +1,7 @@
 @extends('layout.main')
 
 @push('styles')
-@vite(['resources/css/pages.css'])
+@vite(['resources/css/orgdesc.css'])
 @endpush
 
 @section('content')
@@ -229,7 +229,7 @@
 
     <!-- Attendees Modal -->
     <div class="modal-overlay" id="attendeesModal">
-        <div class="modal-content" style="padding: 0; width: 400px; border: 3px solid #500000;">
+        <div class="modal-content" style="padding: 0; width: 400px; border: 3px solid #500000; background: white; border-radius: 8px;">
             <div style="background: #500000; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="margin: 0; font-weight: bold;">ATTENDEES</h3>
                 <button class="modal-close-btn" style="color: white; position: static;" onclick="closeModal('attendeesModal')">X</button>

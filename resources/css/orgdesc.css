@@ -748,8 +748,9 @@ body {
 .member-action-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
     min-width: 140px;
+    justify-content: center;
 }
 
 .event-header-info {
@@ -844,6 +845,8 @@ body {
 .event-action-buttons {
     display: flex;
     gap: 15px;
+    justify-content: center;
+    align-items: center;
 }
 
 /* ==================== ACTION BUTTONS ==================== */
@@ -852,13 +855,26 @@ body {
     background: #38761d;
     color: white;
     border: 2px solid #274e13;
-    padding: 10px 20px;
+    padding: 8px 20px;
     border-radius: 25px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    flex: 1;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+}
+
+.btn-reject,
+.btn-approve {
+    flex: none;
+    /* Prevents buttons from stretching to fill the width */
+    padding: 6px 20px;
+    /* Balanced padding for a cleaner look */
+    min-width: 100px;
+    /* Ensures both buttons are the same width */
+    display: flex;
+    justify-content: center;
+    /* Centers the text inside the button */
+    align-items: center;
 }
 
 .btn-accept:hover,
@@ -873,13 +889,14 @@ body {
     background: #800000;
     color: white;
     border: 2px solid #4a0000;
-    padding: 10px 20px;
+    padding: 8px 20px;
     border-radius: 25px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    flex: 1;
-    font-size: 0.95rem;
+
+    font-size: 0.9rem;
+
 }
 
 .btn-decline:hover,
