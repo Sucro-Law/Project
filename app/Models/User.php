@@ -15,7 +15,6 @@ class User extends Authenticatable
      *
      * @var string
      */
-    protected $table = 'users';
     protected $primaryKey = 'user_id';
 
     /**
@@ -26,7 +25,7 @@ class User extends Authenticatable
     public $incrementing = false;
 
     /**
-     * The "type" of the auto-incrementing ID.
+     * The data type of the primary key.
      *
      * @var string
      */

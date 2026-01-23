@@ -3,14 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrgController;
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\SettingsController;
 
-// Redirect root to login
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Auth routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
@@ -19,52 +17,40 @@ Route::post('/signup', [AuthController::class, 'signup'])->name('signup.submit')
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Forgot/Reset Password routes
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
-// Pages
 Route::get('/dashboard', [OrgController::class, 'index'])->name('dashboard');
 Route::get('/organization', [OrgController::class, 'organization'])->name('organization');
-Route::get('/events', [OrgController::class, 'events'])->name('events');
 Route::get('/organization/detail/{id}', [OrgController::class, 'show'])->name('orgDetail');
+Route::get('/events', [OrgController::class, 'events'])->name('events');
+
+Route::post('/organization/{id}/join', [OrgController::class, 'joinOrganization'])->name('organization.join');
+Route::post('/organization/{id}/leave', [OrgController::class, 'leaveOrganization'])->name('organization.leave');
+Route::post('/organization/{id}/cancel-request', [OrgController::class, 'cancelMembershipRequest'])->name('organization.cancelRequest');
+
+// Officer/Adviser actions
+Route::post('/organization/{orgId}/member/{membershipId}/approve', [OrgController::class, 'approveMember'])->name('organization.approveMember');
+Route::post('/organization/{orgId}/member/{membershipId}/reject', [OrgController::class, 'rejectMember'])->name('organization.rejectMember');
+Route::post('/organization/{orgId}/member/add', [OrgController::class, 'addMember'])->name('organization.addMember');
 
 Route::get('/membership', function () {
     return view('Pages.memberform');
 })->name('membership');
 
-/*
-Route::get('/organization/detail', function () {
-    return view('Pages.orgDetail');
-})->name('orgDetail');*/
-
 Route::get('/profile', function () {
     return view('Pages.profile');
 })->name('profile');
 
-Route::get('/settings', function () {
-    return view('Pages.settings');
-})->name('settings');
+Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+Route::post('/settings/update', [SettingsController::class, 'update'])->name('settings.update');
 
-// Reference URLs (for development)
 Route::get('/dashboard2', function () {
     return view('pureHTML.referencedash1');
-});
+})->name('reference.dashboard');
 
 Route::get('/orgDetailRef', function () {
     return view('pureHTML.refOrgDetail');
-});
-
-Route::get('/test-email', function () {
-    try {
-        Mail::raw('This is a test email from Laravel', function ($message) {
-            $message->to('johnevansgutierrez9@gmail.com')
-                    ->subject('Test Email');
-        });
-        return 'Email sent! Check your inbox and spam folder.';
-    } catch (\Exception $e) {
-        return 'Email failed: ' . $e->getMessage();
-    }
-});
+})->name('reference.orgDetail');

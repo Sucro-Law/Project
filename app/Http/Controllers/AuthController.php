@@ -14,25 +14,16 @@ use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
-    /**
-     * Show the login form
-     */
     public function showLogin()
     {
         return view('auth.signin');
     }
 
-    /**
-     * Show the signup form
-     */
     public function showSignup()
     {
         return view('auth.signup');
     }
 
-    /**
-     * Handle login request
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -41,28 +32,30 @@ class AuthController extends Controller
             'role' => 'required|in:student,faculty,admin'
         ]);
 
-        // Determine account type based on role
         $accountType = ucfirst($request->role);
         
-        // Try to find user by school_id or email
-        $user = User::where(function($query) use ($request) {
-            $query->where('school_id', $request->username)
-                  ->orWhere('email', $request->username);
-        })
-        ->where('account_type', $accountType)
-        ->first();
+        $user = DB::selectOne(
+            "SELECT * FROM users 
+             WHERE (school_id = ? OR email = ?) 
+             AND account_type = ? 
+             LIMIT 1",
+            [$request->username, $request->username, $accountType]
+        );
 
-        // Check if user exists and password is correct
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'username' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        // Login the user
-        Auth::login($user);
+        $userModel = new \App\Models\User();
+        $userModel->exists = true;
+        foreach ((array)$user as $key => $value) {
+            $userModel->{$key} = $value;
+        }
+        
+        Auth::login($userModel);
 
-        // Regenerate session to prevent fixation
         $request->session()->regenerate();
 
         return response()->json([
@@ -72,76 +65,67 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Generate unique user ID with PN- prefix
-     */
-    private function generateUserId()
-    {
-        // Get the last user_id
-        $lastUser = User::orderBy('user_id', 'desc')->first();
-        
-        if (!$lastUser) {
-            // First user, start from 1
-            return 'PN-00000001';
-        }
-        
-        // Extract the numeric part from the last user_id (e.g., PN-00000001 -> 1)
-        $lastNumber = (int) str_replace('PN-', '', $lastUser->user_id);
-        
-        // Increment by 1
-        $newNumber = $lastNumber + 1;
-        
-        // Format with leading zeros (8 digits)
-        return 'PN-' . str_pad($newNumber, 8, '0', STR_PAD_LEFT);
-    }
-
-    /**
-     * Handle signup request
-     */
     public function signup(Request $request)
     {
         $request->validate([
             'role' => 'required|in:student,faculty',
-            'school_id' => 'required|string|unique:users,school_id',
+            'school_id' => 'required|string',
             'first_name' => 'required|string|max:50',
             'middle_name' => 'nullable|string|max:50',
             'last_name' => 'required|string|max:50',
-            'email' => 'required|email|unique:users,email|max:100',
+            'email' => 'required|email|max:100',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Generate unique user ID (PN-)
-        $userId = $this->generateUserId();
-        
-        // Use the school_id from user input (not auto-generated)
+        $existingSchoolId = DB::selectOne(
+            "SELECT user_id FROM users WHERE school_id = ? LIMIT 1",
+            [$request->school_id]
+        );
+
+        if ($existingSchoolId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'School ID already exists.'
+            ], 422);
+        }
+
+        $existingEmail = DB::selectOne(
+            "SELECT user_id FROM users WHERE email = ? LIMIT 1",
+            [$request->email]
+        );
+
+        if ($existingEmail) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email already exists.'
+            ], 422);
+        }
+
         $schoolId = $request->school_id;
 
-        // Create full name
         $fullName = trim($request->first_name . ' ' . 
                         ($request->middle_name ? $request->middle_name . ' ' : '') . 
                         $request->last_name);
 
-        // Determine account type
         $accountType = ucfirst($request->role);
-
-        // Store plain password for email (will be sent once then discarded)
         $plainPassword = $request->password;
+        $hashedPassword = Hash::make($plainPassword);
 
-        // Create user
-        $user = User::create([
-            'user_id' => $userId,
-            'school_id' => $schoolId,
-            'full_name' => $fullName,
-            'email' => $request->email,
-            'password' => Hash::make($plainPassword),
-            'account_type' => $accountType,
-        ]);
+        DB::insert(
+            "INSERT INTO users (school_id, full_name, email, password, account_type, created_at, updated_at) 
+             VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
+            [$schoolId, $fullName, $request->email, $hashedPassword, $accountType]
+        );
 
-        // Send email with credentials
+        $user = DB::selectOne(
+            "SELECT * FROM users WHERE email = ? LIMIT 1",
+            [$request->email]
+        );
+
         try {
             Mail::send('emails.registration', [
                 'user' => $user,
-                'userId' => $userId,
+                'userId' => $user->user_id,
                 'schoolId' => $schoolId,
                 'plainPassword' => $plainPassword,
                 'accountType' => $accountType
@@ -153,20 +137,15 @@ class AuthController extends Controller
             Log::error('Email sending failed: ' . $e->getMessage());
         }
 
-        // Don't auto-login after signup - redirect to login page
-
         return response()->json([
             'success' => true,
             'message' => 'Registration successful! Your credentials have been sent to your email. Please login to continue.',
-            'user_id' => $userId,
+            'user_id' => $user->user_id,
             'school_id' => $schoolId,
             'redirect' => route('login')
         ]);
     }
 
-    /**
-     * Handle logout request
-     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -177,54 +156,44 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-    /**
-     * Show the forgot password form
-     */
     public function showForgotPassword()
     {
         return view('auth.forgot-password');
     }
 
-    /**
-     * Send password reset link via email
-     */
     public function sendResetLink(Request $request)
     {
         $request->validate([
             'email' => 'required|email'
         ]);
 
-        // Find user by email
-        $user = User::where('email', $request->email)->first();
+        $user = DB::selectOne(
+            "SELECT * FROM users WHERE email = ? LIMIT 1",
+            [$request->email]
+        );
 
         if (!$user) {
-            // Don't reveal if email exists or not for security
             return response()->json([
                 'success' => true,
                 'message' => 'If an account exists with this email, you will receive a password reset link shortly.'
             ]);
         }
 
-        // Delete any existing tokens for this email
-        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        DB::delete(
+            "DELETE FROM password_reset_tokens WHERE email = ?",
+            [$request->email]
+        );
 
-        // Generate token
         $token = Str::random(64);
 
-        // Store token in database
-        DB::table('password_reset_tokens')->insert([
-            'email' => $request->email,
-            'token' => Hash::make($token),
-            'created_at' => now()
-        ]);
+        DB::insert(
+            "INSERT INTO password_reset_tokens (email, token, created_at) VALUES (?, ?, NOW())",
+            [$request->email, Hash::make($token)]
+        );
 
-        // Create reset URL
         $resetUrl = url('/reset-password/' . $token . '?email=' . urlencode($request->email));
-
-        // Get expiry time from config (default 60 minutes)
         $expiryMinutes = config('auth.passwords.users.expire', 60);
 
-        // Send email
         try {
             Mail::send('emails.password-reset', [
                 'user' => $user,
@@ -248,9 +217,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Show the password reset form
-     */
     public function showResetPassword(Request $request, $token)
     {
         $email = $request->query('email');
@@ -265,9 +231,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Handle password reset
-     */
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -276,10 +239,10 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed'
         ]);
 
-        // Find the token record
-        $tokenRecord = DB::table('password_reset_tokens')
-            ->where('email', $request->email)
-            ->first();
+        $tokenRecord = DB::selectOne(
+            "SELECT * FROM password_reset_tokens WHERE email = ? LIMIT 1",
+            [$request->email]
+        );
 
         if (!$tokenRecord) {
             return response()->json([
@@ -288,13 +251,14 @@ class AuthController extends Controller
             ], 400);
         }
 
-        // Check if token is expired (default 60 minutes)
         $expiryMinutes = config('auth.passwords.users.expire', 60);
         $tokenCreatedAt = \Carbon\Carbon::parse($tokenRecord->created_at);
 
         if ($tokenCreatedAt->addMinutes($expiryMinutes)->isPast()) {
-            // Delete expired token
-            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            DB::delete(
+                "DELETE FROM password_reset_tokens WHERE email = ?",
+                [$request->email]
+            );
 
             return response()->json([
                 'success' => false,
@@ -302,7 +266,6 @@ class AuthController extends Controller
             ], 400);
         }
 
-        // Verify token
         if (!Hash::check($request->token, $tokenRecord->token)) {
             return response()->json([
                 'success' => false,
@@ -310,8 +273,10 @@ class AuthController extends Controller
             ], 400);
         }
 
-        // Find user and update password
-        $user = User::where('email', $request->email)->first();
+        $user = DB::selectOne(
+            "SELECT * FROM users WHERE email = ? LIMIT 1",
+            [$request->email]
+        );
 
         if (!$user) {
             return response()->json([
@@ -320,12 +285,15 @@ class AuthController extends Controller
             ], 404);
         }
 
-        // Update password
-        $user->password = Hash::make($request->password);
-        $user->save();
+        DB::update(
+            "UPDATE users SET password = ?, updated_at = NOW() WHERE email = ?",
+            [Hash::make($request->password), $request->email]
+        );
 
-        // Delete the used token
-        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        DB::delete(
+            "DELETE FROM password_reset_tokens WHERE email = ?",
+            [$request->email]
+        );
 
         return response()->json([
             'success' => true,

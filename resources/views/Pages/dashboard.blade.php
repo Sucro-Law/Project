@@ -6,8 +6,59 @@
 
 @section('content')
 
+<style>
+.alert {
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+</style>
+
 <div class="container-custom">
     <div class="content-area">
+        <!-- Success/Error Messages -->
+        @if(session('success'))
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle-fill"></i>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-error">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if(session('info'))
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle-fill"></i>
+                {{ session('info') }}
+            </div>
+        @endif
+
         <!-- Organizations Section -->
         <div class="section-header">
             <a href="{{ route('organization') }}" class="section-title">
@@ -15,47 +66,37 @@
             </a>
         </div>
         <div class="org-cards">
+            @forelse($organizations as $org)
             <div class="org-card">
                 <div class="org-header">
-                    <div class="org-logo">GDG</div>
+                    <div class="org-logo">{{ $org->short_name }}</div>
                     <div class="org-info-header">
-                        <h3>Google Developer Groups on Campus – PUP</h3>
-                        <span class="org-status">ACTIVE • 2018</span>
+                        <h3>{{ $org->org_name }}</h3>
+                        <span class="org-status">{{ strtoupper($org->status) }} • {{ $org->year }}</span>
                     </div>
                 </div>
                 <div class="org-description">
-                    An organization is a group of people who work together, like a neighborhood association, a charity, a union, or a corporation.
+                    {{ $org->description ?? 'An organization is a group of people who work together, like a neighborhood association, a charity, a union, or a corporation.' }}
                 </div>
                 <div class="org-footer">
                     <div class="org-members">
-                        <i class="bi bi-people-fill"></i> 23 Members
+                        <i class="bi bi-people-fill"></i> {{ $org->member_count ?? 0 }} Members
                     </div>
-                    <a href="{{ route('orgDetail') }}" class="btn-view-org">View Organization</a>
+                    <a href="{{ route('orgDetail', ['id' => $org->org_id]) }}" class="btn-view-org">View Organization</a>
                 </div>
             </div>
-
-            <div class="org-card">
-                <div class="org-header">
-                    <div class="org-logo">AWS</div>
-                    <div class="org-info-header">
-                        <h3>Amazon Web Services – PUP</h3>
-                        <span class="org-status">ACTIVE • 2020</span>
-                    </div>
-                </div>
-                <div class="org-description">
-                    Learn cloud computing and modern infrastructure with AWS technologies and tools.
-                </div>
-                <div class="org-footer">
-                    <div class="org-members">
-                        <i class="bi bi-people-fill"></i> 18 Members
-                    </div>
-                    <a href="#" class="btn-view-org">View Organization</a>
-                </div>
+            @empty
+            <div class="alert alert-info" style="grid-column: 1/-1;">
+                <i class="bi bi-info-circle-fill"></i>
+                No organizations available at the moment.
             </div>
+            @endforelse
         </div>
+        @if(count($organizations) > 0)
         <div style="text-align: center; margin-top: 30px;">
             <a href="{{ route('organization') }}" class="btn-view-more">View more...</a>
         </div>
+        @endif
 
         <!-- Events Section -->
         <div class="section-header" style="margin-top: 50px;">

@@ -82,12 +82,14 @@
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        margin-top: 7px;
+        gap: 5px;
     }
 
     .status-dot {
-        font-size: 6px !important;
-        color: #155724;
+        width: 6px;
+        height: 6px;
+        background: #155724;
+        border-radius: 50%;
     }
 
     .institute-badge {
@@ -129,31 +131,10 @@
         flex-grow: 1;
     }
 
-    .org-stats-inline {
-        display: flex;
-        gap: 20px;
-        padding: 12px 0;
-        margin-bottom: 10px;
-        margin-top: auto;
-    }
-
-    .stat-inline {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 13px;
-        color: #555;
-        font-weight: 500;
-    }
-
-    .stat-inline i {
-        color: var(--pup-maroon);
-        font-size: 18px;
-    }
-
     .org-action-section {
         display: flex;
         gap: 12px;
+        margin-top: 15px;
     }
 
     .btn-view-org {
@@ -176,6 +157,33 @@
         transform: translateY(-2px);
     }
 
+    .alert {
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .alert-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+
     @media (max-width: 768px) {
         .org-card-content {
             flex-direction: column;
@@ -184,14 +192,11 @@
         }
 
         .org-title-row {
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
 
         .org-meta-row {
-            justify-content: center;
-        }
-
-        .org-stats-inline {
             justify-content: center;
         }
     }
@@ -200,7 +205,28 @@
 <div class="container-custom">
     <h1 class="page-title">Organizations</h1>
 
-    @foreach($organizations as $org)
+    @if(session('success'))
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if(session('info'))
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle-fill"></i>
+            {{ session('info') }}
+        </div>
+    @endif
+
+    @forelse($organizations as $org)
     <div class="org-card-list">
         <div class="org-card-content">
             <div class="org-logo">
@@ -212,8 +238,12 @@
                     <div>
                         <h3 class="org-name-large">{{ $org['name'] }}</h3>
                         <div class="d-flex gap-2 align-items-center flex-wrap">
-                            <span class="org-status-badge"><i class="bi bi-circle-fill status-dot"></i>{{ $org['status'] }}</span>
-                            <span class="institute-badge"><i class="bi bi-building"></i>
+                            <span class="org-status-badge">
+                                <span class="status-dot"></span>
+                                {{ $org['status'] }}
+                            </span>
+                            <span class="institute-badge">
+                                <i class="bi bi-building"></i>
                                 Institute of Bachelors in Information Technology Studies
                             </span>
                         </div>
@@ -231,28 +261,26 @@
                     </div>
                     <div class="meta-item">
                         <i class="bi bi-person-badge"></i>
-                        <span>8 Officers</span>
+                        <span>{{ $org['officers_count'] }} Officers</span>
                     </div>
                 </div>
 
                 <p class="org-desc-short">{{ $org['description'] }}</p>
 
-                <div class="org-stats-inline">
-                    <div class="stat-inline">
-                        <i class="bi bi-person-circle"></i>
-                        <span>Adviser: Josef Karol A. Velayo</span>
-                    </div>
-                </div>
-
                 <div class="org-action-section">
-                    <a href="{{ route('orgDetail') }}" class="btn-view-org">
+                    <a href="{{ route('orgDetail', ['id' => $org['org_id']]) }}" class="btn-view-org">
                         <i class="bi bi-eye me-2"></i>View Organization
                     </a>
                 </div>
             </div>
         </div>
     </div>
-    @endforeach
+    @empty
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle-fill"></i>
+        No organizations found.
+    </div>
+    @endforelse
 </div>
 
 @endsection
