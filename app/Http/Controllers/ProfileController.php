@@ -141,8 +141,9 @@ class ProfileController extends Controller
         }
 
         // Get events the user has attended
+        // Check for 'Present' status AND (event is 'Done' OR event date is in the past)
         $attendedEvents = DB::select("
-            SELECT 
+            SELECT
                 e.event_id,
                 e.title,
                 e.description,
@@ -156,9 +157,9 @@ class ProfileController extends Controller
             FROM event_attendance ea
             INNER JOIN events e ON ea.event_id = e.event_id
             INNER JOIN organizations o ON e.org_id = o.org_id
-            WHERE ea.user_id = ? 
+            WHERE ea.user_id = ?
             AND ea.status = 'Present'
-            AND e.status = 'Done'
+            AND (e.status = 'Done' OR e.event_date < NOW())
             ORDER BY e.event_date DESC
             LIMIT 10
         ", [$user->user_id]);
