@@ -97,13 +97,26 @@ CREATE TABLE event_attendance (
 -- PAST OFFICERS
 CREATE TABLE officer_history (
     history_id VARCHAR(20) PRIMARY KEY,
-    user_id VARCHAR(20) NOT NULL, 
+    user_id VARCHAR(20) NOT NULL,
     org_id VARCHAR(20) NOT NULL,
     position VARCHAR(50),
     term_start DATE,
     term_end DATE,
     archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- NOTIFICATIONS
+CREATE TABLE notifications (
+    notification_id VARCHAR(20) PRIMARY KEY,
+    user_id VARCHAR(20) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    message TEXT,
+    link VARCHAR(255),
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- PROCEDURES & TRIGGERS
@@ -168,6 +181,13 @@ BEGIN
     DECLARE max_seq INT;
     SELECT IFNULL(MAX(CAST(SUBSTRING(history_id, 5) AS UNSIGNED)), 0) INTO max_seq FROM officer_history;
     SET NEW.history_id = CONCAT('HIS-', LPAD(max_seq + 1, 8, '0'));
+END $$
+
+CREATE TRIGGER trg_notif_id_gen BEFORE INSERT ON notifications FOR EACH ROW
+BEGIN
+    DECLARE max_seq INT;
+    SELECT IFNULL(MAX(CAST(SUBSTRING(notification_id, 5) AS UNSIGNED)), 0) INTO max_seq FROM notifications;
+    SET NEW.notification_id = CONCAT('NTF-', LPAD(max_seq + 1, 8, '0'));
 END $$
 
 DELIMITER $$

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use App\Models\Membership;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -608,10 +609,27 @@ class OrgController extends Controller
             return back()->with('error', 'You do not have permission to approve members');
         }
 
+        $membership = DB::selectOne(
+            "SELECT m.user_id, o.org_name FROM memberships m
+             JOIN organizations o ON m.org_id = o.org_id
+             WHERE m.membership_id = ?",
+            [$membershipId]
+        );
+
         DB::update(
             "UPDATE memberships SET status = 'Active' WHERE membership_id = ?",
             [$membershipId]
         );
+
+        if ($membership) {
+            Notification::create(
+                $membership->user_id,
+                'membership_approved',
+                'Membership Approved',
+                "Your membership to {$membership->org_name} has been approved!",
+                route('orgDetail', ['id' => $orgId])
+            );
+        }
 
         return back()->with('success', 'Member approved successfully!');
     }
@@ -640,10 +658,27 @@ class OrgController extends Controller
             return back()->with('error', 'You do not have permission to reject members');
         }
 
+        $membership = DB::selectOne(
+            "SELECT m.user_id, o.org_name FROM memberships m
+             JOIN organizations o ON m.org_id = o.org_id
+             WHERE m.membership_id = ?",
+            [$membershipId]
+        );
+
         DB::update(
             "UPDATE memberships SET status = 'Rejected' WHERE membership_id = ?",
             [$membershipId]
         );
+
+        if ($membership) {
+            Notification::create(
+                $membership->user_id,
+                'membership_rejected',
+                'Membership Request Rejected',
+                "Your membership request to {$membership->org_name} was not approved.",
+                null
+            );
+        }
 
         return back()->with('success', 'Member request rejected');
     }
@@ -823,10 +858,27 @@ public function createEvent(Request $request, $orgId)
         }
 
         try {
+            $event = DB::selectOne(
+                "SELECT e.created_by, e.title, o.org_name FROM events e
+                 JOIN organizations o ON e.org_id = o.org_id
+                 WHERE e.event_id = ?",
+                [$eventId]
+            );
+
             DB::update(
                 "UPDATE events SET status = 'Upcoming', updated_at = NOW() WHERE event_id = ?",
                 [$eventId]
             );
+
+            if ($event && $event->created_by) {
+                Notification::create(
+                    $event->created_by,
+                    'event_approved',
+                    'Event Approved',
+                    "Your event \"{$event->title}\" has been approved!",
+                    route('orgDetail', ['id' => $orgId])
+                );
+            }
 
             return back()->with('success', 'Event approved successfully!');
         } catch (\Exception $e) {
@@ -853,16 +905,32 @@ public function createEvent(Request $request, $orgId)
         }
 
         try {
+            $event = DB::selectOne(
+                "SELECT e.created_by, e.title FROM events e WHERE e.event_id = ?",
+                [$eventId]
+            );
+
             DB::update(
                 "UPDATE events SET status = 'Cancelled', updated_at = NOW() WHERE event_id = ?",
                 [$eventId]
             );
+
+            if ($event && $event->created_by) {
+                Notification::create(
+                    $event->created_by,
+                    'event_rejected',
+                    'Event Rejected',
+                    "Your event \"{$event->title}\" was not approved.",
+                    null
+                );
+            }
 
             return back()->with('success', 'Event rejected successfully!');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to reject event: ' . $e->getMessage());
         }
     }
+
     public function cancelEvent($orgId, $eventId)
 {
     if (!Auth::check()) {

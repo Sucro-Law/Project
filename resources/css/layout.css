@@ -147,9 +147,27 @@ body {
     border-bottom: 1px solid #f0f0f0;
     font-weight: 600;
     color: var(--pup-maroon);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mark-all-read-btn {
+    background: none;
+    border: none;
+    color: var(--pup-maroon);
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.mark-all-read-btn:hover {
+    background: #f0f0f0;
 }
 
 .notification-item {
+    cursor: pointer;
     padding: 15px 20px;
     border-bottom: 1px solid #f0f0f0;
     transition: background 0.3s ease;

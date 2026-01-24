@@ -7,6 +7,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -90,3 +91,7 @@ Route::get('/admin', [AdminController::class, 'index'])->name('admin');
 Route::post('/admin/organization/create', [AdminController::class, 'createOrganization'])->name('admin.organization.create');
 Route::put('/admin/organization/{orgId}/update', [AdminController::class, 'updateOrganization'])->name('admin.organization.update');
 Route::delete('/admin/organization/{orgId}/delete', [AdminController::class, 'deleteOrganization'])->name('admin.organization.delete');
+
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+Route::post('/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');

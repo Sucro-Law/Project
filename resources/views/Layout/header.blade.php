@@ -18,7 +18,7 @@
         </div>
         <div class="notification-btn" onclick="toggleNotifications()">
             <i class="bi bi-bell-fill"></i>
-            <span class="notification-badge">2</span>
+            <span class="notification-badge" id="notifBadge" style="display: none;">0</span>
         </div>
         @if(Auth::check())
         <div class="user-menu" id="userMenuTrigger">
@@ -63,15 +63,11 @@
 
 <div class="notification-dropdown" id="notificationDropdown">
     <div class="notification-header">
-        Notifications
+        <span>Notifications</span>
+        <button onclick="markAllNotificationsRead()" class="mark-all-read-btn">Mark all read</button>
     </div>
-    <div class="notification-item unread">
-        <div class="notification-text">Your application has been submitted. Please wait for verification. View your application form here</div>
-        <div class="notification-time">1hr</div>
-    </div>
-    <div class="notification-item unread">
-        <div class="notification-text">Welcome to Google Developers Group on Campus PUP!</div>
-        <div class="notification-time">7d</div>
+    <div id="notificationList">
+        <div class="notification-item" style="text-align: center; color: #666;">Loading...</div>
     </div>
 </div>
 
@@ -103,6 +99,8 @@
                 notifDropdown.classList.remove('show');
             }
         });
+
+        loadNotifications();
     });
 
     function toggleNotifications() {
@@ -122,5 +120,68 @@
         if (sidebar) {
             sidebar.classList.toggle('active');
         }
+    }
+
+    async function loadNotifications() {
+        try {
+            const response = await fetch('/notifications');
+            const data = await response.json();
+
+            const badge = document.getElementById('notifBadge');
+            if (data.unread_count > 0) {
+                badge.textContent = data.unread_count > 9 ? '9+' : data.unread_count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            const list = document.getElementById('notificationList');
+            if (data.notifications.length === 0) {
+                list.innerHTML = '<div class="notification-item" style="text-align: center; color: #666;">No notifications</div>';
+                return;
+            }
+
+            list.innerHTML = data.notifications.map(notif => `
+                <div class="notification-item ${notif.is_read ? '' : 'unread'}" onclick="handleNotificationClick('${notif.notification_id}', '${notif.link || ''}')">
+                    <div class="notification-text">${notif.message || notif.title}</div>
+                    <div class="notification-time">${timeAgo(notif.created_at)}</div>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error('Failed to load notifications:', err);
+        }
+    }
+
+    async function handleNotificationClick(notifId, link) {
+        await fetch(`/notifications/${notifId}/read`, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+        });
+
+        if (link) {
+            window.location.href = link;
+        } else {
+            loadNotifications();
+        }
+    }
+
+    async function markAllNotificationsRead() {
+        await fetch('/notifications/read-all', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+        });
+        loadNotifications();
+    }
+
+    function timeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+
+        if (seconds < 60) return 'now';
+        if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
+        if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
+        if (seconds < 604800) return Math.floor(seconds / 86400) + 'd';
+        return Math.floor(seconds / 604800) + 'w';
     }
 </script>
