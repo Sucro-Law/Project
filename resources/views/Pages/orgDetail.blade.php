@@ -227,7 +227,7 @@
                 @if(!$event->is_ended)
                 <div class="event-action-group">
                     @if($role === 'officer' || $role === 'adviser')
-                    <button class="btn-view-attendees" title="See Attendees" onclick="openModal('attendeesModal')">
+                    <button class="btn-view-attendees" title="See Attendees" onclick="showAttendees('{{ $event->event_id }}')">
                         <i class="bi bi-eye-fill"></i>
                     </button>
                     @endif
@@ -248,13 +248,38 @@
                 <h3 style="margin: 0; font-weight: bold;">ATTENDEES</h3>
                 <button class="modal-close" style="color: white; position: static;" onclick="closeModal('attendeesModal')">X</button>
             </div>
-            <div class="attendees-list-container">
-                @for ($i = 1; $i <= 10; $i++)
-                    <div class="attendee-row">{{ $i }}. Member {{ $i }}</div>
-            @endfor
+            <div class="attendees-list-container" id="attendeesListContainer"></div>
         </div>
     </div>
 </div>
+
+<script>
+    // Store attendees data for each event
+    const eventAttendees = {
+        @foreach($organizationEvents as $event)
+        '{{ $event->event_id }}': [
+            @foreach($event->attendees as $attendee)
+            { name: '{{ $attendee->full_name }}', status: '{{ $attendee->attendance_status }}' },
+            @endforeach
+        ],
+        @endforeach
+    };
+
+    function showAttendees(eventId) {
+        const container = document.getElementById('attendeesListContainer');
+        const attendees = eventAttendees[eventId] || [];
+
+        if (attendees.length === 0) {
+            container.innerHTML = '<div class="attendee-row" style="text-align: center; color: #666;">No attendees yet</div>';
+        } else {
+            container.innerHTML = attendees.map((a, i) =>
+                `<div class="attendee-row">${i + 1}. ${a.name} <span style="color: #888; font-size: 12px;">(${a.status})</span></div>`
+            ).join('');
+        }
+
+        openModal('attendeesModal');
+    }
+</script>
 
 <!-- Member Admission Modal (For Officers/Advisers) -->
 <div class="modal-overlay" id="memberAdmissionModal">

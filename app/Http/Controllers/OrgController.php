@@ -351,6 +351,14 @@ class OrgController extends Controller
             $event->formatted_date = date('m/d/y', strtotime($event->event_date));
             $event->is_upcoming = in_array($event->status, ['Upcoming']);
             $event->is_ended = $event->status === 'Done';
+
+            $event->attendees = DB::select("
+                SELECT u.full_name, u.school_id, ea.status as attendance_status
+                FROM event_attendance ea
+                INNER JOIN users u ON ea.user_id = u.user_id
+                WHERE ea.event_id = ?
+                ORDER BY u.full_name ASC
+            ", [$event->event_id]);
         }
 
         $sidebarData = $this->getSidebarData();
