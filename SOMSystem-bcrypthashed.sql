@@ -58,8 +58,8 @@ CREATE TABLE org_officers (
     term_start DATE,
     term_end DATE,
     FOREIGN KEY (membership_id) REFERENCES memberships(membership_id) ON DELETE CASCADE,
-    FOREIGN KEY (org_id) REFERENCES organizations(org_id),
-    UNIQUE (membership_id) -- One active officer role per membership
+    FOREIGN KEY (org_id) REFERENCES organizations(org_id) ON DELETE CASCADE,
+    UNIQUE (membership_id)
 );
 
 -- 6. EVENTS
@@ -103,7 +103,8 @@ CREATE TABLE officer_history (
     term_start DATE,
     term_end DATE,
     archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (org_id) REFERENCES organizations(org_id) ON DELETE CASCADE
 );
 
 -- NOTIFICATIONS
