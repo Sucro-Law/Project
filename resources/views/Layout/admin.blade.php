@@ -594,6 +594,20 @@
 <body>
 
     <div class="events-container">
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-bottom: 20px;">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-bottom: 20px;">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
         <div class="header-actions">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Search organizations...">
@@ -619,43 +633,22 @@
                 <i class="bi bi-building"></i> Organizations
             </h2>
             <div class="org-grid" id="organizationsGrid">
-                <!-- Organization Card 1 -->
-                <div class="org-card" data-org-name="google developer groups on campus – pup" onclick="openEditOrgModal(1)">
-                    <div class="org-logo">GDG</div>
-
-
-                    <div class="org-name">Google Developer Groups on Campus – PUP</div>
-                    <div class="org-description">An organization is a group of people who work together, like a neighborhood association, a charity, a union, or a corporation.</div>
+                @foreach($organizations as $org)
+                <div class="org-card" data-org-name="{{ strtolower($org->org_name) }}" onclick="openEditOrgModal('{{ $org->org_id }}')">
+                    <div class="org-logo">{{ $org->short_name }}</div>
+                    <div class="org-name">{{ $org->org_name }}</div>
+                    <div class="org-description">{{ $org->description ?? 'No description available' }}</div>
                     <div class="org-meta">
-                        <div><i class="bi bi-calendar3"></i> Est. 2018</div>
-                        <div><i class="bi bi-person"></i> Adviser: Josef Karol A. Velayo</div>
+                        <div><i class="bi bi-calendar3"></i> Est. {{ $org->year }}</div>
+                        <div><i class="bi bi-person"></i> Adviser: {{ $org->adviser_name ?? 'Not assigned' }}</div>
                     </div>
-                    <span class="org-status active">ACTIVE</span>
+                    <span class="org-status {{ strtolower($org->status) }}">{{ strtoupper($org->status) }}</span>
                 </div>
+                @endforeach
 
-                <!-- Organization Card 2 -->
-                <div class="org-card" data-org-name="amazon web services – pup" onclick="openEditOrgModal(2)">
-                    <div class="org-logo">AWS</div>
-                    <div class="org-name">Amazon Web Services – PUP</div>
-                    <div class="org-description">Learn cloud computing and modern infrastructure with AWS technologies and tools.</div>
-                    <div class="org-meta">
-                        <div><i class="bi bi-calendar3"></i> Est. 2020</div>
-                        <div><i class="bi bi-person"></i> Adviser: John Doe</div>
-                    </div>
-                    <span class="org-status active">ACTIVE</span>
-                </div>
-
-                <!-- Organization Card 3 -->
-                <div class="org-card" data-org-name="microsoft student partners – pup" onclick="openEditOrgModal(3)">
-                    <div class="org-logo">MSP</div>
-                    <div class="org-name">Microsoft Student Partners – PUP</div>
-                    <div class="org-description">Empowering students through technology and innovation with Microsoft tools and platforms.</div>
-                    <div class="org-meta">
-                        <div><i class="bi bi-calendar3"></i> Est. 2019</div>
-                        <div><i class="bi bi-person"></i> Adviser: Jane Smith</div>
-                    </div>
-                    <span class="org-status inactive">INACTIVE</span>
-                </div>
+                @if(count($organizations) === 0)
+                <p style="text-align: center; color: #666; padding: 40px; grid-column: 1 / -1;">No organizations found.</p>
+                @endif
             </div>
         </div>
 
@@ -668,33 +661,22 @@
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
-                <form id="createOrgForm" onsubmit="confirmCreateOrg(event)">
+                <form id="createOrgForm" action="{{ route('admin.organization.create') }}" method="POST">
+                    @csrf
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="form-label">Organization Name *</label>
-                            <input type="text" class="form-control" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Short Name *</label>
-                            <input type="text" class="form-control" name="short_name" maxlength="10" required>
+                            <input type="text" class="form-control" name="org_name" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Description</label>
                             <textarea class="form-control" name="description" rows="4"></textarea>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Adviser School Number</label>
-                            <input type="text" class="form-control" name="adviser_school_number">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Adviser Name</label>
-                            <input type="text" class="form-control" name="adviser_name">
-                        </div>
-                        <div class="form-group">
                             <label class="form-label">Status *</label>
                             <select class="form-select" name="status" required>
-                                <option value="ACTIVE">Active</option>
-                                <option value="INACTIVE">Inactive</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
                             </select>
                         </div>
                     </div>
@@ -715,42 +697,24 @@
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
-                <form id="editOrgForm" onsubmit="confirmUpdateOrg(event)">
+                <form id="editOrgForm" method="POST">
+                    @csrf
+                    @method('PUT')
                     <input type="hidden" name="org_id" id="editOrgId">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="form-label">Organization Name *</label>
-                            <input type="text" class="form-control" name="name" id="editOrgName" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Short Name *</label>
-                            <input type="text" class="form-control" name="short_name" id="editOrgShortName" maxlength="10" required>
+                            <input type="text" class="form-control" name="org_name" id="editOrgName" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Description</label>
                             <textarea class="form-control" name="description" id="editOrgDescription" rows="4"></textarea>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Year Established *</label>
-                            <input type="number" class="form-control" name="year" id="editOrgYear" min="1900" max="2100" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Institute</label>
-                            <input type="text" class="form-control" name="institute" id="editOrgInstitute">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Adviser School Number</label>
-                            <input type="text" class="form-control" name="adviser_school_number" id="editOrgAdviserSchoolNo">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Adviser Name</label>
-                            <input type="text" class="form-control" name="adviser_name" id="editOrgAdviserName">
-                        </div>
-                        <div class="form-group">
                             <label class="form-label">Status *</label>
                             <select class="form-select" name="status" id="editOrgStatus" required>
-                                <option value="ACTIVE">Active</option>
-                                <option value="INACTIVE">Inactive</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
                             </select>
                         </div>
                     </div>
@@ -762,92 +726,20 @@
             </div>
         </div>
 
-        <!-- Confirmation Modal for Create -->
-        <div class="modal-overlay confirmation-modal" id="confirmCreateModal">
-            <div class="modal-content">
-                <div class="confirmation-body">
-                    <i class="bi bi-exclamation-triangle warning-icon"></i>
-                    <h4>Create Organization?</h4>
-                    <p>Are you sure you want to create this organization?</p>
-                    <div class="confirmation-actions">
-                        <button class="btn-secondary" onclick="closeModal('confirmCreateModal')">Cancel</button>
-                        <button class="btn-primary" onclick="submitCreateOrg()">Yes, Create</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Confirmation Modal for Update -->
-        <div class="modal-overlay confirmation-modal" id="confirmUpdateModal">
-            <div class="modal-content">
-                <div class="confirmation-body">
-                    <i class="bi bi-exclamation-triangle warning-icon"></i>
-                    <h4>Update Organization?</h4>
-                    <p>Are you sure you want to update this organization's details?</p>
-                    <div class="confirmation-actions">
-                        <button class="btn-secondary" onclick="closeModal('confirmUpdateModal')">Cancel</button>
-                        <button class="btn-primary" onclick="submitUpdateOrg()">Yes, Update</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Confirmation Modal for Delete Event -->
-        <div class="modal-overlay confirmation-modal" id="confirmDeleteModal">
-            <div class="modal-content">
-                <div class="confirmation-body">
-                    <i class="bi bi-exclamation-triangle warning-icon"></i>
-                    <h4>Delete Event?</h4>
-                    <p id="deleteEventMessage">Are you sure you want to delete this event?</p>
-                    <div class="confirmation-actions">
-                        <button class="btn-secondary" onclick="closeModal('confirmDeleteModal')">Cancel</button>
-                        <button class="btn-danger" onclick="submitDeleteEvent()">Yes, Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        @push('scripts')
         <script>
-            // GLOBAL STATE
-            let currentEventId = null;
-
-            // Hardcoded organization data
             const organizationsData = {
-                1: {
-                    id: 1,
-                    name: 'Google Developer Groups on Campus – PUP',
-                    short_name: 'GDG',
-                    description: 'An organization is a group of people who work together, like a neighborhood association, a charity, a union, or a corporation.',
-                    year: 2018,
-                    institute: 'Institute of Bachelors in Information Technology Studies',
-                    adviser_school_number: 'ADV-001',
-                    adviser_name: 'Josef Karol A. Velayo',
-                    status: 'ACTIVE'
+                @foreach($organizations as $org)
+                '{{ $org->org_id }}': {
+                    id: '{{ $org->org_id }}',
+                    name: '{{ $org->org_name }}',
+                    short_name: '{{ $org->short_name }}',
+                    description: '{{ $org->description ?? '' }}',
+                    year: {{ $org->year }},
+                    adviser_school_number: '{{ $org->adviser_school_id ?? '' }}',
+                    adviser_name: '{{ $org->adviser_name ?? '' }}',
+                    status: '{{ strtoupper($org->status) }}'
                 },
-                2: {
-                    id: 2,
-                    name: 'Amazon Web Services – PUP',
-                    short_name: 'AWS',
-                    description: 'Learn cloud computing and modern infrastructure with AWS technologies and tools.',
-                    year: 2020,
-                    institute: 'Institute of Bachelors in Information Technology Studies',
-                    adviser_school_number: 'ADV-002',
-                    adviser_name: 'John Doe',
-                    status: 'ACTIVE'
-                },
-                3: {
-                    id: 3,
-                    name: 'Microsoft Student Partners – PUP',
-                    short_name: 'MSP',
-                    description: 'Empowering students through technology and innovation with Microsoft tools and platforms.',
-                    year: 2019,
-                    institute: 'Institute of Bachelors in Information Technology Studies',
-                    adviser_school_number: 'ADV-003',
-                    adviser_name: 'Jane Smith',
-                    status: 'INACTIVE'
-                }
+                @endforeach
             };
 
             // SEARCH FUNCTIONALITY
@@ -877,13 +769,9 @@
                 if (org) {
                     document.getElementById('editOrgId').value = org.id;
                     document.getElementById('editOrgName').value = org.name;
-                    document.getElementById('editOrgShortName').value = org.short_name;
                     document.getElementById('editOrgDescription').value = org.description || '';
-                    document.getElementById('editOrgYear').value = org.year;
-                    document.getElementById('editOrgInstitute').value = org.institute || '';
-                    document.getElementById('editOrgAdviserSchoolNo').value = org.adviser_school_number || '';
-                    document.getElementById('editOrgAdviserName').value = org.adviser_name || '';
-                    document.getElementById('editOrgStatus').value = org.status;
+                    document.getElementById('editOrgStatus').value = org.status === 'ACTIVE' ? 'Active' : 'Inactive';
+                    document.getElementById('editOrgForm').action = '/admin/organization/' + org.id + '/update';
 
                     document.getElementById('editOrgModal').classList.add('show');
                 } else {
@@ -891,88 +779,13 @@
                 }
             }
 
-            function confirmCreateOrg(event) {
-                event.preventDefault();
-                document.getElementById('confirmCreateModal').classList.add('show');
-            }
-
-            function submitCreateOrg() {
-                const form = document.getElementById('createOrgForm');
-                const formData = new FormData(form);
-
-                // Here you would normally send to backend
-                console.log('Creating organization with data:');
-                for (let [key, value] of formData.entries()) {
-                    console.log(key + ': ' + value);
-                }
-
-                alert('Organization created successfully! (Demo mode - no backend connection)');
-                closeModal('confirmCreateModal');
-                closeModal('createOrgModal');
-                form.reset();
-            }
-
-            function confirmUpdateOrg(event) {
-                event.preventDefault();
-                document.getElementById('confirmUpdateModal').classList.add('show');
-            }
-
-            function submitUpdateOrg() {
-                const orgId = document.getElementById('editOrgId').value;
-                const form = document.getElementById('editOrgForm');
-                const formData = new FormData(form);
-
-                // Here you would normally send to backend
-                console.log('Updating organization ' + orgId + ' with data:');
-                for (let [key, value] of formData.entries()) {
-                    console.log(key + ': ' + value);
-                }
-
-                alert('Organization updated successfully! (Demo mode - no backend connection)');
-                closeModal('confirmUpdateModal');
-                closeModal('editOrgModal');
-            }
-
-            // EVENT LOGIC
-            function toggleEventMenu(eventId) {
-                document.querySelectorAll('.event-dropdown').forEach(el => {
-                    if (el.id !== 'eventMenu' + eventId) el.classList.remove('show');
-                });
-                const menu = document.getElementById('eventMenu' + eventId);
-                menu.classList.toggle('show');
-            }
-
-            function confirmDeleteEvent(id, title) {
-                currentEventId = id;
-                document.getElementById('deleteEventMessage').innerText = `Are you sure you want to delete "${title}"? This action cannot be undone.`;
-                document.getElementById('confirmDeleteModal').classList.add('show');
-            }
-
-            function submitDeleteEvent() {
-                if (!currentEventId) return;
-
-                console.log('Deleting event ID: ' + currentEventId);
-
-                alert('Event deleted successfully! (Demo mode - no backend connection)');
-                closeModal('confirmDeleteModal');
-
-                // In a real application, you would reload or remove the card from DOM
-                currentEventId = null;
-            }
-
-            // GLOBAL EVENT LISTENERS
             document.querySelectorAll('.modal-overlay').forEach(modal => {
                 modal.addEventListener('click', function(e) {
                     if (e.target === this) this.classList.remove('show');
                 });
             });
-
-            window.onclick = function(event) {
-                if (!event.target.closest('.event-menu')) {
-                    document.querySelectorAll('.event-dropdown').forEach(d => d.classList.remove('show'));
-                }
-            }
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
