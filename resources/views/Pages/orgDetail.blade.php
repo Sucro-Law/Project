@@ -295,7 +295,7 @@
         </div>
     </div>
 
-    <!-- Event Posting Modal - Replace your existing modal -->
+    <!-- Event Posting Modal -->
 <div class="modal-overlay" id="eventPostingModal">
     <div class="modal-content-event">
         <button class="modal-close" onclick="closeModal('eventPostingModal')">
@@ -328,10 +328,14 @@
                             <i class="bi bi-plus-lg"></i>
                             <span>Insert Image</span>
                         </label>
+
+                        <img id="previewImage" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:8px;">
+
                         <input type="file" 
                                name="event_image" 
                                id="eventImage" 
-                               accept="image/*">
+                               accept="image/*"
+                               style="display:none;">
                     </div>
 
                     <div class="details-section">
@@ -378,16 +382,17 @@
 </div>
 
 <script>
-// Add this script at the bottom of your page
-document.getElementById('eventPostingForm')?.addEventListener('submit', function(e) {
-    console.log('Form submitting...');
-    const formData = new FormData(this);
-    console.log('Form data:');
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
+document.getElementById('eventImage')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const img = document.getElementById('previewImage');
+        img.src = URL.createObjectURL(file);
+        img.style.display = 'block';
     }
 });
 </script>
+
+
 
     <!-- Pending Members Modal -->
     <div class="modal-overlay" id="pendingMembers">
@@ -457,7 +462,7 @@ document.getElementById('eventPostingForm')?.addEventListener('submit', function
         </div>
     </div>
 
-    <!-- Pending Events Modal -->
+        <!-- Pending Events Modal -->
 <div class="modal-overlay" id="pendingEvents">
     <div class="modal-content-pending">
         <button class="modal-close" onclick="closeModal('pendingEvents')">
@@ -487,19 +492,17 @@ document.getElementById('eventPostingForm')?.addEventListener('submit', function
 
                             <div class="event-content-row">
                                 <div class="event-visual-column">
-                                    @if($event->event_image)
                                     <div class="event-image-preview">
-                                        <img src="{{ asset('storage/' . $event->event_image) }}" alt="Event Image">
+                                        @if(property_exists($event, 'event_image') && !empty($event->event_image))
+                                            <img src="{{ asset('storage/' . $event->event_image) }}" alt="Event Image">
+                                        @else
+                                            <img src="{{ asset('image/computer.jpg') }}" alt="Default Image">
+                                        @endif
                                     </div>
-                                    @else
-                                    <div class="event-image-preview">
-                                        <img src="{{ asset('image/computer.jpg') }}" alt="Default Image">
-                                    </div>
-                                    @endif
                                     
                                     <div class="event-details-inputs">
                                         <label class="input-label">Details:</label>
-                                        <input type="text" class="detail-input" value="{{ $event->formatted_date }}" readonly>
+                                        <input type="text" class="detail-input" value="{{ $event->formatted_date ?? 'N/A' }}" readonly>
                                         <input type="text" class="detail-input" value="{{ $event->venue ?? 'TBD' }}" readonly>
                                     </div>
                                 </div>

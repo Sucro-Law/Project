@@ -743,88 +743,66 @@ public function show($id)
         }
     }
 
-        // ADD THESE METHODS TO THE END OF YOUR OrgController CLASS (before the closing brace)
+public function createEvent(Request $request, $orgId)
+{
+    if (!Auth::check()) {
+        return back()->with('error', 'Please login first');
+    }
 
-    public function createEvent(Request $request, $orgId)
-    {
-        if (!Auth::check()) {
-            return back()->with('error', 'Please login first');
-        }
-
-        $user = Auth::user();
-
-        // Check if user is officer or adviser of the organization
-        $isOfficer = DB::selectOne(
-            "SELECT membership_id FROM memberships 
-            WHERE org_id = ? AND user_id = ? AND status = 'Active' AND membership_role = 'Officer'
-            LIMIT 1",
-            [$orgId, $user->user_id]
-        );
-
-        $isAdviser = DB::selectOne(
-            "SELECT adviser_id FROM org_advisers WHERE org_id = ? AND user_id = ? LIMIT 1",
-            [$orgId, $user->user_id]
-        );
-
-        if (!$isOfficer && !$isAdviser) {
-            return back()->with('error', 'You do not have permission to create events');
-        }
-
+    try {
         $validated = $request->validate([
-            'title' => 'required|string|max:150',
+            'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'event_date' => 'required|date|after:today',
-            'venue' => 'required|string|max:100',
-            'event_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'event_date' => 'required|date',
+            'venue' => 'required|string|max:255',
+            'event_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        try {
-            $imagePath = null;
-            if ($request->hasFile('event_image')) {
-                $imagePath = $request->file('event_image')->store('events', 'public');
-            }
+        $user = Auth::user(); // ✅ FIXED
 
-            // Determine initial status based on user role
-            $status = $isAdviser ? 'Upcoming' : 'Pending';
+        $eventId = 'EVT-' . str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+        $status = 'Pending';
 
-            // Generate event_id
-            $lastEvent = DB::selectOne(
-                "SELECT event_id FROM events ORDER BY created_at DESC LIMIT 1"
-            );
-            
-            $nextNum = 1;
-            if ($lastEvent) {
-                $lastNum = (int)substr($lastEvent->event_id, 4);
-                $nextNum = $lastNum + 1;
-            }
-            $eventId = 'EVT-' . str_pad($nextNum, 8, '0', STR_PAD_LEFT);
+        $imagePath = null;
 
-            // Insert event
-            DB::insert(
-                "INSERT INTO events (event_id, org_id, title, description, event_date, event_duration, venue, status, created_by, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())",
-                [
-                    $eventId,
-                    $orgId,
-                    $validated['title'],
-                    $validated['description'],
-                    $validated['event_date'],
-                    4, // default duration
-                    $validated['venue'],
-                    $status,
-                    $user->user_id
-                ]
-            );
-
-            $message = $isAdviser 
-                ? 'Event created and approved successfully!' 
-                : 'Event submitted successfully! Waiting for adviser approval.';
-
-            return back()->with('success', $message);
-        } catch (\Exception $e) {
-            return back()->with('error', 'Failed to create event: ' . $e->getMessage());
+        if ($request->hasFile('event_image')) {
+            $image = $request->file('event_image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('uploads/events'), $filename);
+            $imagePath = 'uploads/events/' . $filename;
         }
+
+        DB::insert(
+            "INSERT INTO events 
+            (event_id, org_id, title, description, event_date, event_duration, venue, status, created_by, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
+            [
+                $eventId,
+                $orgId,
+                $validated['title'],
+                $validated['description'],
+                $validated['event_date'],
+                4,
+                $validated['venue'],
+                $status,
+                $user->user_id   // ✅ now not null
+            ]
+        );
+
+        if ($imagePath) {
+            DB::update(
+                "UPDATE events SET image_path = ? WHERE event_id = ?",
+                [$imagePath, $eventId]
+            );
+        }
+
+        return back()->with('success', 'Event submitted successfully and is pending approval.');
+
+    } catch (\Exception $e) {
+        return back()->with('error', 'Failed to create event: ' . $e->getMessage());
     }
+}
+
 
     public function approveEvent($orgId, $eventId)
     {
