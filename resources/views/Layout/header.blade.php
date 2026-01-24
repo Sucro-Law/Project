@@ -4,11 +4,11 @@
     </button>
     <div class="welcome-text pt-3">
         @if(Auth::check())
-            <h2>Welcome, {{ Auth::user()->school_id ?? 'SN ' . Auth::user()->id }}!</h2>
-            <p>Polytechnic University of the Philippines</p>
+        <h2>Welcome, {{ Auth::user()->school_id ?? 'SN ' . Auth::user()->id }}!</h2>
+        <p>Polytechnic University of the Philippines</p>
         @else
-            <h2>Welcome, Guest!</h2>
-            <p>Polytechnic University of the Philippines</p>
+        <h2>Welcome, Guest!</h2>
+        <p>Polytechnic University of the Philippines</p>
         @endif
     </div>
     <div class="top-actions">
@@ -21,29 +21,29 @@
             <span class="notification-badge">2</span>
         </div>
         @if(Auth::check())
-            <div class="user-menu" id="userMenuTrigger">
-                @php
-                    // Get individual name parts
-                    $fullNameParts = explode(' ', Auth::user()->full_name ?? '');
-                    
-                    if (count($fullNameParts) >= 3) {
-                        // Assume format: FirstName MiddleName LastName or FirstName SecondName MiddleName LastName
-                        $lastName = array_pop($fullNameParts); // Get last part as last name
-                        $middleName = array_pop($fullNameParts); // Get second to last as middle name
-                        $firstName = implode(' ', $fullNameParts); // Everything else is first name
-                        
-                        $middleInitial = strtoupper(substr($middleName, 0, 1)) . '.';
-                        $displayName = trim($firstName . ' ' . $middleInitial . ' ' . $lastName);
-                    } else {
-                        // Fallback to full name if format is unexpected
-                        $displayName = Auth::user()->full_name ?? 'User';
-                    }
-                @endphp
-                <span>{{ $displayName }}</span>
-                <i class="bi bi-chevron-down"></i>
-            </div>
+        <div class="user-menu" id="userMenuTrigger">
+            @php
+            // Get individual name parts
+            $fullNameParts = explode(' ', Auth::user()->full_name ?? '');
+
+            if (count($fullNameParts) >= 3) {
+            // Assume format: FirstName MiddleName LastName or FirstName SecondName MiddleName LastName
+            $lastName = array_pop($fullNameParts); // Get last part as last name
+            $middleName = array_pop($fullNameParts); // Get second to last as middle name
+            $firstName = implode(' ', $fullNameParts); // Everything else is first name
+
+            $middleInitial = strtoupper(substr($middleName, 0, 1)) . '.';
+            $displayName = trim($firstName . ' ' . $middleInitial . ' ' . $lastName);
+            } else {
+            // Fallback to full name if format is unexpected
+            $displayName = Auth::user()->full_name ?? 'User';
+            }
+            @endphp
+            <span>{{ $displayName }}</span>
+            <i class="bi bi-chevron-down"></i>
+        </div>
         @else
-            <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
+        <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
         @endif
     </div>
 </div>
@@ -108,7 +108,7 @@
     function toggleNotifications() {
         const notifDropdown = document.getElementById('notificationDropdown');
         const userDropdown = document.getElementById('userDropdown');
-        
+
         if (notifDropdown) {
             notifDropdown.classList.toggle('show');
             if (userDropdown) {
@@ -116,7 +116,7 @@
             }
         }
     }
-    
+
     function toggleSidebar() {
         const sidebar = document.querySelector('.sidebar');
         if (sidebar) {

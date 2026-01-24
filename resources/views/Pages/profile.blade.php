@@ -8,7 +8,7 @@
         margin: 0 auto;
         padding: 30px 20px;
     }
-    
+
     .profile-header {
         background: linear-gradient(135deg, var(--pup-maroon) 0%, var(--pup-dark) 100%);
         border-radius: 16px;

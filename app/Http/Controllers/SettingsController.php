@@ -56,8 +56,8 @@ class SettingsController extends Controller
                 'org_id' => $org->org_id,
                 'org_name' => $org->org_name,
                 'membership_role' => $org->membership_role,
-                'display_position' => $org->membership_role === 'Officer' && !empty($org->position) 
-                    ? $org->position 
+                'display_position' => $org->membership_role === 'Officer' && !empty($org->position)
+                    ? $org->position
                     : $org->membership_role,
                 'academic_year' => $org->academic_year,
                 'formatted_joined_at' => date('F j, Y', strtotime($org->joined_at))
@@ -78,14 +78,14 @@ class SettingsController extends Controller
         }
 
         $user = Auth::user();
-        
+
         // Parse user's full name into parts
         // Expected format: "FirstName [MiddleName/Initial] LastName"
         $nameParts = explode(' ', trim($user->full_name));
         $firstName = '';
         $middleName = '';
         $lastName = '';
-        
+
         if (count($nameParts) == 1) {
             // Only one name part
             $firstName = $nameParts[0];
@@ -102,15 +102,15 @@ class SettingsController extends Controller
             // Format: FirstName1 FirstName2 MiddleName LastName
             // Last part is always last name
             $lastName = $nameParts[count($nameParts) - 1];
-            
+
             // Second to last is middle name (could be initial with period)
             $middleName = $nameParts[count($nameParts) - 2];
-            
+
             // Everything else is first name
             $firstNameParts = array_slice($nameParts, 0, count($nameParts) - 2);
             $firstName = implode(' ', $firstNameParts);
         }
-        
+
         $sidebarData = $this->getSidebarData();
 
         return view('Pages.settings', compact('user', 'sidebarData', 'firstName', 'middleName', 'lastName'));
@@ -155,7 +155,7 @@ class SettingsController extends Controller
                     trim($validated['middle_name'] ?? ''),
                     trim($validated['last_name'] ?? '')
                 ]);
-                
+
                 if (!empty($nameParts)) {
                     $fullName = implode(' ', $nameParts);
                     $updateFields[] = 'full_name = ?';
@@ -177,7 +177,7 @@ class SettingsController extends Controller
 
             if (!empty($updateFields)) {
                 $updateValues[] = $user->user_id;
-                
+
                 DB::update(
                     "UPDATE users SET " . implode(', ', $updateFields) . ", updated_at = NOW() WHERE user_id = ?",
                     $updateValues

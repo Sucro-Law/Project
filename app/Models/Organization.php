@@ -8,18 +8,18 @@ use Illuminate\Support\Facades\DB;
 class Organization extends Model
 {
     protected $primaryKey = 'org_id';
-    
+
     public $incrementing = false;
-    
+
     protected $keyType = 'string';
-    
+
     protected $fillable = [
         'org_id',
         'org_name',
         'description',
         'status',
     ];
-    
+
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -85,7 +85,7 @@ class Organization extends Model
              WHERE org_id = ? AND status = 'Active'",
             [$this->org_id]
         );
-        
+
         return $result ? $result->count : 0;
     }
 
@@ -104,7 +104,7 @@ class Organization extends Model
             private $withCounts = [];
             private $orderBy = null;
             private $limitValue = null;
-            
+
             public function withCount($relations)
             {
                 if (is_string($relations)) {
@@ -113,33 +113,33 @@ class Organization extends Model
                 $this->withCounts = array_merge($this->withCounts, $relations);
                 return $this;
             }
-            
+
             public function latest($column = 'created_at')
             {
                 $this->orderBy = "ORDER BY {$column} DESC";
                 return $this;
             }
-            
+
             public function limit($value)
             {
                 $this->limitValue = "LIMIT {$value}";
                 return $this;
             }
-            
+
             public function get()
             {
                 $sql = $this->query;
-                
+
                 if ($this->orderBy) {
                     $sql .= " " . $this->orderBy;
                 }
-                
+
                 if ($this->limitValue) {
                     $sql .= " " . $this->limitValue;
                 }
-                
+
                 $results = DB::select($sql, $this->params);
-                
+
                 if (!empty($this->withCounts) && !empty($results)) {
                     foreach ($results as $result) {
                         foreach ($this->withCounts as $relation) {
@@ -154,7 +154,7 @@ class Organization extends Model
                         }
                     }
                 }
-                
+
                 return $results;
             }
         };
@@ -187,43 +187,43 @@ class Organization extends Model
                 $data['status'] ?? 'Active'
             ]
         );
-        
+
         return DB::selectOne(
             "SELECT * FROM organizations WHERE org_name = ? ORDER BY created_at DESC LIMIT 1",
             [$data['org_name']]
         );
     }
-    
+
     public static function updateOrganization($orgId, $data)
     {
         $fields = [];
         $values = [];
-        
+
         if (isset($data['org_name'])) {
             $fields[] = 'org_name = ?';
             $values[] = $data['org_name'];
         }
-        
+
         if (isset($data['description'])) {
             $fields[] = 'description = ?';
             $values[] = $data['description'];
         }
-        
+
         if (isset($data['status'])) {
             $fields[] = 'status = ?';
             $values[] = $data['status'];
         }
-        
+
         $fields[] = 'updated_at = NOW()';
         $values[] = $orgId;
-        
+
         if (!empty($fields)) {
             DB::update(
                 "UPDATE organizations SET " . implode(', ', $fields) . " WHERE org_id = ?",
                 $values
             );
         }
-        
+
         return self::findById($orgId);
     }
 
@@ -239,16 +239,16 @@ class Organization extends Model
     {
         preg_match_all('/\b([A-Z])/u', $this->org_name, $matches);
         $acronym = implode('', $matches[1]);
-        
-        return !empty($acronym) && strlen($acronym) >= 2 
-            ? $acronym 
+
+        return !empty($acronym) && strlen($acronym) >= 2
+            ? $acronym
             : strtoupper(substr($this->org_name, 0, 3));
     }
 
     public function getYearAttribute()
     {
         if ($this->created_at) {
-            return is_string($this->created_at) 
+            return is_string($this->created_at)
                 ? date('Y', strtotime($this->created_at))
                 : $this->created_at->format('Y');
         }

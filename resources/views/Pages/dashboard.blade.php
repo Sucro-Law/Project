@@ -7,56 +7,56 @@
 @section('content')
 
 <style>
-.alert {
-    padding: 12px 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .alert {
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-.alert-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
 
-.alert-error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
 
-.alert-info {
-    background: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-}
+    .alert-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
 </style>
 
 <div class="container-custom">
     <div class="content-area">
         <!-- Success/Error Messages -->
         @if(session('success'))
-            <div class="alert alert-success">
-                <i class="bi bi-check-circle-fill"></i>
-                {{ session('success') }}
-            </div>
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ session('success') }}
+        </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-error">
-                <i class="bi bi-exclamation-circle-fill"></i>
-                {{ session('error') }}
-            </div>
+        <div class="alert alert-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ session('error') }}
+        </div>
         @endif
 
         @if(session('info'))
-            <div class="alert alert-info">
-                <i class="bi bi-info-circle-fill"></i>
-                {{ session('info') }}
-            </div>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle-fill"></i>
+            {{ session('info') }}
+        </div>
         @endif
 
         <!-- Organizations Section -->
@@ -98,7 +98,7 @@
         </div>
         @endif
 
-<!-- Events Section -->
+        <!-- Events Section -->
         <div class="section-header" style="margin-top: 50px;">
             <a href="{{ route('events') }}" class="section-title">
                 Events <i class="bi bi-chevron-right"></i>
@@ -133,9 +133,9 @@
                 </div>
             </div>
             @endforelse
-        </div> 
+        </div>
         <div style="text-align: center; margin-top: 30px;">
             <a href="{{ route('events') }}" class="btn-view-more">View more...</a>
         </div>
 
-@endsection
+        @endsection

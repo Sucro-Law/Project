@@ -57,8 +57,8 @@ class OrgController extends Controller
                 'org_id' => $org->org_id,
                 'org_name' => $org->org_name,
                 'membership_role' => $org->membership_role,
-                'display_position' => $org->membership_role === 'Officer' && !empty($org->position) 
-                    ? $org->position 
+                'display_position' => $org->membership_role === 'Officer' && !empty($org->position)
+                    ? $org->position
                     : $org->membership_role,
                 'academic_year' => $org->academic_year,
                 'formatted_joined_at' => date('F j, Y', strtotime($org->joined_at))
@@ -94,10 +94,10 @@ class OrgController extends Controller
         foreach ($organizations as $org) {
             preg_match_all('/\b([A-Z])/u', $org->org_name, $matches);
             $acronym = implode('', $matches[1]);
-            $org->short_name = !empty($acronym) && strlen($acronym) >= 2 
-                ? $acronym 
+            $org->short_name = !empty($acronym) && strlen($acronym) >= 2
+                ? $acronym
                 : strtoupper(substr($org->org_name, 0, 3));
-            
+
             $org->year = date('Y', strtotime($org->created_at));
         }
 
@@ -121,8 +121,8 @@ class OrgController extends Controller
             $event->formatted_date = date('m/d/y', strtotime($event->event_date));
             preg_match_all('/\b([A-Z])/u', $event->org_name, $matches);
             $acronym = implode('', $matches[1]);
-            $event->org_short_name = !empty($acronym) && strlen($acronym) >= 2 
-                ? $acronym 
+            $event->org_short_name = !empty($acronym) && strlen($acronym) >= 2
+                ? $acronym
                 : strtoupper(substr($event->org_name, 0, 3));
         }
 
@@ -150,13 +150,13 @@ class OrgController extends Controller
             ORDER BY o.created_at DESC
         ");
 
-        $organizations = collect($results)->map(function($org) {
+        $organizations = collect($results)->map(function ($org) {
             preg_match_all('/\b([A-Z])/u', $org->org_name, $matches);
             $acronym = implode('', $matches[1]);
-            $short_name = !empty($acronym) && strlen($acronym) >= 2 
-                ? $acronym 
+            $short_name = !empty($acronym) && strlen($acronym) >= 2
+                ? $acronym
                 : strtoupper(substr($org->org_name, 0, 3));
-            
+
             $year = date('Y', strtotime($org->created_at));
 
             return [
@@ -178,9 +178,9 @@ class OrgController extends Controller
 
     // Replace your existing show() method in OrgController with this:
 
-public function show($id)
-{
-    $organization = DB::selectOne("
+    public function show($id)
+    {
+        $organization = DB::selectOne("
         SELECT 
             o.org_id,
             o.org_name,
@@ -196,18 +196,18 @@ public function show($id)
         GROUP BY o.org_id, o.org_name, o.description, o.status, o.created_at, o.updated_at
     ", [$id]);
 
-    if (!$organization) {
-        abort(404, 'Organization not found');
-    }
+        if (!$organization) {
+            abort(404, 'Organization not found');
+        }
 
-    preg_match_all('/\b([A-Z])/u', $organization->org_name, $matches);
-    $acronym = implode('', $matches[1]);
-    $organization->short_name = !empty($acronym) && strlen($acronym) >= 2 
-        ? $acronym 
-        : strtoupper(substr($organization->org_name, 0, 3));
-    $organization->year = date('Y', strtotime($organization->created_at));
+        preg_match_all('/\b([A-Z])/u', $organization->org_name, $matches);
+        $acronym = implode('', $matches[1]);
+        $organization->short_name = !empty($acronym) && strlen($acronym) >= 2
+            ? $acronym
+            : strtoupper(substr($organization->org_name, 0, 3));
+        $organization->year = date('Y', strtotime($organization->created_at));
 
-    $activeMemberships = DB::select("
+        $activeMemberships = DB::select("
         SELECT m.*, u.full_name, u.email, u.school_id, u.account_type
         FROM memberships m
         INNER JOIN users u ON m.user_id = u.user_id
@@ -215,7 +215,7 @@ public function show($id)
         ORDER BY u.full_name ASC
     ", [$id]);
 
-    $officers = DB::select("
+        $officers = DB::select("
         SELECT 
             m.*, 
             u.full_name, 
@@ -242,7 +242,7 @@ public function show($id)
             u.full_name ASC
     ", [$id]);
 
-    $pendingMemberships = DB::select("
+        $pendingMemberships = DB::select("
         SELECT m.*, u.full_name, u.email, u.school_id, u.account_type
         FROM memberships m
         INNER JOIN users u ON m.user_id = u.user_id
@@ -250,7 +250,7 @@ public function show($id)
         ORDER BY m.joined_at DESC
     ", [$id]);
 
-    $alumniMembers = DB::select("
+        $alumniMembers = DB::select("
         SELECT m.*, u.full_name, u.email, u.school_id, u.account_type
         FROM memberships m
         INNER JOIN users u ON m.user_id = u.user_id
@@ -258,7 +258,7 @@ public function show($id)
         ORDER BY u.full_name ASC
     ", [$id]);
 
-    $adviser = DB::selectOne("
+        $adviser = DB::selectOne("
         SELECT u.*, oa.assigned_at
         FROM org_advisers oa
         INNER JOIN users u ON oa.user_id = u.user_id
@@ -266,57 +266,57 @@ public function show($id)
         LIMIT 1
     ", [$id]);
 
-    $organization->activeMemberships = $activeMemberships;
-    $organization->officers = $officers;
-    $organization->pendingMemberships = $pendingMemberships;
-    $organization->alumniMembers = $alumniMembers;
-    $organization->adviser = $adviser;
+        $organization->activeMemberships = $activeMemberships;
+        $organization->officers = $officers;
+        $organization->pendingMemberships = $pendingMemberships;
+        $organization->alumniMembers = $alumniMembers;
+        $organization->adviser = $adviser;
 
-    $user = Auth::user();
-    $role = 'guest';
-    
-    if ($user) {
-        $isAdviser = DB::selectOne(
-            "SELECT adviser_id FROM org_advisers WHERE org_id = ? AND user_id = ? LIMIT 1",
-            [$id, $user->user_id]
-        );
+        $user = Auth::user();
+        $role = 'guest';
 
-        if ($isAdviser) {
-            $role = 'adviser';
-        } else {
-            $userMembership = DB::selectOne("
+        if ($user) {
+            $isAdviser = DB::selectOne(
+                "SELECT adviser_id FROM org_advisers WHERE org_id = ? AND user_id = ? LIMIT 1",
+                [$id, $user->user_id]
+            );
+
+            if ($isAdviser) {
+                $role = 'adviser';
+            } else {
+                $userMembership = DB::selectOne("
                 SELECT * FROM memberships 
                 WHERE org_id = ? AND user_id = ?
                 LIMIT 1
             ", [$id, $user->user_id]);
-            
-            if ($userMembership && $userMembership->status === 'Active') {
-                $role = strtolower($userMembership->membership_role);
+
+                if ($userMembership && $userMembership->status === 'Active') {
+                    $role = strtolower($userMembership->membership_role);
+                }
             }
         }
-    }
-    
-    $isMember = false;
-    $userMembership = null;
-    $isOfficer = false;
-    
-    if ($user) {
-        $userMembership = DB::selectOne("
+
+        $isMember = false;
+        $userMembership = null;
+        $isOfficer = false;
+
+        if ($user) {
+            $userMembership = DB::selectOne("
             SELECT * FROM memberships 
             WHERE org_id = ? AND user_id = ?
             LIMIT 1
         ", [$id, $user->user_id]);
-        
-        if ($userMembership) {
-            $isMember = $userMembership->status === 'Active';
-            $isOfficer = $isMember && $userMembership->membership_role === 'Officer';
-        }
-    }
 
-    // Get pending events for this organization (for officers/advisers)
-    $pendingEvents = [];
-    if ($role === 'officer' || $role === 'adviser') {
-        $pendingEvents = DB::select("
+            if ($userMembership) {
+                $isMember = $userMembership->status === 'Active';
+                $isOfficer = $isMember && $userMembership->membership_role === 'Officer';
+            }
+        }
+
+        // Get pending events for this organization (for officers/advisers)
+        $pendingEvents = [];
+        if ($role === 'officer' || $role === 'adviser') {
+            $pendingEvents = DB::select("
             SELECT 
                 e.*,
                 u.full_name as submitted_by
@@ -326,16 +326,16 @@ public function show($id)
             AND e.status = 'Pending'
             ORDER BY e.created_at DESC
         ", [$id]);
-        
-        // Format dates
-        foreach ($pendingEvents as $event) {
-            $event->formatted_date = date('m/d/y', strtotime($event->event_date));
-            $event->formatted_full_date = date('F j, Y', strtotime($event->event_date));
+
+            // Format dates
+            foreach ($pendingEvents as $event) {
+                $event->formatted_date = date('m/d/y', strtotime($event->event_date));
+                $event->formatted_full_date = date('F j, Y', strtotime($event->event_date));
+            }
         }
-    }
-    
-    // Get approved/upcoming events for the Events tab
-    $organizationEvents = DB::select("
+
+        // Get approved/upcoming events for the Events tab
+        $organizationEvents = DB::select("
         SELECT 
             e.*,
             u.full_name as author_name,
@@ -346,26 +346,26 @@ public function show($id)
         AND e.status IN ('Upcoming', 'Ongoing', 'Done')
         ORDER BY e.event_date DESC
     ", [$id]);
-    
-    foreach ($organizationEvents as $event) {
-        $event->formatted_date = date('m/d/y', strtotime($event->event_date));
-        $event->is_upcoming = in_array($event->status, ['Upcoming']);
-        $event->is_ended = $event->status === 'Done';
+
+        foreach ($organizationEvents as $event) {
+            $event->formatted_date = date('m/d/y', strtotime($event->event_date));
+            $event->is_upcoming = in_array($event->status, ['Upcoming']);
+            $event->is_ended = $event->status === 'Done';
+        }
+
+        $sidebarData = $this->getSidebarData();
+
+        return view('Pages.orgdetail', compact(
+            'organization',
+            'role',
+            'isMember',
+            'userMembership',
+            'isOfficer',
+            'sidebarData',
+            'pendingEvents',
+            'organizationEvents'
+        ));
     }
-
-    $sidebarData = $this->getSidebarData();
-
-    return view('Pages.orgdetail', compact(
-        'organization', 
-        'role', 
-        'isMember', 
-        'userMembership', 
-        'isOfficer', 
-        'sidebarData',
-        'pendingEvents',
-        'organizationEvents'
-    ));
-}
 
     public function joinOrganization(Request $request, $id)
     {
@@ -403,11 +403,11 @@ public function show($id)
                         academic_year = ?
                     WHERE membership_id = ?
                 ", [$this->getCurrentAcademicYear(), $existingMembership->membership_id]);
-                
-                $message = $existingMembership->status === 'Alumni' 
+
+                $message = $existingMembership->status === 'Alumni'
                     ? 'Welcome back! Your membership request has been submitted.'
                     : 'Membership request resubmitted successfully!';
-                    
+
                 return back()->with('success', $message);
             }
         }
@@ -475,7 +475,7 @@ public function show($id)
 
         try {
             $membershipRole = ucfirst($validated['position']);
-            
+
             if ($existingMembership) {
                 DB::update(
                     "UPDATE memberships 
@@ -493,7 +493,7 @@ public function show($id)
                      VALUES (?, ?, ?, ?, 'Pending', CURRENT_DATE)",
                     [$user->user_id, $id, $this->getCurrentAcademicYear(), $membershipRole]
                 );
-                
+
                 $membershipId = DB::selectOne(
                     "SELECT membership_id FROM memberships WHERE user_id = ? AND org_id = ? ORDER BY joined_at DESC LIMIT 1",
                     [$user->user_id, $id]
@@ -568,7 +568,7 @@ public function show($id)
     {
         $currentMonth = date('n');
         $currentYear = date('Y');
-        
+
         if ($currentMonth >= 8) {
             return $currentYear . '-' . ($currentYear + 1);
         } else {
@@ -710,7 +710,7 @@ public function show($id)
                      VALUES (?, ?, ?, ?, 'Active', CURRENT_DATE)",
                     [$targetUser->user_id, $orgId, $this->getCurrentAcademicYear(), $validated['member_type']]
                 );
-                
+
                 $membershipId = DB::selectOne(
                     "SELECT membership_id FROM memberships WHERE user_id = ? AND org_id = ? ORDER BY joined_at DESC LIMIT 1",
                     [$targetUser->user_id, $orgId]
@@ -743,65 +743,64 @@ public function show($id)
         }
     }
 
-public function createEvent(Request $request, $orgId)
-{
-    if (!Auth::check()) {
-        return back()->with('error', 'Please login first');
-    }
-
-    try {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'event_date' => 'required|date',
-            'venue' => 'required|string|max:255',
-            'event_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
-
-        $user = Auth::user(); // ✅ FIXED
-
-        $eventId = 'EVT-' . str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
-        $status = 'Pending';
-
-        $imagePath = null;
-
-        if ($request->hasFile('event_image')) {
-            $image = $request->file('event_image');
-            $filename = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('uploads/events'), $filename);
-            $imagePath = 'uploads/events/' . $filename;
+    public function createEvent(Request $request, $orgId)
+    {
+        if (!Auth::check()) {
+            return back()->with('error', 'Please login first');
         }
 
-        DB::insert(
-            "INSERT INTO events 
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'event_date' => 'required|date',
+                'venue' => 'required|string|max:255',
+                'event_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            ]);
+
+            $user = Auth::user(); // ✅ FIXED
+
+            $eventId = 'EVT-' . str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+            $status = 'Pending';
+
+            $imagePath = null;
+
+            if ($request->hasFile('event_image')) {
+                $image = $request->file('event_image');
+                $filename = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('uploads/events'), $filename);
+                $imagePath = 'uploads/events/' . $filename;
+            }
+
+            DB::insert(
+                "INSERT INTO events 
             (event_id, org_id, title, description, event_date, event_duration, venue, status, created_by, created_at) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
-            [
-                $eventId,
-                $orgId,
-                $validated['title'],
-                $validated['description'],
-                $validated['event_date'],
-                4,
-                $validated['venue'],
-                $status,
-                $user->user_id   // ✅ now not null
-            ]
-        );
-
-        if ($imagePath) {
-            DB::update(
-                "UPDATE events SET image_path = ? WHERE event_id = ?",
-                [$imagePath, $eventId]
+                [
+                    $eventId,
+                    $orgId,
+                    $validated['title'],
+                    $validated['description'],
+                    $validated['event_date'],
+                    4,
+                    $validated['venue'],
+                    $status,
+                    $user->user_id   // ✅ now not null
+                ]
             );
+
+            if ($imagePath) {
+                DB::update(
+                    "UPDATE events SET image_path = ? WHERE event_id = ?",
+                    [$imagePath, $eventId]
+                );
+            }
+
+            return back()->with('success', 'Event submitted successfully and is pending approval.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to create event: ' . $e->getMessage());
         }
-
-        return back()->with('success', 'Event submitted successfully and is pending approval.');
-
-    } catch (\Exception $e) {
-        return back()->with('error', 'Failed to create event: ' . $e->getMessage());
     }
-}
 
 
     public function approveEvent($orgId, $eventId)

@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\DB;
 class EventAttendance extends Model
 {
     protected $table = 'event_attendance';
-    
+
     protected $primaryKey = 'attendance_id';
-    
+
     public $incrementing = false;
-    
+
     protected $keyType = 'string';
-    
+
     public $timestamps = false;
-    
+
     protected $fillable = [
         'event_id',
         'user_id',
@@ -31,27 +31,27 @@ class EventAttendance extends Model
             "SELECT * FROM event_attendance WHERE event_id = ? AND user_id = ?",
             [$eventId, $userId]
         );
-        
+
         if ($existing) {
             // Update existing RSVP
             DB::update(
                 "UPDATE event_attendance SET status = ?, remarks = ? WHERE attendance_id = ?",
                 [$status, $remarks, $existing->attendance_id]
             );
-            
+
             return DB::selectOne(
                 "SELECT * FROM event_attendance WHERE attendance_id = ?",
                 [$existing->attendance_id]
             );
         }
-        
+
         // Create new RSVP
         DB::insert(
             "INSERT INTO event_attendance (event_id, user_id, status, remarks) 
              VALUES (?, ?, ?, ?)",
             [$eventId, $userId, $status, $remarks]
         );
-        
+
         return DB::selectOne(
             "SELECT * FROM event_attendance WHERE event_id = ? AND user_id = ? LIMIT 1",
             [$eventId, $userId]
@@ -64,7 +64,7 @@ class EventAttendance extends Model
             "SELECT * FROM event_attendance WHERE event_id = ? AND user_id = ?",
             [$eventId, $userId]
         );
-        
+
         if ($existing) {
             DB::update(
                 "UPDATE event_attendance 
@@ -79,7 +79,7 @@ class EventAttendance extends Model
                 [$eventId, $userId, $status, $remarks]
             );
         }
-        
+
         return DB::selectOne(
             "SELECT * FROM event_attendance WHERE event_id = ? AND user_id = ? LIMIT 1",
             [$eventId, $userId]
@@ -130,7 +130,7 @@ class EventAttendance extends Model
             [$userId]
         );
     }
-    
+
     public static function getUserEventHistory($userId)
     {
         return DB::select(

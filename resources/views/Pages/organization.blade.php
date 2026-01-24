@@ -3,7 +3,7 @@
 @section('content')
 
 <style>
-   .container-custom {
+    .container-custom {
         max-width: 1400px;
         margin: 0 auto;
         padding: 30px 20px;
@@ -206,24 +206,24 @@
     <h1 class="page-title">Organizations</h1>
 
     @if(session('success'))
-        <div class="alert alert-success">
-            <i class="bi bi-check-circle-fill"></i>
-            {{ session('success') }}
-        </div>
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle-fill"></i>
+        {{ session('success') }}
+    </div>
     @endif
 
     @if(session('error'))
-        <div class="alert alert-error">
-            <i class="bi bi-exclamation-circle-fill"></i>
-            {{ session('error') }}
-        </div>
+    <div class="alert alert-error">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        {{ session('error') }}
+    </div>
     @endif
 
     @if(session('info'))
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle-fill"></i>
-            {{ session('info') }}
-        </div>
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle-fill"></i>
+        {{ session('info') }}
+    </div>
     @endif
 
     @forelse($organizations as $org)

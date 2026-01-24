@@ -89,21 +89,21 @@
             <button class="tab-btn" onclick="showTab('events')">Events</button>
         </div>
         <div class="tabs-right">
-    @if($role === 'officer' || $role === 'adviser')
-    <button class="tab-btn" onclick="openModal('pendingMembers')">
-        <span class="pending-badge" title="Pending member requests">
-            <i class="bi bi-person-plus-fill"></i>
-            <span class="badge-count">{{ count($organization->pendingMemberships) }}</span>
-        </span>
-    </button>
-    <button class="tab-btn" onclick="openModal('pendingEvents')">
-        <span class="pending-badge" title="Pending event approvals">
-            <i class="bi bi-clock-history"></i>
-            <span class="badge-count">{{ isset($pendingEvents) ? count($pendingEvents) : 0 }}</span>
-        </span>
-    </button>
-    @endif
-</div>
+            @if($role === 'officer' || $role === 'adviser')
+            <button class="tab-btn" onclick="openModal('pendingMembers')">
+                <span class="pending-badge" title="Pending member requests">
+                    <i class="bi bi-person-plus-fill"></i>
+                    <span class="badge-count">{{ count($organization->pendingMemberships) }}</span>
+                </span>
+            </button>
+            <button class="tab-btn" onclick="openModal('pendingEvents')">
+                <span class="pending-badge" title="Pending event approvals">
+                    <i class="bi bi-clock-history"></i>
+                    <span class="badge-count">{{ isset($pendingEvents) ? count($pendingEvents) : 0 }}</span>
+                </span>
+            </button>
+            @endif
+        </div>
     </div>
 
     <!-- About Tab -->
@@ -182,20 +182,20 @@
 
     <!-- Events Tab -->
     <!-- Events Tab - Replace your existing Events tab -->
-<div id="events" class="tab-content">
-    @if($role === 'officer' || $role === 'adviser')
-    <div class="create-event-trigger" onclick="openModal('eventPostingModal')">
-        <div class="trigger-avatar">
-            <div class="org-logo-small me-2">{{ $organization->short_name }}</div>
+    <div id="events" class="tab-content">
+        @if($role === 'officer' || $role === 'adviser')
+        <div class="create-event-trigger" onclick="openModal('eventPostingModal')">
+            <div class="trigger-avatar">
+                <div class="org-logo-small me-2">{{ $organization->short_name }}</div>
+            </div>
+            <div class="trigger-input">Create Event</div>
         </div>
-        <div class="trigger-input">Create Event</div>
-    </div>
-    @endif
+        @endif
 
-    <div class="events-list">
-        <div class="section-title">Events</div>
-        
-        @if(count($organizationEvents) > 0)
+        <div class="events-list">
+            <div class="section-title">Events</div>
+
+            @if(count($organizationEvents) > 0)
             @foreach($organizationEvents as $event)
             <div class="event-item">
                 <span class="event-status {{ $event->is_ended ? 'status-ended' : 'status-upcoming' }}">
@@ -223,7 +223,7 @@
                         {{ $event->likes_count ?? 0 }} Likes
                     </div>
                 </div>
-                
+
                 @if(!$event->is_ended)
                 <div class="event-action-group">
                     @if($role === 'officer' || $role === 'adviser')
@@ -236,12 +236,12 @@
                 @endif
             </div>
             @endforeach
-        @else
+            @else
             <p style="text-align: center; color: #666; padding: 40px;">No events posted yet.</p>
-        @endif
+            @endif
+        </div>
     </div>
-</div>
-<!-- Attendees Modal -->
+    <!-- Attendees Modal -->
     <div class="modal-overlay" id="attendeesModal">
         <div class="modal-content" style="padding: 0; width: 400px; border: 3px solid #500000; background: white; border-radius: 8px;">
             <div style="background: #500000; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;">
@@ -251,51 +251,51 @@
             <div class="attendees-list-container">
                 @for ($i = 1; $i <= 10; $i++)
                     <div class="attendee-row">{{ $i }}. Member {{ $i }}</div>
-                @endfor
-            </div>
+            @endfor
         </div>
     </div>
+</div>
 
-    <!-- Member Admission Modal (For Officers/Advisers) -->
-    <div class="modal-overlay" id="memberAdmissionModal">
-        <div class="modal-content" style="padding: 0; max-width: 700px; border-radius: 8px;">
-            <div class="admission-header">
-                <h4 style="margin: 0;">{{ $organization->org_name }}</h4>
-                <button class="modal-close" style="color: white; top: 10px;" onclick="closeModal('memberAdmissionModal')">X</button>
-            </div>
-            <div class="admission-body text-center">
-                <h2 class="admission-title">MEMBER ADMISSION</h2>
+<!-- Member Admission Modal (For Officers/Advisers) -->
+<div class="modal-overlay" id="memberAdmissionModal">
+    <div class="modal-content" style="padding: 0; max-width: 700px; border-radius: 8px;">
+        <div class="admission-header">
+            <h4 style="margin: 0;">{{ $organization->org_name }}</h4>
+            <button class="modal-close" style="color: white; top: 10px;" onclick="closeModal('memberAdmissionModal')">X</button>
+        </div>
+        <div class="admission-body text-center">
+            <h2 class="admission-title">MEMBER ADMISSION</h2>
 
-                <form action="{{ route('organization.addMember', $organization->org_id) }}" method="POST">
-                    @csrf
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <input type="text" name="school_id" class="form-control" placeholder="School Number" required>
-                        </div>
-                        <div class="col-md-6">
-                            <select name="member_type" class="form-select" required>
-                                <option value="">MEMBER/OFFICER</option>
-                                <option value="Member">Member</option>
-                                <option value="Officer">Officer</option>
-                            </select>
-                        </div>
+            <form action="{{ route('organization.addMember', $organization->org_id) }}" method="POST">
+                @csrf
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input type="text" name="school_id" class="form-control" placeholder="School Number" required>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4"><input type="text" name="first_name" class="form-control" placeholder="First Name" required></div>
-                        <div class="col-md-4"><input type="text" name="middle_name" class="form-control" placeholder="Middle Name"></div>
-                        <div class="col-md-4"><input type="text" name="last_name" class="form-control" placeholder="Last Name" required></div>
+                    <div class="col-md-6">
+                        <select name="member_type" class="form-select" required>
+                            <option value="">MEMBER/OFFICER</option>
+                            <option value="Member">Member</option>
+                            <option value="Officer">Officer</option>
+                        </select>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6"><input type="email" name="email" class="form-control" placeholder="Email@gmail.com" required></div>
-                        <div class="col-md-6"><input type="text" name="position" class="form-control" placeholder="Role (IF OFFICER)"></div>
-                    </div>
-                    <button type="submit" class="btn-primary-custom" style="width: 100%; background: #800000; height: 50px;">ADD MEMBER</button>
-                </form>
-            </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><input type="text" name="first_name" class="form-control" placeholder="First Name" required></div>
+                    <div class="col-md-4"><input type="text" name="middle_name" class="form-control" placeholder="Middle Name"></div>
+                    <div class="col-md-4"><input type="text" name="last_name" class="form-control" placeholder="Last Name" required></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6"><input type="email" name="email" class="form-control" placeholder="Email@gmail.com" required></div>
+                    <div class="col-md-6"><input type="text" name="position" class="form-control" placeholder="Role (IF OFFICER)"></div>
+                </div>
+                <button type="submit" class="btn-primary-custom" style="width: 100%; background: #800000; height: 50px;">ADD MEMBER</button>
+            </form>
         </div>
     </div>
+</div>
 
-    <!-- Event Posting Modal -->
+<!-- Event Posting Modal -->
 <div class="modal-overlay" id="eventPostingModal">
     <div class="modal-content-event">
         <button class="modal-close" onclick="closeModal('eventPostingModal')">
@@ -304,21 +304,21 @@
 
         <h2 class="event-posting-title">EVENT POSTING</h2>
 
-        <form action="{{ route('organization.createEvent', $organization->org_id) }}" 
-              method="POST" 
-              enctype="multipart/form-data" 
-              id="eventPostingForm">
+        <form action="{{ route('organization.createEvent', $organization->org_id) }}"
+            method="POST"
+            enctype="multipart/form-data"
+            id="eventPostingForm">
             @csrf
             <div class="posting-grid">
                 <div class="full-width">
-                    <input type="text" 
-                           name="title" 
-                           class="posting-input" 
-                           placeholder="Title" 
-                           required 
-                           value="{{ old('title') }}">
+                    <input type="text"
+                        name="title"
+                        class="posting-input"
+                        placeholder="Title"
+                        required
+                        value="{{ old('title') }}">
                     @error('title')
-                        <small style="color: red;">{{ $message }}</small>
+                    <small style="color: red;">{{ $message }}</small>
                     @enderror
                 </div>
 
@@ -331,45 +331,45 @@
 
                         <img id="previewImage" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:8px;">
 
-                        <input type="file" 
-                               name="event_image" 
-                               id="eventImage" 
-                               accept="image/*"
-                               style="display:none;">
+                        <input type="file"
+                            name="event_image"
+                            id="eventImage"
+                            accept="image/*"
+                            style="display:none;">
                     </div>
 
                     <div class="details-section">
                         <label class="mb-1">Details:</label>
-                        <input type="date" 
-                               name="event_date" 
-                               class="posting-input-small mb-2" 
-                               placeholder="Date" 
-                               required
-                               min="{{ date('Y-m-d', strtotime('+1 day')) }}"
-                               value="{{ old('event_date') }}">
+                        <input type="date"
+                            name="event_date"
+                            class="posting-input-small mb-2"
+                            placeholder="Date"
+                            required
+                            min="{{ date('Y-m-d', strtotime('+1 day')) }}"
+                            value="{{ old('event_date') }}">
                         @error('event_date')
-                            <small style="color: red;">{{ $message }}</small>
+                        <small style="color: red;">{{ $message }}</small>
                         @enderror
-                        
-                        <input type="text" 
-                               name="venue" 
-                               class="posting-input-small" 
-                               placeholder="Event's Place" 
-                               required
-                               value="{{ old('venue') }}">
+
+                        <input type="text"
+                            name="venue"
+                            class="posting-input-small"
+                            placeholder="Event's Place"
+                            required
+                            value="{{ old('venue') }}">
                         @error('venue')
-                            <small style="color: red;">{{ $message }}</small>
+                        <small style="color: red;">{{ $message }}</small>
                         @enderror
                     </div>
                 </div>
 
                 <div class="posting-right">
-                    <textarea name="description" 
-                              class="posting-textarea" 
-                              placeholder="Description" 
-                              required>{{ old('description') }}</textarea>
+                    <textarea name="description"
+                        class="posting-textarea"
+                        placeholder="Description"
+                        required>{{ old('description') }}</textarea>
                     @error('description')
-                        <small style="color: red;">{{ $message }}</small>
+                    <small style="color: red;">{{ $message }}</small>
                     @enderror
                 </div>
             </div>
@@ -382,87 +382,87 @@
 </div>
 
 <script>
-document.getElementById('eventImage')?.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const img = document.getElementById('previewImage');
-        img.src = URL.createObjectURL(file);
-        img.style.display = 'block';
-    }
-});
+    document.getElementById('eventImage')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const img = document.getElementById('previewImage');
+            img.src = URL.createObjectURL(file);
+            img.style.display = 'block';
+        }
+    });
 </script>
 
 
 
-    <!-- Pending Members Modal -->
-    <div class="modal-overlay" id="pendingMembers">
-        <div class="modal-content-pending">
-            <button class="modal-close" onclick="closeModal('pendingMembers')">
-                <i class="bi bi-x-lg"></i>
-            </button>
-            <h2 class="modal-title-pending">Pending Members</h2>
+<!-- Pending Members Modal -->
+<div class="modal-overlay" id="pendingMembers">
+    <div class="modal-content-pending">
+        <button class="modal-close" onclick="closeModal('pendingMembers')">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <h2 class="modal-title-pending">Pending Members</h2>
 
-            @if(count($organization->pendingMemberships) > 0)
-            <div class="accordion" id="pendingMembersAccordion">
-                @foreach($organization->pendingMemberships as $index => $pending)
-                <div class="accordion-item member-accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#member{{ $index }}">
-                            <span class="member-header-info">
-                                <strong>Name:</strong> {{ $pending->full_name }}
-                                <span class="divider">|</span>
-                                <strong>School ID:</strong> {{ $pending->school_id }}
-                            </span>
-                        </button>
-                    </h2>
-                    <div id="member{{ $index }}" class="accordion-collapse collapse"
-                        data-bs-parent="#pendingMembersAccordion">
-                        <div class="accordion-body">
-                            <div class="member-details-container">
-                                <div class="member-info-box">
-                                    <div class="info-row">
-                                        <strong>Full Name:</strong>
-                                        <span class="text-maroon">{{ $pending->full_name }}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <strong>School ID:</strong>
-                                        <span class="text-maroon">{{ $pending->school_id }}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <strong>Email:</strong>
-                                        <span>{{ $pending->email }}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <strong>Role:</strong> {{ $pending->membership_role }}
-                                    </div>
-                                    <div class="info-row">
-                                        <strong>Applied:</strong> {{ date('M d, Y', strtotime($pending->joined_at)) }}
-                                    </div>
+        @if(count($organization->pendingMemberships) > 0)
+        <div class="accordion" id="pendingMembersAccordion">
+            @foreach($organization->pendingMemberships as $index => $pending)
+            <div class="accordion-item member-accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#member{{ $index }}">
+                        <span class="member-header-info">
+                            <strong>Name:</strong> {{ $pending->full_name }}
+                            <span class="divider">|</span>
+                            <strong>School ID:</strong> {{ $pending->school_id }}
+                        </span>
+                    </button>
+                </h2>
+                <div id="member{{ $index }}" class="accordion-collapse collapse"
+                    data-bs-parent="#pendingMembersAccordion">
+                    <div class="accordion-body">
+                        <div class="member-details-container">
+                            <div class="member-info-box">
+                                <div class="info-row">
+                                    <strong>Full Name:</strong>
+                                    <span class="text-maroon">{{ $pending->full_name }}</span>
                                 </div>
-                                <div class="member-action-buttons">
-                                    <form action="{{ route('organization.approveMember', [$organization->org_id, $pending->membership_id]) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <button type="submit" class="btn-accept">ACCEPT</button>
-                                    </form>
-                                    <form action="{{ route('organization.rejectMember', [$organization->org_id, $pending->membership_id]) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <button type="submit" class="btn-decline">DECLINE</button>
-                                    </form>
+                                <div class="info-row">
+                                    <strong>School ID:</strong>
+                                    <span class="text-maroon">{{ $pending->school_id }}</span>
                                 </div>
+                                <div class="info-row">
+                                    <strong>Email:</strong>
+                                    <span>{{ $pending->email }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <strong>Role:</strong> {{ $pending->membership_role }}
+                                </div>
+                                <div class="info-row">
+                                    <strong>Applied:</strong> {{ date('M d, Y', strtotime($pending->joined_at)) }}
+                                </div>
+                            </div>
+                            <div class="member-action-buttons">
+                                <form action="{{ route('organization.approveMember', [$organization->org_id, $pending->membership_id]) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    <button type="submit" class="btn-accept">ACCEPT</button>
+                                </form>
+                                <form action="{{ route('organization.rejectMember', [$organization->org_id, $pending->membership_id]) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    <button type="submit" class="btn-decline">DECLINE</button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                @endforeach
             </div>
-            @else
-            <p style="text-align: center; color: #666; padding: 40px;">No pending membership requests.</p>
-            @endif
+            @endforeach
         </div>
+        @else
+        <p style="text-align: center; color: #666; padding: 40px;">No pending membership requests.</p>
+        @endif
     </div>
+</div>
 
-        <!-- Pending Events Modal -->
+<!-- Pending Events Modal -->
 <div class="modal-overlay" id="pendingEvents">
     <div class="modal-content-pending">
         <button class="modal-close" onclick="closeModal('pendingEvents')">
@@ -494,12 +494,12 @@ document.getElementById('eventImage')?.addEventListener('change', function(e) {
                                 <div class="event-visual-column">
                                     <div class="event-image-preview">
                                         @if(property_exists($event, 'event_image') && !empty($event->event_image))
-                                            <img src="{{ asset('storage/' . $event->event_image) }}" alt="Event Image">
+                                        <img src="{{ asset('storage/' . $event->event_image) }}" alt="Event Image">
                                         @else
-                                            <img src="{{ asset('image/computer.jpg') }}" alt="Default Image">
+                                        <img src="{{ asset('image/computer.jpg') }}" alt="Default Image">
                                         @endif
                                     </div>
-                                    
+
                                     <div class="event-details-inputs">
                                         <label class="input-label">Details:</label>
                                         <input type="text" class="detail-input" value="{{ $event->formatted_date ?? 'N/A' }}" readonly>
@@ -538,126 +538,126 @@ document.getElementById('eventImage')?.addEventListener('change', function(e) {
     </div>
 </div>
 
-    <!-- Membership Modal (For Regular Users) -->
-    <div class="modal-overlay" id="membershipModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('membershipModal')">
-                <i class="bi bi-x-lg"></i>
+<!-- Membership Modal (For Regular Users) -->
+<div class="modal-overlay" id="membershipModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('membershipModal')">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <h2 class="modal-title">MEMBERSHIP FORM</h2>
+        <p style="color: #666; margin-bottom: 25px;">{{ $organization->org_name }}</p>
+
+        <form action="{{ route('organization.submitMembership', $organization->org_id) }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label class="form-label">School Number</label>
+                <input type="text" name="school_number" class="form-control" placeholder="SN-XXXXXXXX"
+                    value="{{ Auth::check() ? Auth::user()->school_id : '' }}" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" name="first_name" class="form-control" placeholder="First Name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Middle Name</label>
+                    <input type="text" name="middle_name" class="form-control" placeholder="Middle Name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="last_name" class="form-control" placeholder="Last Name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="Email@gmail.com"
+                    value="{{ Auth::check() ? Auth::user()->email : '' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Position</label>
+                <select name="position" class="form-select" required>
+                    <option value="">MEMBER/OFFICER</option>
+                    <option value="member">Member</option>
+                    <option value="officer">Officer</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Role (IF OFFICER)</label>
+                <input type="text" name="role" class="form-control" placeholder="e.g., Secretary, Treasurer">
+            </div>
+
+            <div class="certification-text">
+                I hereby certify that the information provided in this form is true, complete,
+                and accurate to the best of my knowledge. I understand that any misrepresentation
+                or material omission made on this form may result in the rejection of my application.
+            </div>
+
+            <button type="submit" class="btn-primary-custom">
+                SUBMIT APPLICATION
             </button>
-            <h2 class="modal-title">MEMBERSHIP FORM</h2>
-            <p style="color: #666; margin-bottom: 25px;">{{ $organization->org_name }}</p>
-
-            <form action="{{ route('organization.submitMembership', $organization->org_id) }}" method="POST">
-                @csrf
-                <div class="form-group">
-                    <label class="form-label">School Number</label>
-                    <input type="text" name="school_number" class="form-control" placeholder="SN-XXXXXXXX" 
-                           value="{{ Auth::check() ? Auth::user()->school_id : '' }}" required>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
-                    <div class="form-group">
-                        <label class="form-label">First Name</label>
-                        <input type="text" name="first_name" class="form-control" placeholder="First Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Middle Name</label>
-                        <input type="text" name="middle_name" class="form-control" placeholder="Middle Name">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" name="last_name" class="form-control" placeholder="Last Name" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-control" placeholder="Email@gmail.com" 
-                           value="{{ Auth::check() ? Auth::user()->email : '' }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Position</label>
-                    <select name="position" class="form-select" required>
-                        <option value="">MEMBER/OFFICER</option>
-                        <option value="member">Member</option>
-                        <option value="officer">Officer</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Role (IF OFFICER)</label>
-                    <input type="text" name="role" class="form-control" placeholder="e.g., Secretary, Treasurer">
-                </div>
-
-                <div class="certification-text">
-                    I hereby certify that the information provided in this form is true, complete,
-                    and accurate to the best of my knowledge. I understand that any misrepresentation
-                    or material omission made on this form may result in the rejection of my application.
-                </div>
-
-                <button type="submit" class="btn-primary-custom">
-                    SUBMIT APPLICATION
-                </button>
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    <!-- RSVP Modal -->
-    <div class="modal-overlay" id="rsvpModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('rsvpModal')">
-                <i class="bi bi-x-lg"></i>
+<!-- RSVP Modal -->
+<div class="modal-overlay" id="rsvpModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('rsvpModal')">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <h2 class="modal-title">EVENT RSVP FORM</h2>
+        <p style="color: #666; margin-bottom: 25px;">{{ $organization->org_name }}</p>
+
+        <form id="rsvpForm">
+            @csrf
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h4 style="color: var(--pup-maroon); margin-bottom: 10px;">Event: 2026: Web Development Workshop</h4>
+                <p style="margin: 0; color: #666;"><strong>Details:</strong></p>
+                <p style="margin: 5px 0; color: #666;">Date: 01/18/26</p>
+                <p style="margin: 5px 0; color: #666;">Event's Place: PUP South</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">School Number</label>
+                <input type="text" class="form-control" placeholder="SN-XXXXXXXX"
+                    value="{{ Auth::check() ? Auth::user()->school_id : '' }}" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" placeholder="First Name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Middle Name</label>
+                    <input type="text" class="form-control" placeholder="Middle Name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-control" placeholder="Last Name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" placeholder="Email@gmail.com"
+                    value="{{ Auth::check() ? Auth::user()->email : '' }}" required>
+            </div>
+
+            <div class="certification-text">
+                I acknowledge that this RSVP is a confirmation of my attendance.
+            </div>
+
+            <button type="submit" class="btn-primary-custom" style="width: 100%;">
+                SUBMIT RSVP
             </button>
-            <h2 class="modal-title">EVENT RSVP FORM</h2>
-            <p style="color: #666; margin-bottom: 25px;">{{ $organization->org_name }}</p>
-
-            <form id="rsvpForm">
-                @csrf
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h4 style="color: var(--pup-maroon); margin-bottom: 10px;">Event: 2026: Web Development Workshop</h4>
-                    <p style="margin: 0; color: #666;"><strong>Details:</strong></p>
-                    <p style="margin: 5px 0; color: #666;">Date: 01/18/26</p>
-                    <p style="margin: 5px 0; color: #666;">Event's Place: PUP South</p>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">School Number</label>
-                    <input type="text" class="form-control" placeholder="SN-XXXXXXXX" 
-                           value="{{ Auth::check() ? Auth::user()->school_id : '' }}" required>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
-                    <div class="form-group">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-control" placeholder="First Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Middle Name</label>
-                        <input type="text" class="form-control" placeholder="Middle Name">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-control" placeholder="Last Name" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-control" placeholder="Email@gmail.com" 
-                           value="{{ Auth::check() ? Auth::user()->email : '' }}" required>
-                </div>
-
-                <div class="certification-text">
-                    I acknowledge that this RSVP is a confirmation of my attendance.
-                </div>
-
-                <button type="submit" class="btn-primary-custom" style="width: 100%;">
-                    SUBMIT RSVP
-                </button>
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -77,10 +77,25 @@
         font-weight: 500;
     }
 
-    .badge.status-upcoming { background: #fff3cd; color: #856404; }
-    .badge.status-pending  { background: #cfe2ff; color: #084298; }
-    .badge.status-done     { background: #d1e7dd; color: #0f5132; }
-    .badge.status-cancelled{ background: #fee2e2; color: #991b1b; }
+    .badge.status-upcoming {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .badge.status-pending {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .badge.status-done {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .badge.status-cancelled {
+        background: #fee2e2;
+        color: #991b1b;
+    }
 
     .badge[class*="status-"] {
         border-radius: 20px;
@@ -129,7 +144,9 @@
         font-weight: 600;
     }
 
-    .form-group { margin-bottom: 20px; }
+    .form-group {
+        margin-bottom: 20px;
+    }
 
     .form-label {
         font-weight: 600;
@@ -194,17 +211,17 @@
 
     {{-- Alerts --}}
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
     @endif
 
     @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show">
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+    <div class="alert alert-danger alert-dismissible fade show">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
     @endif
 
     <h1 class="page-title">Events</h1>
@@ -212,144 +229,144 @@
     {{-- Upcoming Events --}}
     <div class="row g-4">
         @forelse($upcomingEvents as $event)
-            <div class="col-lg-4 col-md-6">
-                <div class="event-card">
+        <div class="col-lg-4 col-md-6">
+            <div class="event-card">
 
-                    <div class="event-banner">
-                        <div class="event-date-badge">
-                            {{ $event->formatted_date }} | {{ $event->venue ?? 'TBA' }}
-                        </div>
-                        <div class="event-icon">📅</div>
-                        <h3 class="event-title">{{ $event->title }}</h3>
-                        <div class="event-org">{{ $event->org_name }}</div>
+                <div class="event-banner">
+                    <div class="event-date-badge">
+                        {{ $event->formatted_date }} | {{ $event->venue ?? 'TBA' }}
+                    </div>
+                    <div class="event-icon">📅</div>
+                    <h3 class="event-title">{{ $event->title }}</h3>
+                    <div class="event-org">{{ $event->org_name }}</div>
+                </div>
+
+                <div class="p-4 d-flex flex-column flex-grow-1">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge status-{{ strtolower($event->status) }}">
+                            {{ strtoupper($event->status) }}
+                        </span>
+                        <span class="small text-muted">
+                            <i class="bi bi-people me-1"></i> {{ $event->rsvp_count }} RSVP'd
+                        </span>
                     </div>
 
-                    <div class="p-4 d-flex flex-column flex-grow-1">
+                    @if($event->description)
+                    <p class="text-muted small mb-3">
+                        {{ Str::limit($event->description, 120) }}
+                    </p>
+                    @endif
 
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="badge status-{{ strtolower($event->status) }}">
-                                {{ strtoupper($event->status) }}
-                            </span>
-                            <span class="small text-muted">
-                                <i class="bi bi-people me-1"></i> {{ $event->rsvp_count }} RSVP'd
-                            </span>
-                        </div>
+                    <div class="mt-auto">
 
-                        @if($event->description)
-                            <p class="text-muted small mb-3">
-                                {{ Str::limit($event->description, 120) }}
-                            </p>
-                        @endif
-
-                        <div class="mt-auto">
-
-                            <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
-                                <div class="detail-item d-flex align-items-center gap-2">
-                                    <i class="bi bi-calendar3"></i>
-                                    <span class="small text-secondary">{{ $event->formatted_full_date }}</span>
-                                </div>
-
-                                <div class="detail-item d-flex align-items-center gap-2">
-                                    <i class="bi bi-geo-alt-fill"></i>
-                                    <span class="small text-secondary">{{ $event->venue ?? 'Venue TBA' }}</span>
-                                </div>
-
-                                @if($event->event_duration)
-                                    <div class="detail-item d-flex align-items-center gap-2">
-                                        <i class="bi bi-clock"></i>
-                                        <span class="small text-secondary">{{ $event->event_duration }} hours</span>
-                                    </div>
-                                @endif
+                        <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
+                            <div class="detail-item d-flex align-items-center gap-2">
+                                <i class="bi bi-calendar3"></i>
+                                <span class="small text-secondary">{{ $event->formatted_full_date }}</span>
                             </div>
 
-                            @auth
-                                @if($event->user_rsvp_status === 'RSVP')
-                                    <button class="btn btn-success w-100" disabled>
-                                        <i class="bi bi-check-circle me-2"></i> Already RSVP'd
-                                    </button>
-                                @else
-                                    <button class="btn btn-primary w-100"
-                                        data-id="{{ $event->event_id }}"
-                                        data-title="{{ $event->title }}"
-                                        data-date="{{ $event->formatted_date }}"
-                                        data-venue="{{ $event->venue ?? 'TBA' }}"
-                                        data-org="{{ $event->org_name }}"
-                                        onclick="openRsvpModal(this)">
-                                        RSVP
-                                    </button>
-                                @endif
-                            @else
-                                <a href="{{ route('login') }}" class="btn btn-primary w-100">Login to RSVP</a>
-                            @endauth
+                            <div class="detail-item d-flex align-items-center gap-2">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span class="small text-secondary">{{ $event->venue ?? 'Venue TBA' }}</span>
+                            </div>
 
+                            @if($event->event_duration)
+                            <div class="detail-item d-flex align-items-center gap-2">
+                                <i class="bi bi-clock"></i>
+                                <span class="small text-secondary">{{ $event->event_duration }} hours</span>
+                            </div>
+                            @endif
                         </div>
+
+                        @auth
+                        @if($event->user_rsvp_status === 'RSVP')
+                        <button class="btn btn-success w-100" disabled>
+                            <i class="bi bi-check-circle me-2"></i> Already RSVP'd
+                        </button>
+                        @else
+                        <button class="btn btn-primary w-100"
+                            data-id="{{ $event->event_id }}"
+                            data-title="{{ $event->title }}"
+                            data-date="{{ $event->formatted_date }}"
+                            data-venue="{{ $event->venue ?? 'TBA' }}"
+                            data-org="{{ $event->org_name }}"
+                            onclick="openRsvpModal(this)">
+                            RSVP
+                        </button>
+                        @endif
+                        @else
+                        <a href="{{ route('login') }}" class="btn btn-primary w-100">Login to RSVP</a>
+                        @endauth
+
                     </div>
                 </div>
             </div>
+        </div>
         @empty
-            <div class="col-12">
-                <div class="empty-state">
-                    <i class="bi bi-calendar-x"></i>
-                    <p>No upcoming events at the moment.</p>
-                </div>
+        <div class="col-12">
+            <div class="empty-state">
+                <i class="bi bi-calendar-x"></i>
+                <p>No upcoming events at the moment.</p>
             </div>
+        </div>
         @endforelse
     </div>
 
     {{-- Past Events --}}
     @if(count($pastEvents) > 0)
-        <div class="section-divider">
-            <h2 class="section-subtitle">Past Events</h2>
-        </div>
+    <div class="section-divider">
+        <h2 class="section-subtitle">Past Events</h2>
+    </div>
 
-        <div class="row g-4">
-            @foreach($pastEvents as $event)
-                <div class="col-lg-4 col-md-6">
-                    <div class="event-card">
-                        <div class="event-banner">
-                            <div class="event-date-badge">
-                                {{ $event->formatted_date }} | {{ $event->venue ?? 'TBA' }}
+    <div class="row g-4">
+        @foreach($pastEvents as $event)
+        <div class="col-lg-4 col-md-6">
+            <div class="event-card">
+                <div class="event-banner">
+                    <div class="event-date-badge">
+                        {{ $event->formatted_date }} | {{ $event->venue ?? 'TBA' }}
+                    </div>
+                    <div class="event-icon">✅</div>
+                    <h3 class="event-title">{{ $event->title }}</h3>
+                    <div class="event-org">{{ $event->org_name }}</div>
+                </div>
+
+                <div class="p-4 d-flex flex-column flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge status-{{ strtolower($event->status) }}">
+                            {{ strtoupper($event->status) }}
+                        </span>
+                        <span class="small text-muted">
+                            <i class="bi bi-people me-1"></i> {{ $event->rsvp_count }} attended
+                        </span>
+                    </div>
+
+                    @if($event->description)
+                    <p class="text-muted small mb-3">
+                        {{ Str::limit($event->description, 120) }}
+                    </p>
+                    @endif
+
+                    <div class="mt-auto">
+                        <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
+                            <div class="detail-item d-flex align-items-center gap-2">
+                                <i class="bi bi-calendar3"></i>
+                                <span class="small text-secondary">{{ $event->formatted_full_date }}</span>
                             </div>
-                            <div class="event-icon">✅</div>
-                            <h3 class="event-title">{{ $event->title }}</h3>
-                            <div class="event-org">{{ $event->org_name }}</div>
-                        </div>
-
-                        <div class="p-4 d-flex flex-column flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="badge status-{{ strtolower($event->status) }}">
-                                    {{ strtoupper($event->status) }}
-                                </span>
-                                <span class="small text-muted">
-                                    <i class="bi bi-people me-1"></i> {{ $event->rsvp_count }} attended
-                                </span>
-                            </div>
-
-                            @if($event->description)
-                                <p class="text-muted small mb-3">
-                                    {{ Str::limit($event->description, 120) }}
-                                </p>
-                            @endif
-
-                            <div class="mt-auto">
-                                <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
-                                    <div class="detail-item d-flex align-items-center gap-2">
-                                        <i class="bi bi-calendar3"></i>
-                                        <span class="small text-secondary">{{ $event->formatted_full_date }}</span>
-                                    </div>
-                                    <div class="detail-item d-flex align-items-center gap-2">
-                                        <i class="bi bi-geo-alt-fill"></i>
-                                        <span class="small text-secondary">{{ $event->venue ?? 'Venue TBA' }}</span>
-                                    </div>
-                                </div>
-
-                                <button class="btn btn-secondary w-100" disabled>Event Ended</button>
+                            <div class="detail-item d-flex align-items-center gap-2">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span class="small text-secondary">{{ $event->venue ?? 'Venue TBA' }}</span>
                             </div>
                         </div>
+
+                        <button class="btn btn-secondary w-100" disabled>Event Ended</button>
                     </div>
                 </div>
-            @endforeach
+            </div>
         </div>
+        @endforeach
+    </div>
     @endif
 </div>
 
@@ -387,7 +404,7 @@
                         <div class="col">
                             <label class="form-label">First Name</label>
                             <input type="text" class="form-control"
-                                   value="{{ $firstName ?? explode(' ', Auth::user()->full_name ?? '')[0] ?? '' }}" readonly>
+                                value="{{ $firstName ?? explode(' ', Auth::user()->full_name ?? '')[0] ?? '' }}" readonly>
                         </div>
                         <div class="col">
                             <label class="form-label">Middle Name</label>
@@ -396,7 +413,7 @@
                         <div class="col">
                             <label class="form-label">Last Name</label>
                             <input type="text" class="form-control"
-                                   value="{{ $lastName ?? explode(' ', Auth::user()->full_name ?? '')[count(explode(' ', Auth::user()->full_name ?? '')) - 1] ?? '' }}" readonly>
+                                value="{{ $lastName ?? explode(' ', Auth::user()->full_name ?? '')[count(explode(' ', Auth::user()->full_name ?? '')) - 1] ?? '' }}" readonly>
                         </div>
                     </div>
 
@@ -429,16 +446,16 @@
     });
 
     function openRsvpModal(btn) {
-        document.getElementById('eventIdInput').value   = btn.dataset.id;
+        document.getElementById('eventIdInput').value = btn.dataset.id;
         document.getElementById('modalEventTitle').textContent = btn.dataset.title;
-        document.getElementById('modalEventDate').textContent  = btn.dataset.date;
+        document.getElementById('modalEventDate').textContent = btn.dataset.date;
         document.getElementById('modalEventPlace').textContent = btn.dataset.venue;
-        document.getElementById('modalOrgName').textContent    = btn.dataset.org;
+        document.getElementById('modalOrgName').textContent = btn.dataset.org;
 
         rsvpModal.show();
     }
 
-    document.getElementById('rsvpForm').addEventListener('submit', async function (e) {
+    document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const eventId = document.getElementById('eventIdInput').value;

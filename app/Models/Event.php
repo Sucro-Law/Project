@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\DB;
 class Event extends Model
 {
     protected $primaryKey = 'event_id';
-    
+
     public $incrementing = false;
-    
+
     protected $keyType = 'string';
-    
+
     protected $fillable = [
         'event_id',
         'org_id',
@@ -24,7 +24,7 @@ class Event extends Model
         'status',
         'created_by',
     ];
-    
+
     protected $casts = [
         'event_date' => 'datetime',
         'created_at' => 'datetime',
@@ -49,7 +49,7 @@ class Event extends Model
                 [$orgId]
             );
         }
-        
+
         return DB::select(
             "SELECT * FROM events 
              WHERE event_date >= NOW() AND status IN ('Pending', 'Upcoming')
@@ -67,7 +67,7 @@ class Event extends Model
                 [$orgId]
             );
         }
-        
+
         return DB::select(
             "SELECT * FROM events 
              WHERE status IN ('Done', 'Cancelled')
@@ -99,7 +99,7 @@ class Event extends Model
                 $data['created_by']
             ]
         );
-        
+
         return DB::selectOne(
             "SELECT * FROM events WHERE org_id = ? AND title = ? ORDER BY created_at DESC LIMIT 1",
             [$data['org_id'], $data['title']]
@@ -110,46 +110,46 @@ class Event extends Model
     {
         $fields = [];
         $values = [];
-        
+
         if (isset($data['title'])) {
             $fields[] = 'title = ?';
             $values[] = $data['title'];
         }
-        
+
         if (isset($data['description'])) {
             $fields[] = 'description = ?';
             $values[] = $data['description'];
         }
-        
+
         if (isset($data['event_date'])) {
             $fields[] = 'event_date = ?';
             $values[] = $data['event_date'];
         }
-        
+
         if (isset($data['event_duration'])) {
             $fields[] = 'event_duration = ?';
             $values[] = $data['event_duration'];
         }
-        
+
         if (isset($data['venue'])) {
             $fields[] = 'venue = ?';
             $values[] = $data['venue'];
         }
-        
+
         if (isset($data['status'])) {
             $fields[] = 'status = ?';
             $values[] = $data['status'];
         }
-        
+
         $values[] = $eventId;
-        
+
         if (!empty($fields)) {
             DB::update(
                 "UPDATE events SET " . implode(', ', $fields) . " WHERE event_id = ?",
                 $values
             );
         }
-        
+
         return self::findById($eventId);
     }
 
@@ -180,7 +180,7 @@ class Event extends Model
              WHERE event_id = ? AND status = 'RSVP'",
             [$eventId]
         );
-        
+
         return $result ? $result->count : 0;
     }
 
@@ -191,10 +191,10 @@ class Event extends Model
              WHERE event_id = ? AND status = 'Present'",
             [$eventId]
         );
-        
+
         return $result ? $result->count : 0;
     }
-    
+
     public static function getTotalAttendeesCount($eventId)
     {
         $result = DB::selectOne(
@@ -202,7 +202,7 @@ class Event extends Model
              WHERE event_id = ?",
             [$eventId]
         );
-        
+
         return $result ? $result->count : 0;
     }
 }

@@ -223,20 +223,20 @@
 
                 <div class="col-md-4">
                     <label class="form-label">First Name</label>
-                    <input type="text" class="form-control editable-field" id="firstName" name="first_name" 
-                           value="{{ $firstName }}" readonly>
+                    <input type="text" class="form-control editable-field" id="firstName" name="first_name"
+                        value="{{ $firstName }}" readonly>
                     <div class="invalid-feedback" id="firstNameError"></div>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Middle Name</label>
-                    <input type="text" class="form-control editable-field" id="middleName" name="middle_name" 
-                           value="{{ $middleName }}" readonly>
+                    <input type="text" class="form-control editable-field" id="middleName" name="middle_name"
+                        value="{{ $middleName }}" readonly>
                     <div class="invalid-feedback" id="middleNameError"></div>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control editable-field" id="lastName" name="last_name" 
-                           value="{{ $lastName }}" readonly>
+                    <input type="text" class="form-control editable-field" id="lastName" name="last_name"
+                        value="{{ $lastName }}" readonly>
                     <div class="invalid-feedback" id="lastNameError"></div>
                 </div>
 
@@ -246,9 +246,9 @@
                         <span class="input-group-text bg-white" style="border-radius: 12px 0 0 12px; border-right: none; color: #666;">
                             <i class="bi bi-envelope-fill"></i>
                         </span>
-                        <input type="email" class="form-control editable-field" id="email" name="email" 
-                               value="{{ Auth::user()->email ?? '' }}" readonly
-                               style="border-left: none; border-radius: 0 12px 12px 0;">
+                        <input type="email" class="form-control editable-field" id="email" name="email"
+                            value="{{ Auth::user()->email ?? '' }}" readonly
+                            style="border-left: none; border-radius: 0 12px 12px 0;">
                     </div>
                     <div class="invalid-feedback" id="emailError"></div>
                 </div>
@@ -258,8 +258,8 @@
                         <label class="form-label">New Password (Optional)</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                            <input type="password" class="form-control editable-field" id="password" name="password" 
-                                   placeholder="Leave blank to keep current password" oninput="checkStrength(this.value)">
+                            <input type="password" class="form-control editable-field" id="password" name="password"
+                                placeholder="Leave blank to keep current password" oninput="checkStrength(this.value)">
                             <span class="input-group-text password-toggle" onclick="togglePassword('password', 'toggleIcon1')">
                                 <i class="bi bi-eye" id="toggleIcon1"></i>
                             </span>
@@ -277,8 +277,8 @@
                         <label class="form-label">Confirm New Password</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                            <input type="password" class="form-control editable-field" id="confirmPassword" 
-                                   name="password_confirmation" placeholder="Re-enter your password">
+                            <input type="password" class="form-control editable-field" id="confirmPassword"
+                                name="password_confirmation" placeholder="Re-enter your password">
                             <span class="input-group-text password-toggle" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
                                 <i class="bi bi-eye" id="toggleIcon2"></i>
                             </span>
@@ -389,38 +389,38 @@
 
     updateBtn.addEventListener('click', () => {
         clearErrors();
-        
+
         // Basic validation
         let hasError = false;
-        
+
         if (!document.getElementById('firstName').value.trim()) {
             showError('firstName', 'First name is required');
             hasError = true;
         }
-        
+
         if (!document.getElementById('lastName').value.trim()) {
             showError('lastName', 'Last name is required');
             hasError = true;
         }
-        
+
         if (!document.getElementById('email').value.trim()) {
             showError('email', 'Email is required');
             hasError = true;
         }
-        
+
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
-        
+
         if (password && password.length < 6) {
             showError('password', 'Password must be at least 6 characters');
             hasError = true;
         }
-        
+
         if (password !== confirmPassword) {
             showError('confirmPassword', 'Passwords do not match');
             hasError = true;
         }
-        
+
         if (!hasError) {
             confirmModal.show();
         }
@@ -428,7 +428,7 @@
 
     confirmYes.addEventListener('click', function() {
         confirmModal.hide();
-        
+
         // Show loading spinner
         const btnText = updateBtn.querySelector('.btn-text');
         const spinner = updateBtn.querySelector('.spinner-border');
@@ -441,50 +441,50 @@
 
         // Send AJAX request
         fetch('{{ route("settings.update") }}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Hide loading spinner
-            btnText.textContent = 'Update Information';
-            spinner.classList.add('d-none');
-            updateBtn.disabled = false;
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading spinner
+                btnText.textContent = 'Update Information';
+                spinner.classList.add('d-none');
+                updateBtn.disabled = false;
 
-            if (data.success) {
-                successMessage.querySelector('#successText').textContent = data.message || 'Successfully updated!';
-                successMessage.classList.remove('d-none');
-                errorMessage.classList.add('d-none');
-                toggleEditMode(false);
+                if (data.success) {
+                    successMessage.querySelector('#successText').textContent = data.message || 'Successfully updated!';
+                    successMessage.classList.remove('d-none');
+                    errorMessage.classList.add('d-none');
+                    toggleEditMode(false);
 
-                // Keep the values as they were entered
-                saveOriginalValues();
+                    // Keep the values as they were entered
+                    saveOriginalValues();
+
+                    setTimeout(() => {
+                        successMessage.classList.add('d-none');
+                    }, 3000);
+                } else {
+                    throw new Error(data.message || 'Update failed');
+                }
+            })
+            .catch(error => {
+                // Hide loading spinner
+                btnText.textContent = 'Update Information';
+                spinner.classList.add('d-none');
+                updateBtn.disabled = false;
+
+                // Show error message
+                errorMessage.querySelector('#errorText').textContent = error.message || 'An error occurred. Please try again.';
+                errorMessage.classList.remove('d-none');
+                successMessage.classList.add('d-none');
 
                 setTimeout(() => {
-                    successMessage.classList.add('d-none');
-                }, 3000);
-            } else {
-                throw new Error(data.message || 'Update failed');
-            }
-        })
-        .catch(error => {
-            // Hide loading spinner
-            btnText.textContent = 'Update Information';
-            spinner.classList.add('d-none');
-            updateBtn.disabled = false;
-
-            // Show error message
-            errorMessage.querySelector('#errorText').textContent = error.message || 'An error occurred. Please try again.';
-            errorMessage.classList.remove('d-none');
-            successMessage.classList.add('d-none');
-
-            setTimeout(() => {
-                errorMessage.classList.add('d-none');
-            }, 5000);
-        });
+                    errorMessage.classList.add('d-none');
+                }, 5000);
+            });
     });
 
     function togglePassword(inputId, iconId) {

@@ -33,7 +33,7 @@ class AuthController extends Controller
         ]);
 
         $accountType = ucfirst($request->role);
-        
+
         $user = DB::selectOne(
             "SELECT * FROM users 
              WHERE (school_id = ? OR email = ?) 
@@ -53,7 +53,7 @@ class AuthController extends Controller
         foreach ((array)$user as $key => $value) {
             $userModel->{$key} = $value;
         }
-        
+
         Auth::login($userModel);
 
         $request->session()->regenerate();
@@ -103,9 +103,9 @@ class AuthController extends Controller
 
         $schoolId = $request->school_id;
 
-        $fullName = trim($request->first_name . ' ' . 
-                        ($request->middle_name ? $request->middle_name . ' ' : '') . 
-                        $request->last_name);
+        $fullName = trim($request->first_name . ' ' .
+            ($request->middle_name ? $request->middle_name . ' ' : '') .
+            $request->last_name);
 
         $accountType = ucfirst($request->role);
         $plainPassword = $request->password;
@@ -131,7 +131,7 @@ class AuthController extends Controller
                 'accountType' => $accountType
             ], function ($message) use ($user) {
                 $message->to($user->email, $user->full_name)
-                        ->subject('Welcome to Student Organization Management - Your Account Details');
+                    ->subject('Welcome to Student Organization Management - Your Account Details');
             });
         } catch (\Exception $e) {
             Log::error('Email sending failed: ' . $e->getMessage());
@@ -201,7 +201,7 @@ class AuthController extends Controller
                 'expiryMinutes' => $expiryMinutes
             ], function ($message) use ($user) {
                 $message->to($user->email, $user->full_name)
-                        ->subject('Reset Your Password - Student Organization Management');
+                    ->subject('Reset Your Password - Student Organization Management');
             });
         } catch (\Exception $e) {
             Log::error('Password reset email failed: ' . $e->getMessage());

@@ -53,8 +53,8 @@ class ProfileController extends Controller
                 'org_id' => $org->org_id,
                 'org_name' => $org->org_name,
                 'membership_role' => $org->membership_role,
-                'display_position' => $org->membership_role === 'Officer' && !empty($org->position) 
-                    ? $org->position 
+                'display_position' => $org->membership_role === 'Officer' && !empty($org->position)
+                    ? $org->position
                     : $org->membership_role,
                 'academic_year' => $org->academic_year,
                 'formatted_joined_at' => date('F j, Y', strtotime($org->joined_at))
@@ -101,12 +101,12 @@ class ProfileController extends Controller
         foreach ($organizations as $org) {
             preg_match_all('/\b([A-Z])/u', $org->org_name, $matches);
             $acronym = implode('', $matches[1]);
-            $org->short_name = !empty($acronym) && strlen($acronym) >= 2 
-                ? $acronym 
+            $org->short_name = !empty($acronym) && strlen($acronym) >= 2
+                ? $acronym
                 : strtoupper(substr($org->org_name, 0, 3));
-            
+
             $org->formatted_joined = date('M j, Y', strtotime($org->joined_at));
-            
+
             if ($org->membership_role === 'Officer' && !empty($org->position)) {
                 $org->display_position = $org->position;
             } else {
@@ -140,10 +140,10 @@ class ProfileController extends Controller
         foreach ($attendedEvents as $event) {
             preg_match_all('/\b([A-Z])/u', $event->org_name, $matches);
             $acronym = implode('', $matches[1]);
-            $event->org_short_name = !empty($acronym) && strlen($acronym) >= 2 
-                ? $acronym 
+            $event->org_short_name = !empty($acronym) && strlen($acronym) >= 2
+                ? $acronym
                 : strtoupper(substr($event->org_name, 0, 3));
-            
+
             $event->formatted_date = date('d', strtotime($event->event_date));
             $event->formatted_month = strtoupper(date('M', strtotime($event->event_date)));
             $event->formatted_full_date = date('M j, Y', strtotime($event->event_date));
@@ -175,10 +175,10 @@ class ProfileController extends Controller
         foreach ($upcomingEvents as $event) {
             preg_match_all('/\b([A-Z])/u', $event->org_name, $matches);
             $acronym = implode('', $matches[1]);
-            $event->org_short_name = !empty($acronym) && strlen($acronym) >= 2 
-                ? $acronym 
+            $event->org_short_name = !empty($acronym) && strlen($acronym) >= 2
+                ? $acronym
                 : strtoupper(substr($event->org_name, 0, 3));
-            
+
             $event->formatted_date = date('d', strtotime($event->event_date));
             $event->formatted_month = strtoupper(date('M', strtotime($event->event_date)));
             $event->formatted_full_date = date('M j, Y', strtotime($event->event_date));
@@ -247,7 +247,7 @@ class ProfileController extends Controller
 
             if (!empty($updateFields)) {
                 $updateValues[] = $user->user_id;
-                
+
                 DB::update(
                     "UPDATE users SET " . implode(', ', $updateFields) . ", updated_at = NOW() WHERE user_id = ?",
                     $updateValues
@@ -266,7 +266,7 @@ class ProfileController extends Controller
     {
         $currentMonth = date('n');
         $currentYear = date('Y');
-        
+
         if ($currentMonth >= 8) {
             return $currentYear . '-' . ($currentYear + 1);
         } else {
@@ -278,7 +278,7 @@ class ProfileController extends Controller
     {
         if ($userId) {
             $user = DB::selectOne("SELECT * FROM users WHERE user_id = ?", [$userId]);
-            
+
             if (!$user) {
                 abort(404, 'User not found');
             }
@@ -286,7 +286,7 @@ class ProfileController extends Controller
             if (!Auth::check()) {
                 return redirect()->route('login')->with('error', 'Please login to view your profile');
             }
-            
+
             return $this->index();
         }
     }

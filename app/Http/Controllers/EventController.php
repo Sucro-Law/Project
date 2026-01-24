@@ -52,8 +52,8 @@ class EventController extends Controller
                 'org_id' => $org->org_id,
                 'org_name' => $org->org_name,
                 'membership_role' => $org->membership_role,
-                'display_position' => $org->membership_role === 'Officer' && !empty($org->position) 
-                    ? $org->position 
+                'display_position' => $org->membership_role === 'Officer' && !empty($org->position)
+                    ? $org->position
                     : $org->membership_role,
                 'academic_year' => $org->academic_year,
                 'formatted_joined_at' => date('F j, Y', strtotime($org->joined_at))
@@ -73,7 +73,7 @@ class EventController extends Controller
     private function parseUserName($fullName)
     {
         $nameParts = explode(' ', trim($fullName));
-        
+
         if (count($nameParts) === 1) {
             return [
                 'first_name' => $nameParts[0],
@@ -134,12 +134,12 @@ class EventController extends Controller
             // Format date
             $event->formatted_date = date('m/d/y', strtotime($event->event_date));
             $event->formatted_full_date = date('F j, Y', strtotime($event->event_date));
-            
+
             // Generate org acronym
             preg_match_all('/\b([A-Z])/u', $event->org_name, $matches);
             $acronym = implode('', $matches[1]);
-            $event->org_short_name = !empty($acronym) && strlen($acronym) >= 2 
-                ? $acronym 
+            $event->org_short_name = !empty($acronym) && strlen($acronym) >= 2
+                ? $acronym
                 : strtoupper(substr($event->org_name, 0, 3));
 
             // Check if user has RSVP'd
@@ -152,12 +152,12 @@ class EventController extends Controller
         }
 
         $sidebarData = $this->getSidebarData();
-        
+
         // Parse user name for the form
         $firstName = '';
         $middleName = '';
         $lastName = '';
-        
+
         if (Auth::check()) {
             $parsedName = $this->parseUserName(Auth::user()->full_name);
             $firstName = $parsedName['first_name'];
@@ -235,7 +235,7 @@ class EventController extends Controller
 
         try {
             $user = Auth::user();
-            
+
             // Create or update RSVP
             EventAttendance::createRSVP($eventId, $user->user_id, 'RSVP');
 
@@ -262,7 +262,7 @@ class EventController extends Controller
 
         try {
             $user = Auth::user();
-            
+
             $result = EventAttendance::cancelRSVP($eventId, $user->user_id);
 
             if ($result) {
@@ -337,7 +337,7 @@ class EventController extends Controller
             // The trigger will automatically set status based on user type
             Event::createEvent($eventData);
 
-            return back()->with('success', 'Event created successfully! ' . 
+            return back()->with('success', 'Event created successfully! ' .
                 ($user->account_type === 'Faculty' ? 'Event is now live.' : 'Waiting for adviser approval.'));
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to create event: ' . $e->getMessage());
