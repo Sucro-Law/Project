@@ -301,20 +301,65 @@ class ProfileController extends Controller
         }
     }
 
-    public function show($userId = null)
+    public function show($userId)
     {
-        if ($userId) {
-            $user = DB::selectOne("SELECT * FROM users WHERE user_id = ?", [$userId]);
+        $user = DB::selectOne("SELECT * FROM users WHERE user_id = ?", [$userId]);
 
-            if (!$user) {
-                abort(404, 'User not found');
-            }
-        } else {
-            if (!Auth::check()) {
-                return redirect()->route('login')->with('error', 'Please login to view your profile');
-            }
-
-            return $this->index();
+        if (!$user) {
+            abort(404, 'User not found');
         }
+
+        $organizations = DB::select("
+            SELECT
+                o.org_id,
+                o.org_name,
+                m.membership_role,
+                m.joined_at,
+                oo.position
+            FROM memberships m
+            INNER JOIN organizations o ON m.org_id = o.org_id
+            LEFT JOIN org_officers oo ON m.membership_id = oo.membership_id
+            WHERE m.user_id = ?
+            AND m.status = 'Active'
+            ORDER BY m.joined_at DESC
+        ", [$userId]);
+
+        if ($user->account_type === 'Faculty') {
+            $advisedOrgs = DB::select("
+                SELECT
+                    o.org_id,
+                    o.org_name,
+                    'Adviser' as membership_role,
+                    oa.assigned_at as joined_at,
+                    'Adviser' as position
+                FROM org_advisers oa
+                INNER JOIN organizations o ON oa.org_id = o.org_id
+                WHERE oa.user_id = ?
+            ", [$userId]);
+            $organizations = array_merge($organizations, $advisedOrgs);
+        }
+
+        foreach ($organizations as $org) {
+            preg_match_all('/\b([A-Z])/u', $org->org_name, $matches);
+            $acronym = implode('', $matches[1]);
+            $org->short_name = !empty($acronym) && strlen($acronym) >= 2
+                ? $acronym
+                : strtoupper(substr($org->org_name, 0, 3));
+            $org->formatted_joined = date('M j, Y', strtotime($org->joined_at));
+            $org->display_position = $org->membership_role === 'Officer' && !empty($org->position)
+                ? $org->position
+                : $org->membership_role;
+        }
+
+        $sidebarData = $this->getSidebarData();
+
+        return view('Pages.profile', [
+            'user' => $user,
+            'organizations' => $organizations,
+            'attendedEvents' => [],
+            'upcomingEvents' => [],
+            'sidebarData' => $sidebarData,
+            'isPublicView' => true
+        ]);
     }
 }
