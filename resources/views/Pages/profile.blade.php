@@ -320,7 +320,7 @@
             <div class="profile-avatar-large">{{ $initials }}</div>
             <div class="profile-info">
                 <h1 class="profile-name">{{ $user->full_name }}</h1>
-                <p class="profile-id">Student ID: {{ $user->school_id }}</p>
+                <p class="profile-id">{{ $user->account_type === 'Faculty' ? 'Faculty' : 'Student' }} ID: {{ $user->school_id }}</p>
                 <div class="profile-stats">
                     <div class="stat-box">
                         <span class="stat-number">{{ $stats['organizations_count'] }}</span>
@@ -350,7 +350,7 @@
                 </h2>
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="info-label">Student Number</span>
+                        <span class="info-label">{{ $user->account_type === 'Faculty' ? 'Faculty' : 'Student' }} Number</span>
                         <span class="info-value">{{ $user->school_id }}</span>
                     </div>
                     <div class="info-item">
