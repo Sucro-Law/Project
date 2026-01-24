@@ -78,7 +78,7 @@ class ProfileController extends Controller
 
         // Get user's organizations with membership details
         $organizations = DB::select("
-            SELECT 
+            SELECT
                 o.org_id,
                 o.org_name,
                 m.membership_id,
@@ -92,10 +92,34 @@ class ProfileController extends Controller
             FROM memberships m
             INNER JOIN organizations o ON m.org_id = o.org_id
             LEFT JOIN org_officers oo ON m.membership_id = oo.membership_id
-            WHERE m.user_id = ? 
+            WHERE m.user_id = ?
             AND m.status = 'Active'
             ORDER BY m.joined_at DESC
         ", [$user->user_id]);
+
+        // For Faculty users, also get organizations they advise
+        if ($user->account_type === 'Faculty') {
+            $advisedOrgs = DB::select("
+                SELECT
+                    o.org_id,
+                    o.org_name,
+                    oa.adviser_id,
+                    'Adviser' as membership_role,
+                    'Active' as status,
+                    oa.assigned_at as joined_at,
+                    NULL as academic_year,
+                    'Adviser' as position,
+                    NULL as term_start,
+                    NULL as term_end
+                FROM org_advisers oa
+                INNER JOIN organizations o ON oa.org_id = o.org_id
+                WHERE oa.user_id = ?
+                ORDER BY oa.assigned_at DESC
+            ", [$user->user_id]);
+
+            // Merge advised orgs into organizations array
+            $organizations = array_merge($organizations, $advisedOrgs);
+        }
 
         // Add short names to organizations
         foreach ($organizations as $org) {
@@ -107,7 +131,9 @@ class ProfileController extends Controller
 
             $org->formatted_joined = date('M j, Y', strtotime($org->joined_at));
 
-            if ($org->membership_role === 'Officer' && !empty($org->position)) {
+            if ($org->membership_role === 'Adviser') {
+                $org->display_position = 'Adviser';
+            } elseif ($org->membership_role === 'Officer' && !empty($org->position)) {
                 $org->display_position = $org->position;
             } else {
                 $org->display_position = $org->membership_role;

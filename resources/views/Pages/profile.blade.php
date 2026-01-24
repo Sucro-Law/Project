@@ -376,11 +376,11 @@
                 </div>
             </div>
 
-            <!-- Organizations Joined -->
+            <!-- Organizations Joined/Advised -->
             <div class="section-card">
                 <h2 class="section-title">
                     <i class="bi bi-building"></i>
-                    Organizations Joined
+                    {{ $user->account_type === 'Faculty' ? 'Organizations Advised' : 'Organizations Joined' }}
                 </h2>
                 @if(count($organizations) > 0)
                 <div class="org-list">
@@ -403,7 +403,7 @@
                 @else
                 <div class="empty-state">
                     <i class="bi bi-building"></i>
-                    <p>You haven't joined any organizations yet.</p>
+                    <p>{{ $user->account_type === 'Faculty' ? "You're not advising any organizations yet." : "You haven't joined any organizations yet." }}</p>
                 </div>
                 @endif
             </div>
