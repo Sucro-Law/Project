@@ -196,6 +196,7 @@
 
     .event-item {
         display: flex;
+        align-items: center;
         gap: 20px;
         padding: 20px;
         border: 1px solid #e0e0e0;
@@ -246,12 +247,12 @@
     .event-item-org {
         font-size: 13px;
         color: #666;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
     }
 
     .event-item-meta {
         display: flex;
-        gap: 15px;
+        justify-content: space-between;
         font-size: 12px;
         color: #999;
         align-items: center;
