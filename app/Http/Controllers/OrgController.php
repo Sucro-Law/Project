@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use App\Models\Membership;
 use App\Models\Notification;
+use App\Http\Controllers\Traits\HasSidebarData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,66 +13,7 @@ use Illuminate\Support\Str;
 
 class OrgController extends Controller
 {
-    /**
-     * Helper method to get sidebar data for authenticated users
-     * This should be called in every controller method that returns a view
-     */
-    private function getSidebarData()
-    {
-        if (!Auth::check()) {
-            return null;
-        }
-
-        $user = Auth::user();
-
-        // Get user's initials
-        $nameParts = explode(' ', $user->full_name);
-        $initials = '';
-        if (count($nameParts) >= 2) {
-            $initials = strtoupper(substr($nameParts[0], 0, 1) . substr($nameParts[count($nameParts) - 1], 0, 1));
-        } else {
-            $initials = strtoupper(substr($user->full_name, 0, 2));
-        }
-
-        // Get user's organizations
-        $userOrganizations = DB::select("
-            SELECT 
-                o.org_id,
-                o.org_name,
-                m.membership_id,
-                m.membership_role,
-                m.joined_at,
-                m.academic_year,
-                oo.position
-            FROM memberships m
-            INNER JOIN organizations o ON m.org_id = o.org_id
-            LEFT JOIN org_officers oo ON m.membership_id = oo.membership_id
-            WHERE m.user_id = ? 
-            AND m.status = 'Active'
-            ORDER BY m.joined_at DESC
-        ", [$user->user_id]);
-
-        // Format organizations data
-        $organizations = [];
-        foreach ($userOrganizations as $org) {
-            $organizations[] = [
-                'org_id' => $org->org_id,
-                'org_name' => $org->org_name,
-                'membership_role' => $org->membership_role,
-                'display_position' => $org->membership_role === 'Officer' && !empty($org->position)
-                    ? $org->position
-                    : $org->membership_role,
-                'academic_year' => $org->academic_year,
-                'formatted_joined_at' => date('F j, Y', strtotime($org->joined_at))
-            ];
-        }
-
-        return [
-            'initials' => $initials,
-            'full_name' => $user->full_name,
-            'organizations' => $organizations
-        ];
-    }
+    use HasSidebarData;
 
     public function index()
     {
@@ -576,18 +518,6 @@ class OrgController extends Controller
         DB::delete("DELETE FROM memberships WHERE membership_id = ?", [$membership->membership_id]);
 
         return back()->with('success', 'Membership request cancelled');
-    }
-
-    private function getCurrentAcademicYear()
-    {
-        $currentMonth = date('n');
-        $currentYear = date('Y');
-
-        if ($currentMonth >= 8) {
-            return $currentYear . '-' . ($currentYear + 1);
-        } else {
-            return ($currentYear - 1) . '-' . $currentYear;
-        }
     }
 
     public function approveMember($orgId, $membershipId)
