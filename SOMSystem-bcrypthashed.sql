@@ -390,14 +390,13 @@ INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES
 ('EVT-00000007', 'PUP-00000005', 'Present', 'Got hands-on GCP experience'),
 ('EVT-00000007', 'PUP-00000006', 'Present', 'Earned badges'),
 ('EVT-00000007', 'PUP-00000002', 'Excused', 'Family emergency'),
-('EVT-00000007', 'PUP-00000006', 'Absent', 'No show');
+('EVT-00000007', 'PUP-00000004', 'Absent', 'No show');
 
 -- Event 8: DevFest 2026 (EVT-00000008)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000008', 'PUP-00000001', 'RSVP', 'Cannot wait for DevFest!'),
 ('EVT-00000008', 'PUP-00000005', 'RSVP', 'Registered early'),
-('EVT-00000008', 'PUP-00000006', 'RSVP', 'Looking forward to workshops'),
-('EVT-00000008', 'PUP-00000006', 'RSVP', NULL);
+('EVT-00000008', 'PUP-00000006', 'RSVP', 'Looking forward to workshops');
 
 -- Event 9: Web Development Series (EVT-00000009)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
@@ -433,6 +432,15 @@ INSERT INTO memberships (user_id, org_id, academic_year, membership_role, joined
 ('PUP-00000001', 'ORG-00000001', '2025-2026', 'Member', '2024-09-15', 'Active'),
 ('PUP-00000001', 'ORG-00000002', '2025-2026', 'Member', '2024-10-01', 'Active');
 
+-- Past event for testing events attended
+INSERT INTO events (org_id, title, description, event_date, event_duration, venue, status, created_by) VALUES
+('ORG-00000001', 'AWS Welcome Orientation', 'Welcome session for new AWS PUP members', '2025-09-20 10:00:00', 3, 'CCIS Room 301', 'Done', 'PUP-00000002');
+
+INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES
+('EVT-00000014', 'PUP-00000001', 'Present', 'Great orientation'),
+('EVT-00000014', 'PUP-00000002', 'Present', 'Welcomed new members'),
+('EVT-00000014', 'PUP-00000004', 'Present', 'Learned about AWS'),
+('EVT-00000014', 'PUP-00000005', 'Present', 'Excited to join');
 
 -- ================================================================================
 -- USEFUL QUERIES TO VIEW EVENT ATTENDANCE DATA
