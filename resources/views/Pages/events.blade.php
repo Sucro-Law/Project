@@ -479,6 +479,9 @@
             if (data.success) {
                 rsvpModal.hide();
                 location.reload();
+            } else if (data.redirect) {
+                alert(data.message);
+                window.location.href = data.redirect;
             } else {
                 alert(data.message || 'Failed to RSVP');
                 submitBtn.disabled = false;

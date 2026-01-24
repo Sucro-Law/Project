@@ -233,9 +233,22 @@ class EventController extends Controller
             ], 400);
         }
 
-        try {
-            $user = Auth::user();
+        $user = Auth::user();
 
+        $isMember = DB::selectOne("
+            SELECT membership_id FROM memberships
+            WHERE user_id = ? AND org_id = ? AND status = 'Active'
+        ", [$user->user_id, $event->org_id]);
+
+        if (!$isMember) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You must be a member of this organization to RSVP',
+                'redirect' => route('orgDetail', ['id' => $event->org_id])
+            ], 403);
+        }
+
+        try {
             // Create or update RSVP
             EventAttendance::createRSVP($eventId, $user->user_id, 'RSVP');
 
