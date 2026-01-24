@@ -487,17 +487,20 @@
                     data-bs-parent="#pendingEventsAccordion">
                     <div class="accordion-body">
                         <div class="event-details-container">
-                            <input type="text" class="event-title-input"
-                                value="{{ $event->title }}" readonly>
+                            <input type="text" class="event-title-input" value="{{ $event->title }}" readonly>
 
                             <div class="event-content-row">
                                 <div class="event-visual-column">
                                     <div class="event-image-preview">
-                                        @if(property_exists($event, 'event_image') && !empty($event->event_image))
-                                        <img src="{{ asset('storage/' . $event->event_image) }}" alt="Event Image">
-                                        @else
-                                        <img src="{{ asset('image/computer.jpg') }}" alt="Default Image">
-                                        @endif
+                                        @php
+                                            $imageSrc = !empty($event->event_image ?? $event->image_path)
+                                                ? asset($event->event_image ?? $event->image_path)
+                                                : asset('image/computer.jpg');
+                                            $defaultImage = asset('image/computer.jpg');
+                                        @endphp
+                                        <img src="{{ $imageSrc }}" alt="Event Image"
+                                             onerror="this.onerror=null; this.src='{{ $defaultImage }}';"
+                                             style="width: 100%; height: auto; display: block;">
                                     </div>
 
                                     <div class="event-details-inputs">
@@ -514,8 +517,8 @@
 
                             <p class="waiting-verification">-- Waiting for Verification --</p>
 
-                            @if($role === 'adviser')
                             <div class="event-action-buttons">
+                                @if($role === 'adviser')
                                 <form action="{{ route('organization.approveEvent', [$organization->org_id, $event->event_id]) }}" method="POST" style="display: inline;">
                                     @csrf
                                     <button type="submit" class="btn-approve">APPROVE</button>
@@ -524,8 +527,15 @@
                                     @csrf
                                     <button type="submit" class="btn-reject">REJECT</button>
                                 </form>
+                                @endif
+
+                                @if($role === 'officer' && Auth::check() && $event->created_by == Auth::user()->user_id)
+                                <form action="{{ route('organization.cancelEvent', [$organization->org_id, $event->event_id]) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to cancel this event submission?');">
+                                    @csrf
+                                    <button type="submit" class="btn-cancel-event">CANCEL</button>
+                                </form>
+                                @endif
                             </div>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -537,6 +547,26 @@
         @endif
     </div>
 </div>
+
+<style>
+    .btn-cancel-event {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancel-event:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+</style>
+
 
 <!-- Membership Modal (For Regular Users) -->
 <div class="modal-overlay" id="membershipModal">

@@ -60,6 +60,8 @@ Route::post('/organization/{id}/membership', [OrgController::class, 'submitMembe
 Route::post('/organization/{orgId}/member/{membershipId}/approve', [OrgController::class, 'approveMember'])->name('organization.approveMember');
 Route::post('/organization/{orgId}/member/{membershipId}/reject', [OrgController::class, 'rejectMember'])->name('organization.rejectMember');
 Route::post('/organization/{orgId}/member/add', [OrgController::class, 'addMember'])->name('organization.addMember');
+Route::post('/organization/{orgId}/event/{eventId}/cancel', [OrgController::class, 'cancelEvent'])
+    ->name('organization.cancelEvent');
 
 Route::get('/membership', function () {
     return view('Pages.memberform');

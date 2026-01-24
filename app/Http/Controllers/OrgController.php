@@ -743,64 +743,57 @@ class OrgController extends Controller
         }
     }
 
-    public function createEvent(Request $request, $orgId)
-    {
-        if (!Auth::check()) {
-            return back()->with('error', 'Please login first');
-        }
-
-        try {
-            $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'event_date' => 'required|date',
-                'venue' => 'required|string|max:255',
-                'event_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            ]);
-
-            $user = Auth::user(); // ✅ FIXED
-
-            $eventId = 'EVT-' . str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
-            $status = 'Pending';
-
-            $imagePath = null;
-
-            if ($request->hasFile('event_image')) {
-                $image = $request->file('event_image');
-                $filename = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('uploads/events'), $filename);
-                $imagePath = 'uploads/events/' . $filename;
-            }
-
-            DB::insert(
-                "INSERT INTO events 
-            (event_id, org_id, title, description, event_date, event_duration, venue, status, created_by, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
-                [
-                    $eventId,
-                    $orgId,
-                    $validated['title'],
-                    $validated['description'],
-                    $validated['event_date'],
-                    4,
-                    $validated['venue'],
-                    $status,
-                    $user->user_id   // ✅ now not null
-                ]
-            );
-
-            if ($imagePath) {
-                DB::update(
-                    "UPDATE events SET image_path = ? WHERE event_id = ?",
-                    [$imagePath, $eventId]
-                );
-            }
-
-            return back()->with('success', 'Event submitted successfully and is pending approval.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Failed to create event: ' . $e->getMessage());
-        }
+public function createEvent(Request $request, $orgId)
+{
+    if (!Auth::check()) {
+        return back()->with('error', 'Please login first');
     }
+
+    try {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'event_date' => 'required|date',
+            'venue' => 'required|string|max:255',
+            'event_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $user = Auth::user();
+        $eventId = 'EVT-' . str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+        $status = 'Pending';
+        $imagePath = null;
+
+        if ($request->hasFile('event_image')) {
+            $image = $request->file('event_image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('uploads/events'), $filename);
+            $imagePath = 'uploads/events/' . $filename;
+        }
+
+        // INSERT with image_path included
+        DB::insert(
+            "INSERT INTO events 
+            (event_id, org_id, title, description, event_date, event_duration, venue, status, image_path, created_by, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
+            [
+                $eventId,
+                $orgId,
+                $validated['title'],
+                $validated['description'],
+                $validated['event_date'],
+                4,
+                $validated['venue'],
+                $status,
+                $imagePath,  // Include image path in initial insert
+                $user->user_id
+            ]
+        );
+
+        return back()->with('success', 'Event submitted successfully and is pending approval.');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Failed to create event: ' . $e->getMessage());
+    }
+}
 
 
     public function approveEvent($orgId, $eventId)
@@ -862,4 +855,49 @@ class OrgController extends Controller
             return back()->with('error', 'Failed to reject event: ' . $e->getMessage());
         }
     }
+    public function cancelEvent($orgId, $eventId)
+{
+    if (!Auth::check()) {
+        return back()->with('error', 'Please login first');
+    }
+
+    $user = Auth::user();
+
+    // Get the event details
+    $event = DB::selectOne(
+        "SELECT * FROM events WHERE event_id = ? AND org_id = ?",
+        [$eventId, $orgId]
+    );
+
+    if (!$event) {
+        return back()->with('error', 'Event not found');
+    }
+
+    // Check if user is the creator of the event
+    if ($event->created_by !== $user->user_id) {
+        return back()->with('error', 'You can only cancel events you created');
+    }
+
+    // Check if event is still pending
+    if ($event->status !== 'Pending') {
+        return back()->with('error', 'Only pending events can be cancelled');
+    }
+
+    try {
+        // Delete the event from database
+        DB::delete(
+            "DELETE FROM events WHERE event_id = ?",
+            [$eventId]
+        );
+
+        // Optionally delete the event image if it exists
+        if (!empty($event->image_path) && file_exists(public_path($event->image_path))) {
+            unlink(public_path($event->image_path));
+        }
+
+        return back()->with('success', 'Event submission cancelled successfully!');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Failed to cancel event: ' . $e->getMessage());
+    }
+}
 }
