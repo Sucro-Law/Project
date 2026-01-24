@@ -510,7 +510,12 @@ class OrgController extends Controller
             }
 
             if ($validated['position'] === 'officer' && !empty($validated['role'])) {
-                // Position will be set when membership is approved
+                DB::delete("DELETE FROM org_officers WHERE membership_id = ?", [$membershipId]);
+                DB::insert(
+                    "INSERT INTO org_officers (membership_id, org_id, position, term_start, term_end)
+                     VALUES (?, ?, ?, NULL, NULL)",
+                    [$membershipId, $id, $validated['role']]
+                );
             }
 
             return back()->with('success', 'Membership application submitted successfully! Please wait for approval.');
@@ -610,7 +615,7 @@ class OrgController extends Controller
         }
 
         $membership = DB::selectOne(
-            "SELECT m.user_id, o.org_name FROM memberships m
+            "SELECT m.user_id, m.membership_role, o.org_name FROM memberships m
              JOIN organizations o ON m.org_id = o.org_id
              WHERE m.membership_id = ?",
             [$membershipId]
@@ -620,6 +625,13 @@ class OrgController extends Controller
             "UPDATE memberships SET status = 'Active' WHERE membership_id = ?",
             [$membershipId]
         );
+
+        if ($membership && $membership->membership_role === 'Officer') {
+            DB::update(
+                "UPDATE org_officers SET term_start = CURRENT_DATE, term_end = DATE_ADD(CURRENT_DATE, INTERVAL 1 YEAR) WHERE membership_id = ?",
+                [$membershipId]
+            );
+        }
 
         if ($membership) {
             Notification::create(
