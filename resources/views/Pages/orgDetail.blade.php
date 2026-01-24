@@ -72,9 +72,9 @@
                     MEMBERSHIP FORM
                 </button>
                 @endif
-                <a href="#" class="btn-secondary-custom">
+                <button class="btn-secondary-custom" onclick="shareOrganization()">
                     <i class="bi bi-share me-1"></i> Share
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -757,5 +757,19 @@
             bsAlert.close();
         });
     }, 5000);
+
+    function shareOrganization() {
+        const url = window.location.href;
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ $organization->org_name }}',
+                url: url
+            });
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Link copied to clipboard!');
+            });
+        }
+    }
 </script>
 @endsection
