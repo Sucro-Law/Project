@@ -124,7 +124,7 @@
             @endif
 
             <p class="description-text">
-                {{ $organization->description ?? 'An organization is a group of people who work together, like a neighborhood association, a charity, a union, or a corporation. You can use the word organization to refer to group or business, or to the act of forming or establishing something.' }}
+                {{ $organization->description ?? 'No description available' }}
             </p>
         </div>
     </div>

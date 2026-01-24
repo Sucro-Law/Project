@@ -163,7 +163,7 @@ class OrgController extends Controller
                 'org_id' => $org->org_id,
                 'name' => $org->org_name,
                 'short_name' => $short_name,
-                'description' => $org->description ?? 'An organization is a group of people who work together, like a neighborhood association, a charity, a union, or a corporation.',
+                'description' => $org->description ?? 'No description available',
                 'status' => $org->status,
                 'year' => $year,
                 'members' => $org->member_count ?? 0,

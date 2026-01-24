@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="org-description">
-                    {{ $org->description ?? 'An organization is a group of people who work together, like a neighborhood association, a charity, a union, or a corporation.' }}
+                    {{ $org->description ?? 'No description available' }}
                 </div>
                 <div class="org-footer">
                     <div class="org-members">
