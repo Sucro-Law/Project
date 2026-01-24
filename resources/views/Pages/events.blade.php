@@ -69,11 +69,6 @@
         margin-bottom: 12px;
         line-height: 1.3;
         letter-spacing: 0.5px;
-        /*display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        height: 3.2em;*/
     }
 
     .event-org {
@@ -82,18 +77,12 @@
         font-weight: 500;
     }
 
-    .badge.status-upcoming {
-        background: #fff3cd;
-        color: #856404;
-        border-radius: 20px;
-        padding: 6px 12px;
-        font-size: 10px;
-        font-weight: 700;
-    }
+    .badge.status-upcoming { background: #fff3cd; color: #856404; }
+    .badge.status-pending  { background: #cfe2ff; color: #084298; }
+    .badge.status-done     { background: #d1e7dd; color: #0f5132; }
+    .badge.status-cancelled{ background: #fee2e2; color: #991b1b; }
 
-    .badge.status-ended {
-        background: #fee2e2;
-        color: #991b1b;
+    .badge[class*="status-"] {
         border-radius: 20px;
         padding: 6px 12px;
         font-size: 10px;
@@ -113,10 +102,7 @@
         padding: 12px 30px;
         border-radius: 25px;
         font-weight: 600;
-        cursor: pointer;
         transition: all 0.3s ease;
-        text-align: center;
-        text-decoration: none;
     }
 
     .btn-primary:hover {
@@ -134,111 +120,16 @@
         font-weight: 600;
     }
 
-    .btn-like-event {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(5px);
+    .btn-success {
+        background: #d1e7dd;
+        color: #0f5132;
         border: none;
-        color: white;
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .btn-like-event:hover {
-        background: white;
-        color: #ff4d4d;
-        transform: scale(1.1);
-    }
-
-    .btn-like-event.active {
-        background: white;
-        color: #ff4d4d;
-    }
-
-    .speaker-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 15px;
         padding: 12px;
-        background: #fcf6f6;
-        border-radius: 12px;
-        min-height: 65px;
-        border: 1px solid #f0f0f0;
-        width: 100%;
+        border-radius: 25px;
+        font-weight: 600;
     }
 
-    .speaker-avatar {
-        width: 35px;
-        height: 35px;
-        background: var(--pup-maroon);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 700;
-        flex-shrink: 0;
-    }
-
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .modal-overlay.show {
-        display: flex;
-    }
-
-    .modal-content {
-        background: white;
-        border-radius: 20px;
-        padding: 40px;
-        max-width: 600px;
-        width: 90%;
-        max-height: 90vh;
-        overflow-y: auto;
-        position: relative;
-    }
-
-    .modal-close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        color: #999;
-    }
-
-    .modal-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--pup-maroon);
-        margin-bottom: 25px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
+    .form-group { margin-bottom: 20px; }
 
     .form-label {
         font-weight: 600;
@@ -253,14 +144,12 @@
         border: 2px solid #e0e0e0;
         border-radius: 10px;
         padding: 12px 15px;
-        font-size: 0.95rem;
         width: 100%;
         transition: all 0.3s ease;
     }
 
     .form-control:focus,
     .form-select:focus {
-        outline: none;
         border-color: var(--pup-maroon);
         box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.1);
     }
@@ -274,249 +163,322 @@
         border-radius: 10px;
         margin-bottom: 20px;
     }
+
+    .section-divider {
+        margin: 50px 0 30px;
+        border-top: 2px solid #f0f0f0;
+        padding-top: 30px;
+    }
+
+    .section-subtitle {
+        color: #666;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+
+    .empty-state i {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
 </style>
 
 <div class="container-custom">
+
+    {{-- Alerts --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <h1 class="page-title">Events</h1>
 
+    {{-- Upcoming Events --}}
     <div class="row g-4">
-        <div class="col-lg-4 col-md-6">
-            <div class="event-card">
-                <div class="event-banner">
-                    <div class="event-date-badge">01/20/26 | Main Campus</div>
-                    <div class="event-icon">🚀</div>
-                    <h3 class="event-title mb-2">2026: Web Development Workshop</h3>
-                    <div class="event-org">Google Developer Groups on Campus – PUP</div>
+        @forelse($upcomingEvents as $event)
+            <div class="col-lg-4 col-md-6">
+                <div class="event-card">
 
-                    <button class="btn-like-event">
-                        <i class="bi bi-heart-fill"></i>
-                    </button>
-                </div>
-                <div class="p-4 d-flex flex-column flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="badge status-upcoming">UPCOMING</span>
-                        <span class="small text-muted"><i class="bi bi-people me-1"></i> 19 Liked</span>
-                    </div>
-
-                    <p class="text-muted small mb-3">
-                        Building the web of tomorrow—one line of code at a time. From fundamentals to modern tools, this workshop empowers developers.
-                    </p>
-
-                    <div class="speaker-info">
-                        <div class="speaker-avatar">JK</div>
-                        <div>
-                            <div class="small fw-bold" style="color: #333;">Mr. Josef Velayo</div>
-                            <div class="text-muted" style="font-size: 10px;">Lead Speaker / GDG Lead</div>
+                    <div class="event-banner">
+                        <div class="event-date-badge">
+                            {{ $event->formatted_date }} | {{ $event->venue ?? 'TBA' }}
                         </div>
+                        <div class="event-icon">📅</div>
+                        <h3 class="event-title">{{ $event->title }}</h3>
+                        <div class="event-org">{{ $event->org_name }}</div>
                     </div>
 
-                    <div class="mt-auto">
-                        <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
-                            <div class="detail-item d-flex align-items-center gap-2">
-                                <i class="bi bi-calendar3"></i>
-                                <span class="small text-secondary">January 18, 2026</span>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge status-{{ strtolower($event->status) }}">
+                                {{ strtoupper($event->status) }}
+                            </span>
+                            <span class="small text-muted">
+                                <i class="bi bi-people me-1"></i> {{ $event->rsvp_count }} RSVP'd
+                            </span>
+                        </div>
+
+                        @if($event->description)
+                            <p class="text-muted small mb-3">
+                                {{ Str::limit($event->description, 120) }}
+                            </p>
+                        @endif
+
+                        <div class="mt-auto">
+
+                            <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
+                                <div class="detail-item d-flex align-items-center gap-2">
+                                    <i class="bi bi-calendar3"></i>
+                                    <span class="small text-secondary">{{ $event->formatted_full_date }}</span>
+                                </div>
+
+                                <div class="detail-item d-flex align-items-center gap-2">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <span class="small text-secondary">{{ $event->venue ?? 'Venue TBA' }}</span>
+                                </div>
+
+                                @if($event->event_duration)
+                                    <div class="detail-item d-flex align-items-center gap-2">
+                                        <i class="bi bi-clock"></i>
+                                        <span class="small text-secondary">{{ $event->event_duration }} hours</span>
+                                    </div>
+                                @endif
                             </div>
-                            <div class="detail-item d-flex align-items-center gap-2">
-                                <i class="bi bi-geo-alt-fill"></i>
-                                <span class="small text-secondary">PUP South</span>
-                            </div>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <button class="btn btn-primary w-100" onclick="openModal('rsvpModal')">RSVP</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-lg-4 col-md-6">
-            <div class="event-card">
-                <div class="event-banner">
-                    <div class="event-date-badge">01/18/26 | PUP South</div>
-                    <div class="event-icon">💡</div>
-                    <h3 class="event-title mb-2">This is how you do it!</h3>
-                    <div class="event-org">Institute of Bachelors in IT Studies</div>
+                            @auth
+                                @if($event->user_rsvp_status === 'RSVP')
+                                    <button class="btn btn-success w-100" disabled>
+                                        <i class="bi bi-check-circle me-2"></i> Already RSVP'd
+                                    </button>
+                                @else
+                                    <button class="btn btn-primary w-100"
+                                        data-id="{{ $event->event_id }}"
+                                        data-title="{{ $event->title }}"
+                                        data-date="{{ $event->formatted_date }}"
+                                        data-venue="{{ $event->venue ?? 'TBA' }}"
+                                        data-org="{{ $event->org_name }}"
+                                        onclick="openRsvpModal(this)">
+                                        RSVP
+                                    </button>
+                                @endif
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-primary w-100">Login to RSVP</a>
+                            @endauth
 
-                    <button class="btn-like-event">
-                        <i class="bi bi-heart-fill"></i>
-                    </button>
-                </div>
-                <div class="p-4 d-flex flex-column flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="badge status-ended">ENDED</span>
-                        <span class="small text-muted"><i class="bi bi-people me-1"></i> 24 Liked</span>
-                    </div>
-                    <p class="text-muted small mb-3">
-                        Are you ready to step out of your comfort zone? Join us for an exciting session where we explore new possibilities.
-                    </p>
-
-                    <div class="speaker-info">
-                        <div class="speaker-avatar">KG</div>
-                        <div>
-                            <div class="small fw-bold" style="color: #333;">Ms. Keliya Gamayo</div>
-                            <div class="text-muted" style="font-size: 10px;">Lead Speaker / IBITS Lead</div>
-                        </div>
-                    </div>
-
-                    <div class="mt-auto">
-                        <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
-                            <div class="detail-item d-flex align-items-center gap-2">
-                                <i class="bi bi-calendar3"></i>
-                                <span class="small text-secondary">December 12, 2025</span>
-                            </div>
-                            <div class="detail-item d-flex align-items-center gap-2">
-                                <i class="bi bi-geo-alt-fill"></i>
-                                <span class="small text-secondary">PUP South Campus</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-secondary w-100" disabled>Event Ended</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6">
-            <div class="event-card">
-                <div class="event-banner">
-                    <div class="event-date-badge">01/25/26 | Main Campus</div>
-                    <div class="event-icon">☁️</div>
-                    <h3 class="event-title mb-2">AWS Cloud Fundamentals</h3>
-                    <div class="event-org">Amazon Web Services – PUP</div>
-
-                    <button class="btn-like-event">
-                        <i class="bi bi-heart-fill"></i>
-                    </button>
-                </div>
-                <div class="p-4 d-flex flex-column flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="badge status-upcoming">UPCOMING</span>
-                        <span class="small text-muted"><i class="bi bi-people me-1"></i> 53 Liked</span>
-                    </div>
-
-                    <p class="text-muted small mb-3">
-                        Dive into the world of cloud computing with AWS. Learn the fundamentals of cloud infrastructure and scalable services.
-                    </p>
-
-                    <div class="speaker-info">
-                        <div class="speaker-avatar">FC</div>
-                        <div>
-                            <div class="small fw-bold" style="color: #333;">Ms. Franzel Cayona</div>
-                            <div class="text-muted" style="font-size: 10px;">Lead Speaker / AWS Lead</div>
-                        </div>
-                    </div>
-
-                    <div class="mt-auto">
-                        <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
-                            <div class="detail-item d-flex align-items-center gap-2">
-                                <i class="bi bi-calendar3"></i>
-                                <span class="small text-secondary">January 25, 2026</span>
-                            </div>
-                            <div class="detail-item d-flex align-items-center gap-2">
-                                <i class="bi bi-geo-alt-fill"></i>
-                                <span class="small text-secondary">PUP Main Campus</span>
-                            </div>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <button class="btn btn-primary w-100" onclick="openModal('rsvpModal')">RSVP</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @empty
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="bi bi-calendar-x"></i>
+                    <p>No upcoming events at the moment.</p>
+                </div>
+            </div>
+        @endforelse
     </div>
+
+    {{-- Past Events --}}
+    @if(count($pastEvents) > 0)
+        <div class="section-divider">
+            <h2 class="section-subtitle">Past Events</h2>
+        </div>
+
+        <div class="row g-4">
+            @foreach($pastEvents as $event)
+                <div class="col-lg-4 col-md-6">
+                    <div class="event-card">
+                        <div class="event-banner">
+                            <div class="event-date-badge">
+                                {{ $event->formatted_date }} | {{ $event->venue ?? 'TBA' }}
+                            </div>
+                            <div class="event-icon">✅</div>
+                            <h3 class="event-title">{{ $event->title }}</h3>
+                            <div class="event-org">{{ $event->org_name }}</div>
+                        </div>
+
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge status-{{ strtolower($event->status) }}">
+                                    {{ strtoupper($event->status) }}
+                                </span>
+                                <span class="small text-muted">
+                                    <i class="bi bi-people me-1"></i> {{ $event->rsvp_count }} attended
+                                </span>
+                            </div>
+
+                            @if($event->description)
+                                <p class="text-muted small mb-3">
+                                    {{ Str::limit($event->description, 120) }}
+                                </p>
+                            @endif
+
+                            <div class="mt-auto">
+                                <div class="d-flex flex-column gap-2 mb-3 pt-3 border-top">
+                                    <div class="detail-item d-flex align-items-center gap-2">
+                                        <i class="bi bi-calendar3"></i>
+                                        <span class="small text-secondary">{{ $event->formatted_full_date }}</span>
+                                    </div>
+                                    <div class="detail-item d-flex align-items-center gap-2">
+                                        <i class="bi bi-geo-alt-fill"></i>
+                                        <span class="small text-secondary">{{ $event->venue ?? 'Venue TBA' }}</span>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-secondary w-100" disabled>Event Ended</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
 </div>
 
-<!-- RSVP Modal -->
-<div class="modal-overlay" id="rsvpModal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('rsvpModal')">
-            <i class="bi bi-x-lg"></i>
-        </button>
-        <h2 class="modal-title">EVENT RSVP FORM</h2>
-        <p style="color: #666; margin-bottom: 25px;">Google Developer Groups on Campus – PUP</p>
+{{-- RSVP Modal --}}
+<div class="modal fade" id="rsvpModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:20px;border:none;">
 
-        <form id="rsvpForm">
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                <h4 style="color: var(--pup-maroon); margin-bottom: 10px;" id="modalEventTitle">Event: 2026: Web Development Workshop</h4>
-                <p style="margin: 0; color: #666;"><strong>Details:</strong></p>
-                <p style="margin: 5px 0; color: #666;" id="modalEventDate">Date: 01/18/26</p>
-                <p style="margin: 5px 0; color: #666;" id="modalEventPlace">Event's Place: PUP South</p>
+            <div class="modal-header" style="border-bottom:2px solid #f0f0f0;">
+                <h5 class="modal-title" style="color:var(--pup-maroon);font-weight:700;">
+                    EVENT RSVP FORM
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">School Number</label>
-                <input type="text" class="form-control" placeholder="SN-XXXXXXXX" required>
-            </div>
+            <div class="modal-body p-4">
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
-                <div class="form-group">
-                    <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" placeholder="First Name" required>
+                <p class="text-muted mb-3" id="modalOrgName"></p>
+
+                <div class="bg-light p-3 rounded mb-3">
+                    <h6 class="fw-bold text-maroon" id="modalEventTitle"></h6>
+                    <p class="mb-1"><strong>Date:</strong> <span id="modalEventDate"></span></p>
+                    <p class="mb-0"><strong>Venue:</strong> <span id="modalEventPlace"></span></p>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Middle Name</label>
-                    <input type="text" class="form-control" placeholder="Middle Name">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" placeholder="Last Name" required>
-                </div>
-            </div>
 
-            <div class="form-group">
-                <label class="form-label">Email Address</label>
-                <input type="email" class="form-control" placeholder="Email@gmail.com" required>
-            </div>
+                <form id="rsvpForm">
+                    <input type="hidden" id="eventIdInput" name="event_id">
 
-            <div class="certification-text">
-                I acknowledge that this RSVP is a confirmation of my attendance.
-            </div>
+                    <div class="form-group">
+                        <label class="form-label">School Number</label>
+                        <input type="text" class="form-control" value="{{ Auth::user()->school_id ?? '' }}" readonly>
+                    </div>
 
-            <button type="submit" class="btn btn-primary w-100">
-                SUBMIT RSVP
-            </button>
-        </form>
+                    <div class="row g-3">
+                        <div class="col">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control"
+                                   value="{{ $firstName ?? explode(' ', Auth::user()->full_name ?? '')[0] ?? '' }}" readonly>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" value="{{ $middleName ?? '' }}" readonly>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control"
+                                   value="{{ $lastName ?? explode(' ', Auth::user()->full_name ?? '')[count(explode(' ', Auth::user()->full_name ?? '')) - 1] ?? '' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" value="{{ Auth::user()->email ?? '' }}" readonly>
+                    </div>
+
+                    <div class="certification-text">
+                        I acknowledge that this RSVP is a confirmation of my attendance.
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        SUBMIT RSVP
+                    </button>
+                </form>
+
+            </div>
+        </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    function showTab(tabName) {
-        // Hide all tabs
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
-        });
+    let rsvpModal;
 
-        // Remove active from all buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-
-        // Show selected tab
-        document.getElementById(tabName).classList.add('active');
-
-        // Add active to clicked button
-        event.target.classList.add('active');
-    }
-
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('show');
-        document.body.style.overflow = 'auto';
-    }
-
-    // Close modal when clicking outside
-    document.querySelectorAll('.modal-overlay').forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal(this.id);
-            }
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        rsvpModal = new bootstrap.Modal(document.getElementById('rsvpModal'));
     });
+
+    function openRsvpModal(btn) {
+        document.getElementById('eventIdInput').value   = btn.dataset.id;
+        document.getElementById('modalEventTitle').textContent = btn.dataset.title;
+        document.getElementById('modalEventDate').textContent  = btn.dataset.date;
+        document.getElementById('modalEventPlace').textContent = btn.dataset.venue;
+        document.getElementById('modalOrgName').textContent    = btn.dataset.org;
+
+        rsvpModal.show();
+    }
+
+    document.getElementById('rsvpForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const eventId = document.getElementById('eventIdInput').value;
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+
+        try {
+            const response = await fetch(`/events/${eventId}/rsvp`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                rsvpModal.hide();
+                location.reload();
+            } else {
+                alert(data.message || 'Failed to RSVP');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        } catch (err) {
+            alert('An error occurred. Please try again.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
+
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(alert => {
+            new bootstrap.Alert(alert).close();
+        });
+    }, 5000);
 </script>
 
 @endsection

@@ -98,57 +98,44 @@
         </div>
         @endif
 
-        <!-- Events Section -->
+<!-- Events Section -->
         <div class="section-header" style="margin-top: 50px;">
             <a href="{{ route('events') }}" class="section-title">
                 Events <i class="bi bi-chevron-right"></i>
             </a>
         </div>
         <div class="events-grid">
+            @forelse($events as $event)
             <div class="event-card">
                 <div class="event-image">
-                    <span class="event-date-badge">01/18/26 | PUP South</span>
-                    💻
+                    <span class="event-date-badge">{{ $event->formatted_date }} | {{ $event->venue ?? 'TBA' }}</span>
+                    📅
                 </div>
                 <div class="event-content">
-                    <div class="event-title">2026: Web Development Workshop</div>
+                    <div class="event-title">{{ $event->title }}</div>
                     <div class="event-description">
-                        This is how you do it! Building the web of tomorrow—one line of code at a time. 💻
+                        {{ Str::limit($event->description ?? 'No description available', 100) }}
                     </div>
                     <div class="event-meta">
-                        <div class="event-author">– Google Developer Groups on Campus</div>
+                        <div class="event-author">– {{ $event->org_name }}</div>
                         <div class="event-likes">
-                            <i class="bi bi-heart-fill"></i>
-                            19
+                            <i class="bi bi-people-fill"></i>
+                            {{ $event->rsvp_count }}
                         </div>
                     </div>
                 </div>
             </div>
-
+            @empty
             <div class="event-card">
-                <div class="event-image">
-                    <span class="event-date-badge">01/20/26 | Main Campus</span>
-                    🚀
-                </div>
-                <div class="event-content">
-                    <div class="event-title">This is how you do it! - IBITS</div>
-                    <div class="event-description">
-                        Are you ready to step out of your comfort zone?
-                    </div>
-                    <div class="event-meta">
-                        <div class="event-author">– Amazon Web Services</div>
-                        <div class="event-likes">
-                            <i class="bi bi-heart-fill"></i>
-                            24
-                        </div>
-                    </div>
+                <div class="event-content" style="text-align: center; padding: 40px;">
+                    <i class="bi bi-calendar-x" style="font-size: 48px; color: #ccc; display: block; margin-bottom: 15px;"></i>
+                    <p style="color: #999; margin: 0;">No upcoming events at the moment</p>
                 </div>
             </div>
+            @endforelse
         </div> 
         <div style="text-align: center; margin-top: 30px;">
             <a href="{{ route('events') }}" class="btn-view-more">View more...</a>
         </div>
-    </div>
-</div>
 
 @endsection
