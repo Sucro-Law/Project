@@ -379,9 +379,9 @@ class EventController extends Controller
 
         try {
             Event::deleteEvent($eventId);
-            return redirect()->route('events')->with('success', 'Event deleted successfully!');
+            return back()->with('success', 'Event cancelled successfully!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to delete event: ' . $e->getMessage());
+            return back()->with('error', 'Failed to cancel event: ' . $e->getMessage());
         }
     }
 

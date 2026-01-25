@@ -155,8 +155,8 @@ class Event extends Model
 
     public static function deleteEvent($eventId)
     {
-        return DB::delete(
-            "DELETE FROM events WHERE event_id = ?",
+        return DB::update(
+            "UPDATE events SET status = 'Cancelled' WHERE event_id = ?",
             [$eventId]
         );
     }
