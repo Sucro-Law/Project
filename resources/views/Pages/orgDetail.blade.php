@@ -181,15 +181,12 @@
     </div>
 
     <!-- Events Tab -->
-    <!-- Events Tab - Replace your existing Events tab -->
     <div id="events" class="tab-content">
         @if($role === 'officer' || $role === 'adviser')
-        <div class="create-event-trigger" onclick="openModal('eventPostingModal')">
-            <div class="trigger-avatar">
-                <div class="org-logo-small me-2">{{ $organization->short_name }}</div>
-            </div>
-            <div class="trigger-input">Create Event</div>
-        </div>
+        <button class="btn-create-event" onclick="openModal('eventPostingModal')">
+            <i class="bi bi-plus-circle"></i>
+            Create Event
+        </button>
         @endif
 
         <div class="events-list">
@@ -197,26 +194,24 @@
 
             @if(count($organizationEvents) > 0)
             @foreach($organizationEvents as $event)
-            <div class="event-item" style="position: relative;">
-                @if(($role === 'officer' || $role === 'adviser') && !$event->is_ended)
-                <div class="event-menu" style="position: absolute; top: 10px; right: 10px;">
-                    <button class="event-menu-btn" onclick="toggleEventMenu('{{ $event->event_id }}')" style="background: none; border: none; cursor: pointer; padding: 5px;">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </button>
-                    <div class="event-dropdown" id="eventMenu{{ $event->event_id }}" style="display: none; position: absolute; right: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 100; min-width: 120px;">
-                        <form action="{{ route('events.delete', $event->event_id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this event?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" style="width: 100%; padding: 10px 15px; border: none; background: none; text-align: left; cursor: pointer; color: #dc3545;">
-                                <i class="bi bi-trash me-2"></i>Cancel Event
+            <div class="event-item">
+                <div class="event-header-row">
+                    <span class="event-status {{ $event->is_ended ? 'status-ended' : 'status-upcoming' }}">
+                        {{ $event->is_ended ? 'ENDED' : 'UPCOMING' }}
+                    </span>
+                    @if(($role === 'officer' || $role === 'adviser') && !$event->is_ended)
+                    <div class="event-menu">
+                        <button class="event-menu-btn" onclick="toggleEventMenu('{{ $event->event_id }}')">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <div class="event-dropdown" id="eventMenu{{ $event->event_id }}">
+                            <button onclick="confirmDeleteEvent('{{ $event->event_id }}', '{{ addslashes($event->title) }}')">
+                                <i class="bi bi-trash"></i> Delete Event
                             </button>
-                        </form>
+                        </div>
                     </div>
+                    @endif
                 </div>
-                @endif
-                <span class="event-status {{ $event->is_ended ? 'status-ended' : 'status-upcoming' }}">
-                    {{ $event->is_ended ? 'ENDED' : 'UPCOMING' }}
-                </span>
                 <h3>{{ $event->title }}</h3>
                 <p class="event-description">
                     {{ $event->description }}
@@ -296,19 +291,34 @@
         openModal('attendeesModal');
     }
 
+    let currentEventId = null;
+
     function toggleEventMenu(eventId) {
-        document.querySelectorAll('.event-dropdown').forEach(d => {
-            if (d.id !== 'eventMenu' + eventId) d.style.display = 'none';
+        document.querySelectorAll('.event-dropdown').forEach(el => {
+            if (el.id !== 'eventMenu' + eventId) el.classList.remove('show');
         });
         const menu = document.getElementById('eventMenu' + eventId);
-        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        menu.classList.toggle('show');
     }
 
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.event-menu')) {
-            document.querySelectorAll('.event-dropdown').forEach(d => d.style.display = 'none');
+    function confirmDeleteEvent(id, title) {
+        currentEventId = id;
+        document.getElementById('deleteEventMessage').innerText = `Are you sure you want to delete "${title}"? This action cannot be undone.`;
+        document.getElementById('confirmDeleteModal').classList.add('show');
+    }
+
+    function submitDeleteEvent() {
+        if (!currentEventId) return;
+        const form = document.getElementById('deleteEventForm');
+        form.action = '/events/' + currentEventId + '/delete';
+        form.submit();
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.closest('.event-menu')) {
+            document.querySelectorAll('.event-dropdown').forEach(d => d.classList.remove('show'));
         }
-    });
+    }
 </script>
 
 <!-- Member Admission Modal (For Officers/Advisers) -->
@@ -837,6 +847,25 @@
                 SUBMIT RSVP
             </button>
         </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay confirmation-modal" id="confirmDeleteModal">
+    <div class="modal-content">
+        <div class="confirmation-body">
+            <i class="bi bi-exclamation-triangle warning-icon"></i>
+            <h4>Delete Event?</h4>
+            <p id="deleteEventMessage">Are you sure you want to delete this event?</p>
+            <form id="deleteEventForm" method="POST" style="display: none;">
+                @csrf
+                @method('DELETE')
+            </form>
+            <div class="confirmation-actions">
+                <button class="btn-secondary" onclick="closeModal('confirmDeleteModal')">Cancel</button>
+                <button class="btn-danger" onclick="submitDeleteEvent()">Yes, Delete</button>
+            </div>
+        </div>
     </div>
 </div>
 </div>
