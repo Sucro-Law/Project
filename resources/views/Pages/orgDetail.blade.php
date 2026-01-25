@@ -197,7 +197,23 @@
 
             @if(count($organizationEvents) > 0)
             @foreach($organizationEvents as $event)
-            <div class="event-item">
+            <div class="event-item" style="position: relative;">
+                @if(($role === 'officer' || $role === 'adviser') && !$event->is_ended)
+                <div class="event-menu" style="position: absolute; top: 10px; right: 10px;">
+                    <button class="event-menu-btn" onclick="toggleEventMenu('{{ $event->event_id }}')" style="background: none; border: none; cursor: pointer; padding: 5px;">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <div class="event-dropdown" id="eventMenu{{ $event->event_id }}" style="display: none; position: absolute; right: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 100; min-width: 120px;">
+                        <form action="{{ route('events.delete', $event->event_id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this event?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" style="width: 100%; padding: 10px 15px; border: none; background: none; text-align: left; cursor: pointer; color: #dc3545;">
+                                <i class="bi bi-trash me-2"></i>Cancel Event
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                @endif
                 <span class="event-status {{ $event->is_ended ? 'status-ended' : 'status-upcoming' }}">
                     {{ $event->is_ended ? 'ENDED' : 'UPCOMING' }}
                 </span>
@@ -279,6 +295,20 @@
 
         openModal('attendeesModal');
     }
+
+    function toggleEventMenu(eventId) {
+        document.querySelectorAll('.event-dropdown').forEach(d => {
+            if (d.id !== 'eventMenu' + eventId) d.style.display = 'none';
+        });
+        const menu = document.getElementById('eventMenu' + eventId);
+        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.event-menu')) {
+            document.querySelectorAll('.event-dropdown').forEach(d => d.style.display = 'none');
+        }
+    });
 </script>
 
 <!-- Member Admission Modal (For Officers/Advisers) -->
@@ -544,6 +574,7 @@
 
                             <div class="event-action-buttons">
                                 @if($role === 'adviser')
+                                <button type="button" class="btn-edit-event" onclick="openEditEventModal('{{ $event->event_id }}', '{{ addslashes($event->title) }}', '{{ addslashes($event->description ?? '') }}', '{{ $event->event_date }}', '{{ $event->venue ?? '' }}', '{{ $event->event_duration ?? 4 }}')">EDIT</button>
                                 <form action="{{ route('organization.approveEvent', [$organization->org_id, $event->event_id]) }}" method="POST" style="display: inline;">
                                     @csrf
                                     <button type="submit" class="btn-approve">APPROVE</button>
@@ -573,6 +604,84 @@
     </div>
 </div>
 
+<!-- Edit Event Modal (For Advisers) -->
+<div class="modal-overlay" id="editEventModal">
+    <div class="modal-content-event">
+        <button class="modal-close" onclick="closeModal('editEventModal')">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <h2 class="event-posting-title">EDIT EVENT</h2>
+
+        <form action="" method="POST" id="editEventForm">
+            @csrf
+            @method('PUT')
+            <div class="posting-grid">
+                <div class="full-width">
+                    <input type="text"
+                        name="title"
+                        id="editEventTitle"
+                        class="posting-input"
+                        placeholder="Title"
+                        required>
+                </div>
+
+                <div class="posting-left">
+                    <div class="details-section">
+                        <label class="mb-1">Details:</label>
+                        <input type="date"
+                            name="event_date"
+                            id="editEventDate"
+                            class="posting-input-small mb-2"
+                            placeholder="Date"
+                            required
+                            min="{{ date('Y-m-d', strtotime('+1 day')) }}">
+
+                        <input type="text"
+                            name="venue"
+                            id="editEventVenue"
+                            class="posting-input-small mb-2"
+                            placeholder="Event's Place"
+                            required>
+
+                        <input type="number"
+                            name="event_duration"
+                            id="editEventDuration"
+                            class="posting-input-small"
+                            placeholder="Duration (hours)"
+                            min="1"
+                            max="24">
+                    </div>
+                </div>
+
+                <div class="posting-right">
+                    <textarea name="description"
+                        id="editEventDescription"
+                        class="posting-textarea"
+                        placeholder="Description"
+                        required></textarea>
+                </div>
+            </div>
+
+            <div class="posting-footer">
+                <button type="submit" class="btn-submit-event">UPDATE EVENT</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditEventModal(eventId, title, description, eventDate, venue, duration) {
+        document.getElementById('editEventTitle').value = title.replace(/\\'/g, "'");
+        document.getElementById('editEventDescription').value = description.replace(/\\'/g, "'");
+        document.getElementById('editEventDate').value = eventDate.split(' ')[0];
+        document.getElementById('editEventVenue').value = venue;
+        document.getElementById('editEventDuration').value = duration;
+        document.getElementById('editEventForm').action = '/events/' + eventId + '/update';
+        openModal('editEventModal');
+    }
+</script>
+
 <style>
     .btn-cancel-event {
         background: #dc3545;
@@ -589,6 +698,23 @@
         background: #c82333;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-edit-event {
+        background: #ffc107;
+        color: #212529;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit-event:hover {
+        background: #e0a800;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
     }
 </style>
 
