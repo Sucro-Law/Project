@@ -30,12 +30,13 @@ class Notification extends Model
 
     public static function getForUser($userId, $limit = 10)
     {
+        $limit = (int) $limit;
         return DB::select("
             SELECT * FROM notifications
             WHERE user_id = ?
             ORDER BY created_at DESC
-            LIMIT ?
-        ", [$userId, $limit]);
+            LIMIT {$limit}
+        ", [$userId]);
     }
 
     public static function getUnreadCount($userId)
