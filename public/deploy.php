@@ -23,8 +23,8 @@ if ($signature) {
     }
 }
 
-// Change to project root
-$projectRoot = dirname(__FILE__);
+// Change to project root (one level up from public/)
+$projectRoot = dirname(__DIR__);
 chdir($projectRoot);
 
 // Run git pull
