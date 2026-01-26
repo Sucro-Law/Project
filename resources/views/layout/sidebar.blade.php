@@ -84,6 +84,14 @@
                     Settings
                 </a>
             </li>
+            @if(Auth::check() && Auth::user()->account_type === 'Admin')
+            <li class="nav-item">
+                <a href="{{ route('admin') }}" class="nav-link {{ request()->routeIs('admin') ? 'active' : '' }}">
+                    <i class="bi bi-shield-lock"></i>
+                    Admin Panel
+                </a>
+            </li>
+            @endif
             @if(Auth::check())
             <li class="nav-item">
                 <form action="{{ route('logout') }}" method="POST" style="margin: 0;">

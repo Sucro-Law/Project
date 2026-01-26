@@ -58,10 +58,13 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
+        // Redirect admin to admin page, others to dashboard
+        $redirectRoute = ($userModel->account_type === 'Admin') ? route('admin') : route('dashboard');
+
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
-            'redirect' => route('dashboard')
+            'redirect' => $redirectRoute
         ]);
     }
 
