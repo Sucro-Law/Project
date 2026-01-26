@@ -82,7 +82,18 @@ ALTER TABLE events
 ADD COLUMN image_path VARCHAR(255) NULL AFTER status;
 
 
--- 7. EVENT ATTENDANCE
+-- 7. EVENT LIKES
+CREATE TABLE event_likes (
+    like_id VARCHAR(20) PRIMARY KEY,
+    event_id VARCHAR(20) NOT NULL,
+    user_id VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE (event_id, user_id)
+);
+
+-- 8. EVENT ATTENDANCE
 CREATE TABLE event_attendance (
     attendance_id VARCHAR(20) PRIMARY KEY,
     event_id VARCHAR(20) NOT NULL,
@@ -168,6 +179,13 @@ BEGIN
     DECLARE max_seq INT;
     SELECT IFNULL(MAX(CAST(SUBSTRING(event_id, 5) AS UNSIGNED)), 0) INTO max_seq FROM events;
     SET NEW.event_id = CONCAT('EVT-', LPAD(max_seq + 1, 8, '0'));
+END $$
+
+CREATE TRIGGER trg_like_id_gen BEFORE INSERT ON event_likes FOR EACH ROW
+BEGIN
+    DECLARE max_seq INT;
+    SELECT IFNULL(MAX(CAST(SUBSTRING(like_id, 6) AS UNSIGNED)), 0) INTO max_seq FROM event_likes;
+    SET NEW.like_id = CONCAT('LIKE-', LPAD(max_seq + 1, 8, '0'));
 END $$
 
 CREATE TRIGGER trg_att_id_gen BEFORE INSERT ON event_attendance FOR EACH ROW

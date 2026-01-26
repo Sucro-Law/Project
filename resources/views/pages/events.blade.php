@@ -205,6 +205,36 @@
         margin-bottom: 20px;
         opacity: 0.3;
     }
+
+    .btn-like {
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+        padding: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-like:hover {
+        color: #e74c3c;
+    }
+
+    .btn-like.liked {
+        color: #e74c3c;
+    }
+
+    .btn-like i {
+        font-size: 18px;
+    }
+
+    .search-container .form-control:focus {
+        box-shadow: none;
+        border-color: var(--pup-maroon);
+    }
 </style>
 
 <div class="container-custom">
@@ -225,6 +255,26 @@
     @endif
 
     <h1 class="page-title">Events</h1>
+
+    {{-- Search Bar --}}
+    <div class="search-container mb-4">
+        <form action="{{ route('events.search') }}" method="GET" class="d-flex gap-2">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" name="q" class="form-control border-start-0" placeholder="Search events by title, description, or organization..." value="{{ $query ?? '' }}">
+            </div>
+            <button type="submit" class="btn btn-primary px-4" style="background: var(--pup-maroon); border-color: var(--pup-maroon);">Search</button>
+            @if(!empty($query))
+            <a href="{{ route('events') }}" class="btn btn-outline-secondary">Clear</a>
+            @endif
+        </form>
+    </div>
+
+    @if(!empty($query))
+    <p class="text-muted mb-3">Search results for: <strong>"{{ $query }}"</strong></p>
+    @endif
 
     {{-- Upcoming Events --}}
     <div class="row g-4">
@@ -247,9 +297,15 @@
                         <span class="badge status-{{ strtolower($event->status) }}">
                             {{ strtoupper($event->status) }}
                         </span>
-                        <span class="small text-muted">
-                            <i class="bi bi-people me-1"></i> {{ $event->rsvp_count }} RSVP'd
-                        </span>
+                        <div class="d-flex align-items-center gap-3">
+                            <button class="btn-like {{ $event->user_liked ? 'liked' : '' }}" onclick="toggleLike('{{ $event->event_id }}', this)" title="Like">
+                                <i class="bi {{ $event->user_liked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                                <span class="like-count">{{ $event->likes_count ?? 0 }}</span>
+                            </button>
+                            <span class="small text-muted">
+                                <i class="bi bi-people me-1"></i> {{ $event->rsvp_count }} RSVP'd
+                            </span>
+                        </div>
                     </div>
 
                     @if($event->description)
@@ -501,6 +557,45 @@
             new bootstrap.Alert(alert).close();
         });
     }, 5000);
+
+    async function toggleLike(eventId, btn) {
+        @auth
+        try {
+            const response = await fetch(`/events/${eventId}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const icon = btn.querySelector('i');
+                const countSpan = btn.querySelector('.like-count');
+
+                if (data.liked) {
+                    btn.classList.add('liked');
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else {
+                    btn.classList.remove('liked');
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+                countSpan.textContent = data.likeCount;
+            } else {
+                alert(data.message || 'Failed to like event');
+            }
+        } catch (err) {
+            alert('An error occurred. Please try again.');
+        }
+        @else
+        alert('Please login to like events');
+        window.location.href = '{{ route("login") }}';
+        @endauth
+    }
 </script>
 
 @endsection

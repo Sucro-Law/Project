@@ -64,7 +64,8 @@ class EventController extends Controller
                 o.org_name,
                 o.org_id,
                 u.full_name as creator_name,
-                (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count
+                (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count,
+                (SELECT COUNT(*) FROM event_likes el WHERE el.event_id = e.event_id) as likes_count
             FROM events e
             INNER JOIN organizations o ON e.org_id = o.org_id
             LEFT JOIN users u ON e.created_by = u.user_id
@@ -102,12 +103,15 @@ class EventController extends Controller
                 ? $acronym
                 : strtoupper(substr($event->org_name, 0, 3));
 
-            // Check if user has RSVP'd
+            // Check if user has RSVP'd and liked
             if (Auth::check()) {
                 $userRsvp = EventAttendance::getUserRSVP($event->event_id, Auth::id());
                 $event->user_rsvp_status = $userRsvp ? $userRsvp->status : null;
+                $userLike = DB::selectOne("SELECT like_id FROM event_likes WHERE event_id = ? AND user_id = ?", [$event->event_id, Auth::user()->user_id]);
+                $event->user_liked = $userLike ? true : false;
             } else {
                 $event->user_rsvp_status = null;
+                $event->user_liked = false;
             }
         }
 
@@ -125,7 +129,8 @@ class EventController extends Controller
             $lastName = $parsedName['last_name'];
         }
 
-        return view('pages.events', compact('upcomingEvents', 'pastEvents', 'sidebarData', 'firstName', 'middleName', 'lastName', 'isOfficerOrAdviser'));
+        $query = '';
+        return view('pages.events', compact('upcomingEvents', 'pastEvents', 'sidebarData', 'firstName', 'middleName', 'lastName', 'isOfficerOrAdviser', 'query'));
     }
 
     public function show($eventId)
@@ -440,5 +445,119 @@ class EventController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to reject event: ' . $e->getMessage());
         }
+    }
+
+    public function likeEvent($eventId)
+    {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Please login first'], 401);
+        }
+
+        $user = Auth::user();
+
+        try {
+            // Check if already liked
+            $existingLike = DB::selectOne(
+                "SELECT like_id FROM event_likes WHERE event_id = ? AND user_id = ?",
+                [$eventId, $user->user_id]
+            );
+
+            if ($existingLike) {
+                // Unlike
+                DB::delete("DELETE FROM event_likes WHERE event_id = ? AND user_id = ?", [$eventId, $user->user_id]);
+                $liked = false;
+            } else {
+                // Like
+                DB::insert("INSERT INTO event_likes (event_id, user_id) VALUES (?, ?)", [$eventId, $user->user_id]);
+                $liked = true;
+            }
+
+            // Get new like count
+            $likeCount = DB::selectOne("SELECT COUNT(*) as count FROM event_likes WHERE event_id = ?", [$eventId])->count;
+
+            return response()->json([
+                'success' => true,
+                'liked' => $liked,
+                'likeCount' => $likeCount
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('q', '');
+
+        $sidebarData = $this->getSidebarData();
+
+        // Check if user is officer or adviser
+        $isOfficerOrAdviser = false;
+        if (Auth::check()) {
+            $user = Auth::user();
+            $isOfficer = DB::selectOne(
+                "SELECT m.membership_id FROM memberships m
+                 WHERE m.user_id = ? AND m.membership_role = 'Officer' AND m.status = 'Active' LIMIT 1",
+                [$user->user_id]
+            );
+            $isAdviser = DB::selectOne(
+                "SELECT adviser_id FROM org_advisers WHERE user_id = ? LIMIT 1",
+                [$user->user_id]
+            );
+            $isOfficerOrAdviser = $isOfficer || $isAdviser || $user->account_type === 'Faculty';
+        }
+
+        $statusFilter = $isOfficerOrAdviser ? "IN ('Pending', 'Upcoming')" : "= 'Upcoming'";
+
+        $upcomingEvents = DB::select("
+            SELECT
+                e.*,
+                o.org_name,
+                o.org_id,
+                u.full_name as creator_name,
+                (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count,
+                (SELECT COUNT(*) FROM event_likes el WHERE el.event_id = e.event_id) as likes_count
+            FROM events e
+            INNER JOIN organizations o ON e.org_id = o.org_id
+            LEFT JOIN users u ON e.created_by = u.user_id
+            WHERE e.event_date >= NOW()
+            AND e.status {$statusFilter}
+            AND (e.title LIKE ? OR e.description LIKE ? OR o.org_name LIKE ?)
+            ORDER BY e.event_date ASC
+        ", ["%{$query}%", "%{$query}%", "%{$query}%"]);
+
+        // Format events
+        foreach ($upcomingEvents as $event) {
+            $event->formatted_date = date('m/d/y', strtotime($event->event_date));
+            $event->formatted_full_date = date('F j, Y', strtotime($event->event_date));
+
+            preg_match_all('/\b([A-Z])/u', $event->org_name, $matches);
+            $acronym = implode('', $matches[1]);
+            $event->org_short_name = !empty($acronym) && strlen($acronym) >= 2
+                ? $acronym
+                : strtoupper(substr($event->org_name, 0, 3));
+
+            if (Auth::check()) {
+                $userRsvp = EventAttendance::getUserRSVP($event->event_id, Auth::id());
+                $event->user_rsvp_status = $userRsvp ? $userRsvp->status : null;
+                $userLike = DB::selectOne("SELECT like_id FROM event_likes WHERE event_id = ? AND user_id = ?", [$event->event_id, Auth::user()->user_id]);
+                $event->user_liked = $userLike ? true : false;
+            } else {
+                $event->user_rsvp_status = null;
+                $event->user_liked = false;
+            }
+        }
+
+        $pastEvents = [];
+        $firstName = $middleName = $lastName = '';
+
+        if (Auth::check()) {
+            $parsedName = $this->parseUserName(Auth::user()->full_name);
+            $firstName = $parsedName['first_name'];
+            $middleName = $parsedName['middle_name'];
+            $lastName = $parsedName['last_name'];
+        }
+
+        return view('pages.events', compact('upcomingEvents', 'pastEvents', 'sidebarData', 'firstName', 'middleName', 'lastName', 'isOfficerOrAdviser', 'query'));
     }
 }
