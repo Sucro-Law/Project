@@ -311,6 +311,7 @@ SELECT * FROM memberships;
 SELECT * FROM org_advisers;
 SELECT * FROM org_officers;
 SELECT * FROM events;
+SELECT * FROM event_likes;
 SELECT * FROM event_attendance;
 SELECT * FROM officer_history;
 
