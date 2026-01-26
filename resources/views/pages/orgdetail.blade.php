@@ -243,9 +243,9 @@
             @foreach($organizationEvents as $event)
             <div class="event-item">
                 <div class="event-header-row">
-                    <span class="event-status {{ $event->is_ended ? 'status-ended' : 'status-upcoming' }}">
+                 <span class="event-status {{ $event->is_ended ? 'status-ended' : 'status-upcoming' }}">
                         {{ $event->is_ended ? 'ENDED' : 'UPCOMING' }}
-                    </span>
+</span>
                     @if(($role === 'officer' || $role === 'adviser') && !$event->is_ended)
                     <div class="event-menu">
                         <button class="event-menu-btn" onclick="toggleEventMenu('{{ $event->event_id }}')">

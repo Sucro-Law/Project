@@ -549,7 +549,7 @@ class EventController extends Controller
         }
 
         // Format events
-        foreach ($upcomingEvents as $event) {
+            foreach ($upcomingEvents as $event) {
             $event->formatted_date = date('m/d/y', strtotime($event->event_date));
             $event->formatted_full_date = date('F j, Y', strtotime($event->event_date));
 
