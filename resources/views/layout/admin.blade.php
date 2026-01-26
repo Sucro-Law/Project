@@ -679,6 +679,15 @@
                                 <option value="Inactive">Inactive</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label class="form-label">Adviser</label>
+                            <select class="form-select" name="adviser_id">
+                                <option value="">-- Select Adviser --</option>
+                                @foreach($facultyUsers as $faculty)
+                                <option value="{{ $faculty->user_id }}">{{ $faculty->full_name }} ({{ $faculty->school_id }})</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn-secondary" onclick="closeModal('createOrgModal')">Cancel</button>
@@ -717,6 +726,15 @@
                                 <option value="Inactive">Inactive</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label class="form-label">Adviser</label>
+                            <select class="form-select" name="adviser_id" id="editOrgAdviser">
+                                <option value="">-- Select Adviser --</option>
+                                @foreach($facultyUsers as $faculty)
+                                <option value="{{ $faculty->user_id }}">{{ $faculty->full_name }} ({{ $faculty->school_id }})</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn-secondary" onclick="closeModal('editOrgModal')">Cancel</button>
@@ -733,10 +751,11 @@
                     id: '{{ $org->org_id }}',
                     name: '{{ $org->org_name }}',
                     short_name: '{{ $org->short_name }}',
-                    description: '{{ $org->description ?? '' }}',
+                    description: `{!! addslashes($org->description ?? '') !!}`,
                     year: {{ $org->year }},
                     adviser_school_number: '{{ $org->adviser_school_id ?? '' }}',
                     adviser_name: '{{ $org->adviser_name ?? '' }}',
+                    adviser_user_id: '{{ $org->adviser_user_id ?? '' }}',
                     status: '{{ strtoupper($org->status) }}'
                 },
                 @endforeach
@@ -771,6 +790,7 @@
                     document.getElementById('editOrgName').value = org.name;
                     document.getElementById('editOrgDescription').value = org.description || '';
                     document.getElementById('editOrgStatus').value = org.status === 'ACTIVE' ? 'Active' : 'Inactive';
+                    document.getElementById('editOrgAdviser').value = org.adviser_user_id || '';
                     document.getElementById('editOrgForm').action = '/admin/organization/' + org.id + '/update';
 
                     document.getElementById('editOrgModal').classList.add('show');
