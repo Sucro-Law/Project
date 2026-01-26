@@ -56,7 +56,7 @@ class SettingsController extends Controller
 
         $sidebarData = $this->getSidebarData();
 
-        return view('Pages.settings', compact('user', 'sidebarData', 'firstName', 'middleName', 'lastName'));
+        return view('pages.settings', compact('user', 'sidebarData', 'firstName', 'middleName', 'lastName'));
     }
 
     public function update(Request $request)

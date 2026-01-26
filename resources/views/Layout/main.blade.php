@@ -23,11 +23,11 @@
 
 <body>
     <div class="dashboard">
-        @include('Layout.header')
+        @include('layout.header')
         <div class="main-content">
             @yield('content')
-            @include('Layout.sidebar')
-            @include('Layout.footer')
+            @include('layout.sidebar')
+            @include('layout.footer')
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

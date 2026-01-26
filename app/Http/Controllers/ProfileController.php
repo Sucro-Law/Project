@@ -174,7 +174,7 @@ class ProfileController extends Controller
 
         $sidebarData = $this->getSidebarData();
 
-        return view('Pages.profile', compact(
+        return view('pages.profile', compact(
             'user',
             'organizations',
             'attendedEvents',
@@ -284,7 +284,7 @@ class ProfileController extends Controller
 
         $sidebarData = $this->getSidebarData();
 
-        return view('Pages.profile', [
+        return view('pages.profile', [
             'user' => $user,
             'organizations' => $organizations,
             'attendedEvents' => [],

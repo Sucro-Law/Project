@@ -37,7 +37,7 @@ class AdminController extends Controller
             $org->year = date('Y', strtotime($org->created_at));
         }
 
-        return view('Layout.admin', compact('organizations'));
+        return view('layout.admin', compact('organizations'));
     }
 
     public function createOrganization(Request $request)

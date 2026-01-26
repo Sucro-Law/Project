@@ -108,7 +108,7 @@ class EventController extends Controller
             $lastName = $parsedName['last_name'];
         }
 
-        return view('Pages.events', compact('upcomingEvents', 'pastEvents', 'sidebarData', 'firstName', 'middleName', 'lastName'));
+        return view('pages.events', compact('upcomingEvents', 'pastEvents', 'sidebarData', 'firstName', 'middleName', 'lastName'));
     }
 
     public function show($eventId)
@@ -148,7 +148,7 @@ class EventController extends Controller
 
         $sidebarData = $this->getSidebarData();
 
-        return view('Pages.event-detail', compact('event', 'stats', 'attendees', 'userRsvp', 'sidebarData'));
+        return view('pages.event-detail', compact('event', 'stats', 'attendees', 'userRsvp', 'sidebarData'));
     }
 
     public function rsvp(Request $request, $eventId)

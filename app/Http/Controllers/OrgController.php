@@ -71,7 +71,7 @@ class OrgController extends Controller
 
         $sidebarData = $this->getSidebarData();
 
-        return view('Pages.dashboard', compact('organizations', 'events', 'sidebarData'));
+        return view('pages.dashboard', compact('organizations', 'events', 'sidebarData'));
     }
 
     public function organization()
@@ -116,7 +116,7 @@ class OrgController extends Controller
 
         $sidebarData = $this->getSidebarData();
 
-        return view('Pages.organization', compact('organizations', 'sidebarData'));
+        return view('pages.organization', compact('organizations', 'sidebarData'));
     }
 
     // Replace your existing show() method in OrgController with this:
@@ -306,7 +306,7 @@ class OrgController extends Controller
 
         $sidebarData = $this->getSidebarData();
 
-        return view('Pages.orgdetail', compact(
+        return view('pages.orgdetail', compact(
             'organization',
             'role',
             'isMember',
