@@ -73,14 +73,11 @@ CREATE TABLE events (
     venue VARCHAR(100),
     status ENUM('Pending', 'Upcoming', 'Ongoing', 'Done', 'Cancelled') DEFAULT 'Pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_by VARCHAR(20),
     FOREIGN KEY (org_id) REFERENCES organizations(org_id) ON DELETE CASCADE,
     FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE SET NULL
 ); 
-
-ALTER TABLE events
-ADD COLUMN image_path VARCHAR(255) NULL AFTER status;
-
 
 -- 7. EVENT LIKES
 CREATE TABLE event_likes (
@@ -98,7 +95,7 @@ CREATE TABLE event_attendance (
     attendance_id VARCHAR(20) PRIMARY KEY,
     event_id VARCHAR(20) NOT NULL,
     user_id VARCHAR(20) NOT NULL,
-    status ENUM('RSVP', 'Walk-in', 'Present', 'Absent', 'Excused') DEFAULT 'RSVP',
+    status ENUM('RSVP', 'Present') DEFAULT 'RSVP',
     remarks TEXT,
     FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -593,10 +590,7 @@ SELECT
     o.org_name,
     DATE_FORMAT(e.event_date, '%Y-%m-%d %H:%i') AS event_date,
     SUM(CASE WHEN ea.status = 'RSVP' THEN 1 ELSE 0 END) AS rsvp,
-    SUM(CASE WHEN ea.status = 'Present' THEN 1 ELSE 0 END) AS present,
-    SUM(CASE WHEN ea.status = 'Absent' THEN 1 ELSE 0 END) AS absent,
-    SUM(CASE WHEN ea.status = 'Walk-in' THEN 1 ELSE 0 END) AS walk_in,
-    SUM(CASE WHEN ea.status = 'Excused' THEN 1 ELSE 0 END) AS excused
+    SUM(CASE WHEN ea.status = 'Present' THEN 1 ELSE 0 END) AS present
 FROM events e
 JOIN organizations o ON e.org_id = o.org_id
 LEFT JOIN event_attendance ea ON e.event_id = ea.event_id
@@ -622,3 +616,14 @@ SELECT
 FROM org_advisers oa
 JOIN users u ON oa.user_id = u.user_id
 WHERE oa.org_id = 'ORG-00000001';
+
+-- events date
+SELECT 
+    event_id, 
+    title, 
+    DATE_FORMAT(event_date, '%M %d, %Y %h:%i %p') as formatted_date, 
+    venue, 
+    status 
+FROM events
+WHERE event_date >= NOW()
+ORDER BY event_date ASC;
