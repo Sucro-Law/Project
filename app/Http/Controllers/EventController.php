@@ -77,7 +77,7 @@ class EventController extends Controller
                 LEFT JOIN memberships m ON e.org_id = m.org_id AND m.user_id = ? AND m.status = 'Active'
                 WHERE e.event_date >= NOW()
                 AND e.status {$statusFilter}
-                ORDER BY e.event_date ASC
+                ORDER BY e.created_at ASC
             ", [$user->user_id]);
         } else {
             $upcomingEvents = [];

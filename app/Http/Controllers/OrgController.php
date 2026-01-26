@@ -938,6 +938,7 @@ class OrgController extends Controller
         }
     }
 
+    //UPDATE MEMBER ROLE/INFOS
     public function updateMember(Request $request, $orgId, $membershipId)
     {
         if (!Auth::check()) {
@@ -984,6 +985,41 @@ class OrgController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Failed to update member: ' . $e->getMessage());
+        }
+    }
+
+    //DELETE MEMBER
+    public function deleteMembership($orgId, $membershipId)
+    {
+        // Check if user is logged in and authorized
+        if (!Auth::check()) {
+            return back()->with('error', 'Please login first');
+        }
+
+        $user = Auth::user();
+
+        // Authorization: Only Officers or Advisers can delete records
+        $isOfficer = DB::selectOne("SELECT membership_id FROM memberships WHERE org_id = ? AND user_id = ? AND status = 'Active' AND membership_role = 'Officer'", [$orgId, $user->user_id]);
+        $isAdviser = DB::selectOne("SELECT adviser_id FROM org_advisers WHERE org_id = ? AND user_id = ? ", [$orgId, $user->user_id]);
+
+        if (!$isOfficer && !$isAdviser) {
+            return back()->with('error', 'You do not have permission to delete members');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // 1. Delete from org_officers if they were an officer
+            DB::delete("DELETE FROM org_officers WHERE membership_id = ?", [$membershipId]);
+
+            // 2. Delete the actual membership record
+            DB::delete("DELETE FROM memberships WHERE membership_id = ? AND org_id = ?", [$membershipId, $orgId]);
+
+            DB::commit();
+            return back()->with('success', 'Member record deleted successfully from the database.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to delete record: ' . $e->getMessage());
         }
     }
 }

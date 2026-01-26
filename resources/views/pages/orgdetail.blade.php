@@ -135,46 +135,81 @@
     </div>
 
     <!-- Officers Tab -->
-    <div id="officers" class="tab-content">
-        <div class="about-section">
-            <div class="section-title">Officers ({{ count($organization->officers) }})</div>
-            @if(count($organization->officers) > 0)
-            <div class="officers-grid">
-                @foreach($organization->officers as $officer)
-                <div class="officer-item">
-                    <div class="officer-role">{{ $officer->position ?? 'Officer' }}</div>
-                    <div class="officer-name">{{ $officer->full_name }}</div>
+   <div id="officers" class="tab-content">
+    <div class="about-section">
+        <div class="section-title">Officers ({{ count($organization->officers) }})</div>
+        @if(count($organization->officers) > 0)
+        <div class="officers-grid" style="display: flex; flex-direction: column; gap: 10px;">
+            @foreach($organization->officers as $index => $officer)
+            <div class="officer-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+
+                <div style="display: flex; align-items: center; gap: 40px;">
+                    <div class="officer-role" style="min-width: 120px; font-weight: 600; color: #800000;">
+                        {{ $officer->position ?? 'Officer' }}
+                    </div>
+                    <div class="officer-name">
+                        {{ $officer->full_name }}
+                    </div>
                 </div>
-                @endforeach
+
+                @if($role === 'officer' || $role === 'adviser')
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="btn-edit-member" style="background: none; border: none; color: #800000; cursor: pointer;" onclick="openEditModal('{{ $officer->membership_id }}', '{{ $officer->school_id ?? '' }}', '{{ addslashes($officer->full_name) }}', '{{ $officer->email ?? '' }}', '{{ $officer->membership_role }}', '{{ $officer->position ?? '' }}')">
+                        <i class="bi bi-box-arrow-up-right" style="font-size: 1.2rem;"></i>
+                    </button>
+
+                    <form action="/organization/{{ $organization->org_id }}/membership/{{ $officer->membership_id }}" method="POST" onsubmit="return confirmDelete('{{ addslashes($officer->full_name) }}')" style="margin: 0;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; display: flex; align-items: center;">
+                            <i class="bi bi-trash3" style="font-size: 1.2rem;"></i>
+                        </button>
+                    </form>
+                </div>
+                @endif
+
             </div>
-            @else
-            <p style="text-align: center; color: #666; padding: 20px;">No officers assigned yet.</p>
-            @endif
+            @endforeach
         </div>
+        @else
+        <p style="text-align: center; color: #666; padding: 20px;">No officers assigned yet.</p>
+        @endif
     </div>
+</div>
 
     <!-- Members Tab -->
     <div id="members" class="tab-content">
-        <div class="about-section">
-            <div class="section-title">Members ({{ count($organization->activeMemberships) }})</div>
-            @if(count($organization->activeMemberships) > 0)
-            <div class="members-grid">
-                @foreach($organization->activeMemberships as $index => $member)
-                <div class="member-card">
-                    <span class="member-name">{{ $index + 1 }}. {{ $member->full_name }}</span>
-                    @if($role === 'officer' || $role === 'adviser')
+    <div class="about-section">
+        <div class="section-title">Members ({{ count($organization->activeMemberships) }})</div>
+        @if(count($organization->activeMemberships) > 0)
+        <div class="members-grid">
+            @foreach($organization->activeMemberships as $index => $member)
+            <div class="member-card" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;">
+                <span class="member-name">{{ $index + 1 }}. {{ $member->full_name }}</span>
+
+                @if($role === 'officer' || $role === 'adviser')
+                <div style="display: flex; align-items: center; gap: 12px;">
                     <button class="btn-edit-member" onclick="openEditModal('{{ $member->membership_id }}', '{{ $member->school_id ?? '' }}', '{{ addslashes($member->full_name) }}', '{{ $member->email ?? '' }}', '{{ $member->membership_role }}', '{{ $member->position ?? '' }}')">
                         <i class="bi bi-box-arrow-up-right"></i>
                     </button>
-                    @endif
+
+                    <form action="/organization/{{ $organization->org_id }}/membership/{{ $member->membership_id }}" method="POST" onsubmit="return confirmDelete('{{ addslashes($member->full_name) }}')" style="margin: 0;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; display: flex; align-items: center; padding: 0;">
+                            <i class="bi bi-trash3" style="font-size: 1.2rem;"></i>
+                        </button>
+                    </form>
                 </div>
-                @endforeach
+                @endif
             </div>
-            @else
-            <p style="text-align: center; color: #666; padding: 20px;">No active members yet.</p>
-            @endif
+            @endforeach
         </div>
+        @else
+        <p style="text-align: center; color: #666; padding: 20px;">No active members yet.</p>
+        @endif
     </div>
+</div>
 
     <!-- Alumni Tab -->
     <div id="alumni" class="tab-content">
@@ -865,6 +900,8 @@
     </div>
 </div>
 
+
+
 <!-- RSVP Modal -->
 <div class="modal-overlay" id="rsvpModal">
     <div class="modal-content">
@@ -1040,6 +1077,11 @@
             positionInput.required = false;
             positionInput.placeholder = 'Role (IF OFFICER)';
         }
+    }
+
+
+    function confirmDelete(name) {
+        return confirm("Are you sure you want to permanently delete " + name + " from this organization? This action cannot be undone.");
     }
 </script>
 

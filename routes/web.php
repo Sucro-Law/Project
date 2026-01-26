@@ -98,3 +98,6 @@ Route::delete('/admin/organization/{orgId}/delete', [AdminController::class, 'de
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::post('/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
+
+
+Route::delete('/organization/{orgId}/membership/{membershipId}', [OrgController::class, 'deleteMembership']);
