@@ -1,3 +1,97 @@
+# PUP Student Organization Management System
+
+A web-based management system for student organizations at the Polytechnic University of the Philippines.
+
+## Features
+
+### User Management
+- Student, Faculty, and Admin accounts
+- Role-based access control (Member, Officer, Adviser, Admin)
+- Profile management
+
+### Organization Management
+- View and search organizations
+- Membership application and approval
+- Officer and adviser assignment
+- Member role modification
+
+### Event Management
+- Create and manage events
+- Event approval workflow (Officer creates, Adviser approves)
+- RSVP functionality for members
+- Like/React feature
+- Event search
+
+### Admin Module
+- Organization CRUD operations
+- Search and filter organizations
+
+## Tech Stack
+
+- **Framework:** Laravel 12
+- **Frontend:** Blade templates, Bootstrap 5, Vite
+- **Database:** MySQL
+- **Authentication:** Laravel built-in auth
+
+## Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/Sucro-Law/Project.git
+cd Project
+```
+
+2. Install dependencies
+```bash
+composer install
+npm install
+```
+
+3. Configure environment
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. Set up database
+- Create a MySQL database
+- Update `.env` with database credentials
+- Import `SOMSystem-hostinger.sql`
+
+5. Build assets and run
+```bash
+npm run build
+php artisan serve
+```
+
+## Test Accounts
+
+All passwords are: `password123`
+
+| Type | Email | School ID |
+|------|-------|-----------|
+| Student | kagamayow@gmail.com | SN-00000123 |
+| Student | evansg@gmail.com | SN-00000101 |
+| Student | sisramiez@gmail.com | SN-00001110 |
+| Faculty | jkvelayo@gmail.com | FN-00001010 |
+| Faculty | cfcayona@gmail.com | FN-00022121 |
+| Faculty | kennyken@gmail.com | FN-00022322 |
+| Admin | admin@admin.com | ADMIN-001 |
+
+## Team
+
+- Ken John Vianney Mondragon
+- Josef Velayo
+- Franzel Cayona
+- Kelia Gamayo
+- Evans Gutierrez
+- Siska Ramirez
+
+---
+
+<details>
+<summary>Laravel Framework Information</summary>
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -57,3 +151,5 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+</details>
