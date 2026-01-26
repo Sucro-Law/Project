@@ -32,15 +32,13 @@ Route::get('/organization/detail/{id}', [OrgController::class, 'show'])->name('o
 
 // Event routes - Public viewing
 Route::get('/events', [EventController::class, 'index'])->name('events');
+Route::get('/events/search', [EventController::class, 'search'])->name('events.search');
 Route::get('/events/{eventId}', [EventController::class, 'show'])->name('events.show');
 
-// Event RSVP routes
+// Event RSVP and like routes
 Route::post('/events/{eventId}/rsvp', [EventController::class, 'rsvp'])->name('events.rsvp');
 Route::delete('/events/{eventId}/rsvp', [EventController::class, 'cancelRsvp'])->name('events.cancelRsvp');
-
-// Event like and search routes
 Route::post('/events/{eventId}/like', [EventController::class, 'likeEvent'])->name('events.like');
-Route::get('/events/search', [EventController::class, 'search'])->name('events.search');
 
 // Event management routes - For officers/advisers
 Route::post('/organization/{orgId}/events/create', [EventController::class, 'createEvent'])->name('events.create');
