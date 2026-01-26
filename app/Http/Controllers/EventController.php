@@ -154,26 +154,16 @@ class EventController extends Controller
     public function rsvp(Request $request, $eventId)
     {
         if (!Auth::check()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Please login to RSVP for this event'
-            ], 401);
+            return back()->with('error', 'Please login to RSVP for this event');
         }
 
         $event = Event::findById($eventId);
         if (!$event) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Event not found'
-            ], 404);
+            return back()->with('error', 'Event not found');
         }
 
-        // Check if event is still upcoming
         if (!in_array($event->status, ['Pending', 'Upcoming'])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cannot RSVP to this event. Event has already started or ended.'
-            ], 400);
+            return back()->with('error', 'Cannot RSVP to this event. Event has already started or ended.');
         }
 
         $user = Auth::user();
@@ -184,26 +174,14 @@ class EventController extends Controller
         ", [$user->user_id, $event->org_id]);
 
         if (!$isMember) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You must be a member of this organization to RSVP',
-                'redirect' => route('orgDetail', ['id' => $event->org_id])
-            ], 403);
+            return back()->with('error', 'You must be a member of this organization to RSVP');
         }
 
         try {
-            // Create or update RSVP
             EventAttendance::createRSVP($eventId, $user->user_id, 'RSVP');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Successfully RSVP\'d to the event!'
-            ]);
+            return back()->with('success', 'Successfully RSVP\'d to the event!');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to RSVP: ' . $e->getMessage()
-            ], 500);
+            return back()->with('error', 'Failed to RSVP: ' . $e->getMessage());
         }
     }
 
