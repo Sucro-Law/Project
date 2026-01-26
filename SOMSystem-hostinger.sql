@@ -305,6 +305,27 @@ END $$
 
 DELIMITER ;
 
+-- AUTO EVENT STATUS UPDATER
+-- Automatically updates event status based on date and duration
+DELIMITER $$
+
+CREATE EVENT auto_event_status_updater
+ON SCHEDULE EVERY 1 MINUTE
+DO
+BEGIN
+    UPDATE events
+    SET status = 'Ongoing'
+    WHERE status = 'Upcoming'
+      AND event_date <= NOW();
+
+    UPDATE events
+    SET status = 'Done'
+    WHERE status = 'Ongoing'
+      AND NOW() >= DATE_ADD(event_date, INTERVAL event_duration HOUR);
+END $$
+
+DELIMITER ;
+
 SELECT * FROM users;
 SELECT * FROM organizations;
 SELECT * FROM memberships;
