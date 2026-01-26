@@ -280,20 +280,22 @@
                         </div>
 
                         @auth
-                        @if($event->user_rsvp_status === 'RSVP')
-                        <button class="btn btn-success w-100" disabled>
-                            <i class="bi bi-check-circle me-2"></i> Already RSVP'd
-                        </button>
-                        @else
-                        <button class="btn btn-primary w-100"
-                            data-id="{{ $event->event_id }}"
-                            data-title="{{ $event->title }}"
-                            data-date="{{ $event->formatted_date }}"
-                            data-venue="{{ $event->venue ?? 'TBA' }}"
-                            data-org="{{ $event->org_name }}"
-                            onclick="openRsvpModal(this)">
-                            RSVP
-                        </button>
+                        @if(!$isOfficerOrAdviser)
+                            @if($event->user_rsvp_status === 'RSVP')
+                            <button class="btn btn-success w-100" disabled>
+                                <i class="bi bi-check-circle me-2"></i> Already RSVP'd
+                            </button>
+                            @else
+                            <button class="btn btn-primary w-100"
+                                data-id="{{ $event->event_id }}"
+                                data-title="{{ $event->title }}"
+                                data-date="{{ $event->formatted_date }}"
+                                data-venue="{{ $event->venue ?? 'TBA' }}"
+                                data-org="{{ $event->org_name }}"
+                                onclick="openRsvpModal(this)">
+                                RSVP
+                            </button>
+                            @endif
                         @endif
                         @else
                         <a href="{{ route('login') }}" class="btn btn-primary w-100">Login to RSVP</a>

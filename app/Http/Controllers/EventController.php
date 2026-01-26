@@ -125,7 +125,7 @@ class EventController extends Controller
             $lastName = $parsedName['last_name'];
         }
 
-        return view('pages.events', compact('upcomingEvents', 'pastEvents', 'sidebarData', 'firstName', 'middleName', 'lastName'));
+        return view('pages.events', compact('upcomingEvents', 'pastEvents', 'sidebarData', 'firstName', 'middleName', 'lastName', 'isOfficerOrAdviser'));
     }
 
     public function show($eventId)
