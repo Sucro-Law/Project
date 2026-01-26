@@ -48,9 +48,7 @@
             display: flex;
             gap: 15px;
             align-items: center;
-            /* This ensures buttons and search box line up perfectly */
             justify-content: flex-end;
-            /* Optional: keeps them on the right side */
         }
 
         .search-box {
@@ -159,8 +157,6 @@
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
-            line-clamp: 2;
-            /* Standard property for compatibility */
             overflow: hidden;
         }
 
@@ -189,159 +185,6 @@
         .org-status.inactive {
             background: #f8d7da;
             color: #721c24;
-        }
-
-        /* Events Section */
-        .events-section {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .events-grid {
-            display: grid;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .event-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 25px;
-            background: white;
-            position: relative;
-        }
-
-        .event-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .event-badge {
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .event-badge.upcoming {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .event-badge.ended {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .event-menu {
-            position: relative;
-        }
-
-        .event-menu-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #666;
-            padding: 5px 10px;
-        }
-
-        .event-menu-btn:hover {
-            color: #800000;
-        }
-
-        .event-dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-            min-width: 150px;
-        }
-
-        .event-dropdown.show {
-            display: block;
-        }
-
-        .event-dropdown button {
-            width: 100%;
-            padding: 10px 15px;
-            border: none;
-            background: none;
-            text-align: left;
-            cursor: pointer;
-            color: #dc3545;
-            font-weight: 500;
-        }
-
-        .event-dropdown button:hover {
-            background: #f8f9fa;
-        }
-
-        .event-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .event-description {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .event-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .event-detail-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #555;
-            font-size: 14px;
-        }
-
-        .event-detail-item i {
-            color: #800000;
-        }
-
-        .event-org-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #f8f9fa;
-            padding: 8px 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-
-        .event-org-logo {
-            width: 30px;
-            height: 30px;
-            background: #800000;
-            color: white;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
         }
 
         /* Modal Overlay */
@@ -594,6 +437,7 @@
 <body>
 
     <div class="events-container">
+
         @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-bottom: 20px;">
             {{ session('success') }}
@@ -661,23 +505,17 @@
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
-                <form id="createOrgForm" action="{{ route('admin.organization.create') }}" method="POST">
+                <form id="createOrgForm" action="{{ route('admin.organization.create') }}" method="POST" onsubmit="confirmCreateOrg(event)">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="form-label">Organization Name *</label>
                             <input type="text" class="form-control" name="org_name" required>
                         </div>
+
                         <div class="form-group">
                             <label class="form-label">Description</label>
                             <textarea class="form-control" name="description" rows="4"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Status *</label>
-                            <select class="form-select" name="status" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Adviser School Number</label>
@@ -686,6 +524,13 @@
                         <div class="form-group">
                             <label class="form-label">Adviser Name</label>
                             <input type="text" class="form-control" name="adviser_name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status *</label>
+                            <select class="form-select" name="status" required>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -705,7 +550,8 @@
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
-                <form id="editOrgForm" method="POST">
+
+                <form id="editOrgForm" method="POST" onsubmit="confirmUpdateOrg(event)">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="org_id" id="editOrgId">
@@ -718,13 +564,7 @@
                             <label class="form-label">Description</label>
                             <textarea class="form-control" name="description" id="editOrgDescription" rows="4"></textarea>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Status *</label>
-                            <select class="form-select" name="status" id="editOrgStatus" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                        </div>
+
                         <div class="form-group">
                             <label class="form-label">Adviser School Number</label>
                             <input type="text" class="form-control" name="adviser_school_number" id="editOrgAdviserSchoolNo">
@@ -732,6 +572,13 @@
                         <div class="form-group">
                             <label class="form-label">Adviser Name</label>
                             <input type="text" class="form-control" name="adviser_name" id="editOrgAdviserName">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status *</label>
+                            <select class="form-select" name="status" id="editOrgStatus" required>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -742,69 +589,125 @@
             </div>
         </div>
 
-        <script>
-            const organizationsData = {
-                @foreach($organizations as $org)
-                '{{ $org->org_id }}': {
-                    id: '{{ $org->org_id }}',
-                    name: '{{ $org->org_name }}',
-                    short_name: '{{ $org->short_name }}',
-                    description: `{!! addslashes($org->description ?? '') !!}`,
-                    year: {{ $org->year }},
-                    adviser_school_number: '{{ $org->adviser_school_id ?? '' }}',
-                    adviser_name: '{{ $org->adviser_name ?? '' }}',
-                    adviser_user_id: '{{ $org->adviser_user_id ?? '' }}',
-                    status: '{{ strtoupper($org->status) }}'
-                },
-                @endforeach
-            };
+        <!-- Confirmation Modal for Create -->
+        <div class="modal-overlay confirmation-modal" id="confirmCreateModal">
+            <div class="modal-content">
+                <div class="confirmation-body">
+                    <i class="bi bi-exclamation-triangle warning-icon"></i>
+                    <h4>Create Organization?</h4>
+                    <p>Are you sure you want to create this organization?</p>
+                    <div class="confirmation-actions">
+                        <button class="btn-secondary" onclick="closeModal('confirmCreateModal')">Cancel</button>
+                        <button class="btn-primary" onclick="submitCreateOrg()">Yes, Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            // SEARCH FUNCTIONALITY
-            document.getElementById('searchInput').addEventListener('input', function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                const orgCards = document.querySelectorAll('.org-card');
+        <!-- Confirmation Modal for Update -->
+        <div class="modal-overlay confirmation-modal" id="confirmUpdateModal">
+            <div class="modal-content">
+                <div class="confirmation-body">
+                    <i class="bi bi-exclamation-triangle warning-icon"></i>
+                    <h4>Update Organization?</h4>
+                    <p>Are you sure you want to update this organization's details?</p>
+                    <div class="confirmation-actions">
+                        <button class="btn-secondary" onclick="closeModal('confirmUpdateModal')">Cancel</button>
+                        <button class="btn-primary" onclick="submitUpdateOrg()">Yes, Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                orgCards.forEach(card => {
-                    const orgName = card.getAttribute('data-org-name');
-                    card.style.display = orgName.includes(searchTerm) ? 'block' : 'none';
-                });
+    </div>
+
+    <script>
+        const organizationsData = {
+            @foreach($organizations as $org)
+            '{{ $org->org_id }}': {
+                id: '{{ $org->org_id }}',
+                name: '{{ $org->org_name }}',
+                short_name: '{{ $org->short_name }}',
+                description: `{!! addslashes($org->description ?? '') !!}`,
+                year: {{ $org->year }},
+                adviser_school_number: '{{ $org->adviser_school_id ?? '' }}',
+                adviser_name: '{{ $org->adviser_name ?? '' }}',
+                status: '{{ $org->status }}'
+            },
+            @endforeach
+        };
+
+        // SEARCH FUNCTIONALITY
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const orgCards = document.querySelectorAll('.org-card');
+
+            orgCards.forEach(card => {
+                const orgName = card.getAttribute('data-org-name');
+                card.style.display = orgName.includes(searchTerm) ? 'block' : 'none';
             });
+        });
 
-            // MODAL CONTROLS
-            function closeModal(modalId) {
-                document.getElementById(modalId).classList.remove('show');
+        // MODAL CONTROLS
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // ORGANIZATION LOGIC
+        function openCreateOrgModal() {
+            document.getElementById('createOrgForm').reset();
+            document.getElementById('createOrgModal').classList.add('show');
+        }
+
+        function openEditOrgModal(orgId) {
+            const org = organizationsData[orgId];
+
+            if (org) {
+                document.getElementById('editOrgId').value = org.id;
+                document.getElementById('editOrgName').value = org.name;
+                document.getElementById('editOrgDescription').value = org.description || '';
+                document.getElementById('editOrgAdviserSchoolNo').value = org.adviser_school_number || '';
+                document.getElementById('editOrgAdviserName').value = org.adviser_name || '';
+                document.getElementById('editOrgStatus').value = org.status === 'Active' ? 'Active' : 'Inactive';
+                document.getElementById('editOrgForm').action = '/admin/organization/' + org.id + '/update';
+
+                document.getElementById('editOrgModal').classList.add('show');
+            } else {
+                alert('Organization not found');
             }
+        }
 
-            // ORGANIZATION LOGIC
-            function openCreateOrgModal() {
-                document.getElementById('createOrgModal').classList.add('show');
-            }
+        function confirmCreateOrg(event) {
+            event.preventDefault();
+            document.getElementById('confirmCreateModal').classList.add('show');
+        }
 
-            function openEditOrgModal(orgId) {
-                const org = organizationsData[orgId];
+        function submitCreateOrg() {
+            closeModal('confirmCreateModal');
+            document.getElementById('createOrgForm').removeEventListener('submit', confirmCreateOrg);
+            document.getElementById('createOrgForm').submit();
+        }
 
-                if (org) {
-                    document.getElementById('editOrgId').value = org.id;
-                    document.getElementById('editOrgName').value = org.name;
-                    document.getElementById('editOrgDescription').value = org.description || '';
-                    document.getElementById('editOrgStatus').value = org.status === 'ACTIVE' ? 'Active' : 'Inactive';
-                    document.getElementById('editOrgAdviserSchoolNo').value = org.adviser_school_number || '';
-                    document.getElementById('editOrgAdviserName').value = org.adviser_name || '';
-                    document.getElementById('editOrgForm').action = '/admin/organization/' + org.id + '/update';
+        function confirmUpdateOrg(event) {
+            event.preventDefault();
+            document.getElementById('confirmUpdateModal').classList.add('show');
+        }
 
-                    document.getElementById('editOrgModal').classList.add('show');
-                } else {
-                    alert('Organization not found');
-                }
-            }
+        function submitUpdateOrg() {
+            closeModal('confirmUpdateModal');
+            document.getElementById('editOrgForm').removeEventListener('submit', confirmUpdateOrg);
+            document.getElementById('editOrgForm').submit();
+        }
 
-            document.querySelectorAll('.modal-overlay').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) this.classList.remove('show');
-                });
+        // GLOBAL EVENT LISTENERS
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('show');
             });
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
