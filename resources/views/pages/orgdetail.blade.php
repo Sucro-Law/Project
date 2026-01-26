@@ -135,81 +135,81 @@
     </div>
 
     <!-- Officers Tab -->
-   <div id="officers" class="tab-content">
-    <div class="about-section">
-        <div class="section-title">Officers ({{ count($organization->officers) }})</div>
-        @if(count($organization->officers) > 0)
-        <div class="officers-grid" style="display: flex; flex-direction: column; gap: 10px;">
-            @foreach($organization->officers as $index => $officer)
-            <div class="officer-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <div id="officers" class="tab-content">
+        <div class="about-section">
+            <div class="section-title">Officers ({{ count($organization->officers) }})</div>
+            @if(count($organization->officers) > 0)
+            <div class="officers-grid" style="display: flex; flex-direction: column; gap: 10px;">
+                @foreach($organization->officers as $index => $officer)
+                <div class="officer-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
 
-                <div style="display: flex; align-items: center; gap: 40px;">
-                    <div class="officer-role" style="min-width: 120px; font-weight: 600; color: #800000;">
-                        {{ $officer->position ?? 'Officer' }}
+                    <div style="display: flex; align-items: center; gap: 40px;">
+                        <div class="officer-role" style="min-width: 120px; font-weight: 600; color: #800000;">
+                            {{ $officer->position ?? 'Officer' }}
+                        </div>
+                        <div class="officer-name">
+                            {{ $officer->full_name }}
+                        </div>
                     </div>
-                    <div class="officer-name">
-                        {{ $officer->full_name }}
-                    </div>
-                </div>
 
-                @if($role === 'officer' || $role === 'adviser')
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button class="btn-edit-member" style="background: none; border: none; color: #800000; cursor: pointer;" onclick="openEditModal('{{ $officer->membership_id }}', '{{ $officer->school_id ?? '' }}', '{{ addslashes($officer->full_name) }}', '{{ $officer->email ?? '' }}', '{{ $officer->membership_role }}', '{{ $officer->position ?? '' }}')">
-                        <i class="bi bi-box-arrow-up-right" style="font-size: 1.2rem;"></i>
-                    </button>
-
-                    <form action="/organization/{{ $organization->org_id }}/membership/{{ $officer->membership_id }}" method="POST" onsubmit="return confirmDelete('{{ addslashes($officer->full_name) }}')" style="margin: 0;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; display: flex; align-items: center;">
-                            <i class="bi bi-trash3" style="font-size: 1.2rem;"></i>
+                    @if($role === 'adviser')
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button class="btn-edit-member" style="background: none; border: none; color: #800000; cursor: pointer;" onclick="openEditModal('{{ $officer->membership_id }}', '{{ $officer->school_id ?? '' }}', '{{ addslashes($officer->full_name) }}', '{{ $officer->email ?? '' }}', '{{ $officer->membership_role }}', '{{ $officer->position ?? '' }}')">
+                            <i class="bi bi-box-arrow-up-right" style="font-size: 1.2rem;"></i>
                         </button>
-                    </form>
-                </div>
-                @endif
 
+                        <form action="/organization/{{ $organization->org_id }}/membership/{{ $officer->membership_id }}" method="POST" onsubmit="return confirmDelete('{{ addslashes($officer->full_name) }}')" style="margin: 0;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; display: flex; align-items: center;">
+                                <i class="bi bi-trash3" style="font-size: 1.2rem;"></i>
+                            </button>
+                        </form>
+                    </div>
+                    @endif
+
+                </div>
+                @endforeach
             </div>
-            @endforeach
+            @else
+            <p style="text-align: center; color: #666; padding: 20px;">No officers assigned yet.</p>
+            @endif
         </div>
-        @else
-        <p style="text-align: center; color: #666; padding: 20px;">No officers assigned yet.</p>
-        @endif
     </div>
-</div>
 
     <!-- Members Tab -->
     <div id="members" class="tab-content">
-    <div class="about-section">
-        <div class="section-title">Members ({{ count($organization->activeMemberships) }})</div>
-        @if(count($organization->activeMemberships) > 0)
-        <div class="members-grid">
-            @foreach($organization->activeMemberships as $index => $member)
-            <div class="member-card" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;">
-                <span class="member-name">{{ $index + 1 }}. {{ $member->full_name }}</span>
+        <div class="about-section">
+            <div class="section-title">Members ({{ count($organization->activeMemberships) }})</div>
+            @if(count($organization->activeMemberships) > 0)
+            <div class="members-grid">
+                @foreach($organization->activeMemberships as $index => $member)
+                <div class="member-card" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;">
+                    <span class="member-name">{{ $index + 1 }}. {{ $member->full_name }}</span>
 
-                @if($role === 'officer' || $role === 'adviser')
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <button class="btn-edit-member" onclick="openEditModal('{{ $member->membership_id }}', '{{ $member->school_id ?? '' }}', '{{ addslashes($member->full_name) }}', '{{ $member->email ?? '' }}', '{{ $member->membership_role }}', '{{ $member->position ?? '' }}')">
-                        <i class="bi bi-box-arrow-up-right"></i>
-                    </button>
-
-                    <form action="/organization/{{ $organization->org_id }}/membership/{{ $member->membership_id }}" method="POST" onsubmit="return confirmDelete('{{ addslashes($member->full_name) }}')" style="margin: 0;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; display: flex; align-items: center; padding: 0;">
-                            <i class="bi bi-trash3" style="font-size: 1.2rem;"></i>
+                    @if($role === 'officer' || $role === 'adviser')
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <button class="btn-edit-member" onclick="openEditModal('{{ $member->membership_id }}', '{{ $member->school_id ?? '' }}', '{{ addslashes($member->full_name) }}', '{{ $member->email ?? '' }}', '{{ $member->membership_role }}', '{{ $member->position ?? '' }}')">
+                            <i class="bi bi-box-arrow-up-right"></i>
                         </button>
-                    </form>
+
+                        <form action="/organization/{{ $organization->org_id }}/membership/{{ $member->membership_id }}" method="POST" onsubmit="return confirmDelete('{{ addslashes($member->full_name) }}')" style="margin: 0;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; display: flex; align-items: center; padding: 0;">
+                                <i class="bi bi-trash3" style="font-size: 1.2rem;"></i>
+                            </button>
+                        </form>
+                    </div>
+                    @endif
                 </div>
-                @endif
+                @endforeach
             </div>
-            @endforeach
+            @else
+            <p style="text-align: center; color: #666; padding: 20px;">No active members yet.</p>
+            @endif
         </div>
-        @else
-        <p style="text-align: center; color: #666; padding: 20px;">No active members yet.</p>
-        @endif
     </div>
-</div>
 
     <!-- Alumni Tab -->
     <div id="alumni" class="tab-content">
@@ -277,8 +277,12 @@
                         Author: {{ $event->author_name ?? 'Unknown' }}
                     </div>
                     <div class="event-detail-item">
-                        <i class="bi bi-heart-fill"></i>
-                        {{ $event->likes_count ?? 0 }} Likes
+                        <button class="btn-like {{ $event->user_liked ? 'liked' : '' }}"
+                            onclick="toggleLike('{{ $event->event_id }}', this)"
+                            style="background: none; border: none; cursor: pointer; color: {{ $event->user_liked ? '#ff0000' : '#666' }}">
+                            <i class="bi {{ $event->user_liked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                            <span class="like-count">{{ $event->likes_count ?? 0 }}</span> Likes
+                        </button>
                     </div>
                 </div>
 
@@ -315,65 +319,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    // Store attendees data for each event
-    const eventAttendees = {
-        @foreach($organizationEvents as $event)
-        '{{ $event->event_id }}': [
-            @foreach($event -> attendees as $attendee) {
-                name: '{{ $attendee->full_name }}',
-                status: '{{ $attendee->attendance_status }}'
-            },
-            @endforeach
-        ],
-        @endforeach
-    };
-
-    function showAttendees(eventId) {
-        const container = document.getElementById('attendeesListContainer');
-        const attendees = eventAttendees[eventId] || [];
-
-        if (attendees.length === 0) {
-            container.innerHTML = '<div class="attendee-row" style="text-align: center; color: #666;">No attendees yet</div>';
-        } else {
-            container.innerHTML = attendees.map((a, i) =>
-                `<div class="attendee-row">${i + 1}. ${a.name} <span style="color: #888; font-size: 12px;">(${a.status})</span></div>`
-            ).join('');
-        }
-
-        openModal('attendeesModal');
-    }
-
-    let currentEventId = null;
-
-    function toggleEventMenu(eventId) {
-        document.querySelectorAll('.event-dropdown').forEach(el => {
-            if (el.id !== 'eventMenu' + eventId) el.classList.remove('show');
-        });
-        const menu = document.getElementById('eventMenu' + eventId);
-        menu.classList.toggle('show');
-    }
-
-    function confirmDeleteEvent(id, title) {
-        currentEventId = id;
-        document.getElementById('deleteEventMessage').innerText = `Are you sure you want to delete "${title}"? This action cannot be undone.`;
-        document.getElementById('confirmDeleteModal').classList.add('show');
-    }
-
-    function submitDeleteEvent() {
-        if (!currentEventId) return;
-        const form = document.getElementById('deleteEventForm');
-        form.action = '/events/' + currentEventId + '/delete';
-        form.submit();
-    }
-
-    window.onclick = function(event) {
-        if (!event.target.closest('.event-menu')) {
-            document.querySelectorAll('.event-dropdown').forEach(d => d.classList.remove('show'));
-        }
-    }
-</script>
 
 <!-- Member Admission Modal (For Officers/Advisers) -->
 <div class="modal-overlay" id="memberAdmissionModal">
@@ -442,20 +387,6 @@
                 </div>
 
                 <div class="posting-left">
-                    <div class="image-upload-box">
-                        <label for="eventImage" class="upload-label">
-                            <i class="bi bi-plus-lg"></i>
-                            <span>Insert Image</span>
-                        </label>
-
-                        <img id="previewImage" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:8px;">
-
-                        <input type="file"
-                            name="event_image"
-                            id="eventImage"
-                            accept="image/*"
-                            style="display:none;">
-                    </div>
 
                     <div class="details-section">
                         <label class="mb-1">Details:</label>
@@ -499,18 +430,6 @@
         </form>
     </div>
 </div>
-
-<script>
-    document.getElementById('eventImage')?.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const img = document.getElementById('previewImage');
-            img.src = URL.createObjectURL(file);
-            img.style.display = 'block';
-        }
-    });
-</script>
-
 
 
 <!-- Pending Members Modal -->
@@ -610,17 +529,6 @@
 
                             <div class="event-content-row">
                                 <div class="event-visual-column">
-                                    <div class="event-image-preview">
-                                        @php
-                                        $imageSrc = !empty($event->event_image ?? $event->image_path)
-                                        ? asset($event->event_image ?? $event->image_path)
-                                        : asset('image/computer.jpg');
-                                        $defaultImage = asset('image/computer.jpg');
-                                        @endphp
-                                        <img src="{{ $imageSrc }}" alt="Event Image"
-                                            onerror="this.onerror=null; this.src='{{ $defaultImage }}';"
-                                            style="width: 100%; height: auto; display: block;">
-                                    </div>
 
                                     <div class="event-details-inputs">
                                         <label class="input-label">Details:</label>
@@ -734,53 +642,6 @@
     </div>
 </div>
 
-<script>
-    function openEditEventModal(eventId, title, description, eventDate, venue, duration) {
-        document.getElementById('editEventTitle').value = title.replace(/\\'/g, "'");
-        document.getElementById('editEventDescription').value = description.replace(/\\'/g, "'");
-        document.getElementById('editEventDate').value = eventDate.split(' ')[0];
-        document.getElementById('editEventVenue').value = venue;
-        document.getElementById('editEventDuration').value = duration;
-        document.getElementById('editEventForm').action = '/events/' + eventId + '/update';
-        openModal('editEventModal');
-    }
-</script>
-
-<style>
-    .btn-cancel-event {
-        background: #dc3545;
-        color: white;
-        border: none;
-        padding: 10px 30px;
-        border-radius: 5px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .btn-cancel-event:hover {
-        background: #c82333;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-    }
-
-    .btn-edit-event {
-        background: #ffc107;
-        color: #212529;
-        border: none;
-        padding: 10px 30px;
-        border-radius: 5px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .btn-edit-event:hover {
-        background: #e0a800;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
-    }
-</style>
 
 
 <!-- Membership Modal (For Regular Users) -->
@@ -980,6 +841,75 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    function openEditEventModal(eventId, title, description, eventDate, venue, duration) {
+        document.getElementById('editEventTitle').value = title.replace(/\\'/g, "'");
+        document.getElementById('editEventDescription').value = description.replace(/\\'/g, "'");
+        document.getElementById('editEventDate').value = eventDate.split(' ')[0];
+        document.getElementById('editEventVenue').value = venue;
+        document.getElementById('editEventDuration').value = duration;
+        document.getElementById('editEventForm').action = '/events/' + eventId + '/update';
+        openModal('editEventModal');
+    }
+
+
+    // Store attendees data for each event
+    const eventAttendees = {
+        @foreach($organizationEvents as $event)
+        '{{ $event->event_id }}': [
+            @foreach($event -> attendees as $attendee) {
+                name: '{{ $attendee->full_name }}',
+                status: '{{ $attendee->attendance_status }}'
+            },
+            @endforeach
+        ],
+        @endforeach
+    };
+
+
+    function showAttendees(eventId) {
+        const container = document.getElementById('attendeesListContainer');
+        const attendees = eventAttendees[eventId] || [];
+
+        if (attendees.length === 0) {
+            container.innerHTML = '<div class="attendee-row" style="text-align: center; color: #666;">No attendees yet</div>';
+        } else {
+            container.innerHTML = attendees.map((a, i) =>
+                `<div class="attendee-row">${i + 1}. ${a.name} <span style="color: #888; font-size: 12px;">(${a.status})</span></div>`
+            ).join('');
+        }
+
+        openModal('attendeesModal');
+    }
+
+    let currentEventId = null;
+
+    function toggleEventMenu(eventId) {
+        document.querySelectorAll('.event-dropdown').forEach(el => {
+            if (el.id !== 'eventMenu' + eventId) el.classList.remove('show');
+        });
+        const menu = document.getElementById('eventMenu' + eventId);
+        menu.classList.toggle('show');
+    }
+
+    function confirmDeleteEvent(id, title) {
+        currentEventId = id;
+        document.getElementById('deleteEventMessage').innerText = `Are you sure you want to delete "${title}"? This action cannot be undone.`;
+        document.getElementById('confirmDeleteModal').classList.add('show');
+    }
+
+    function submitDeleteEvent() {
+        if (!currentEventId) return;
+        const form = document.getElementById('deleteEventForm');
+        form.action = '/events/' + currentEventId + '/delete';
+        form.submit();
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.closest('.event-menu')) {
+            document.querySelectorAll('.event-dropdown').forEach(d => d.classList.remove('show'));
+        }
+    }
+
     function showTab(tabName) {
         document.querySelectorAll('.tab-content').forEach(tab => {
             tab.classList.remove('active');
@@ -1010,6 +940,16 @@
                 closeModal(this.id);
             }
         });
+    });
+
+
+    document.getElementById('eventImage')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const img = document.getElementById('previewImage');
+            img.src = URL.createObjectURL(file);
+            img.style.display = 'block';
+        }
     });
 
     // Auto-dismiss alerts after 5 seconds
@@ -1083,68 +1023,33 @@
     function confirmDelete(name) {
         return confirm("Are you sure you want to permanently delete " + name + " from this organization? This action cannot be undone.");
     }
+
+
+    function toggleLike(eventId, button) {
+        fetch(`/events/${eventId}/like`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const icon = button.querySelector('i');
+                    const countSpan = button.querySelector('.like-count');
+
+                    if (data.liked) {
+                        icon.classList.replace('bi-heart', 'bi-heart-fill');
+                        button.style.color = '#ff0000';
+                    } else {
+                        icon.classList.replace('bi-heart-fill', 'bi-heart');
+                        button.style.color = '#666';
+                    }
+                    countSpan.innerText = data.likes_count;
+                }
+            });
+    }
 </script>
 
-<style>
-    .members-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        padding: 10px 0;
-    }
-
-    .member-card {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 15px 20px;
-    }
-
-    .member-name {
-        font-size: 14px;
-        color: #333;
-    }
-
-    .btn-edit-member {
-        background: none;
-        border: none;
-        color: #c9302c;
-        font-size: 18px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        padding: 5px;
-    }
-
-    .btn-edit-member:hover {
-        color: #800000;
-        transform: scale(1.1);
-    }
-
-    .edit-modal-close-btn {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 24px;
-        font-weight: bold;
-        cursor: pointer;
-        padding: 5px 15px;
-        line-height: 1;
-        z-index: 9999;
-        position: relative;
-    }
-
-    .edit-modal-close-btn:hover {
-        color: #ffcccc;
-        transform: scale(1.2);
-    }
-
-    @media (max-width: 768px) {
-        .members-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
 @endsection

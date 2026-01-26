@@ -101,3 +101,5 @@ Route::post('/notifications/read-all', [NotificationController::class, 'markAllA
 
 
 Route::delete('/organization/{orgId}/membership/{membershipId}', [OrgController::class, 'deleteMembership']);
+
+Route::post('/events/{eventId}/like', [OrgController::class, 'toggleLike'])->name('events.like');
