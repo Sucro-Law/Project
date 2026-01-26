@@ -365,7 +365,7 @@
             <div class="brand-logo">
                 <span style="font-size: 3rem; color: var(--pup-maroon); font-weight: bold;">PUP</span>
             </div>
-            <h1 class="brand-title">Hi, PUPians!</h1>
+            <h1 class="brand-title">Hi, PUPians! (auto-deploy works!)</h1>
             <p class="brand-subtitle">Please click or tap your destination</p>
             <p class="brand-tagline">Polytechnic University of the Philippines</p>
         </div>
