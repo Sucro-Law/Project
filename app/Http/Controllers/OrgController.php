@@ -131,7 +131,7 @@ class OrgController extends Controller
             o.status,
             o.created_at,
             o.updated_at,
-            COUNT(DISTINCT CASE WHEN m.status = 'Active' THEN m.membership_id END) as member_count,
+            COUNT(DISTINCT CASE WHEN m.status = 'Active' AND m.membership_role = 'Member' THEN m.membership_id END) as member_count,
             COUNT(DISTINCT CASE WHEN m.status = 'Active' AND m.membership_role = 'Officer' THEN m.membership_id END) as officers_count
         FROM organizations o
         LEFT JOIN memberships m ON o.org_id = m.org_id
