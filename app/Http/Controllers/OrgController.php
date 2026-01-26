@@ -74,10 +74,12 @@ class OrgController extends Controller
         return view('pages.dashboard', compact('organizations', 'events', 'sidebarData'));
     }
 
-    public function organization()
+    public function organization(Request $request)
     {
-        $results = DB::select("
-            SELECT 
+        $query = $request->get('q', '');
+
+        $sql = "
+            SELECT
                 o.org_id,
                 o.org_name,
                 o.description,
@@ -89,9 +91,17 @@ class OrgController extends Controller
             FROM organizations o
             LEFT JOIN memberships m ON o.org_id = m.org_id
             WHERE o.status = 'Active'
-            GROUP BY o.org_id, o.org_name, o.description, o.status, o.created_at, o.updated_at
-            ORDER BY o.created_at DESC
-        ");
+        ";
+
+        $params = [];
+        if (!empty($query)) {
+            $sql .= " AND (o.org_name LIKE ? OR o.description LIKE ?)";
+            $params = ["%{$query}%", "%{$query}%"];
+        }
+
+        $sql .= " GROUP BY o.org_id, o.org_name, o.description, o.status, o.created_at, o.updated_at ORDER BY o.created_at DESC";
+
+        $results = DB::select($sql, $params);
 
         $organizations = collect($results)->map(function ($org) {
             preg_match_all('/\b([A-Z])/u', $org->org_name, $matches);
@@ -116,7 +126,7 @@ class OrgController extends Controller
 
         $sidebarData = $this->getSidebarData();
 
-        return view('pages.organization', compact('organizations', 'sidebarData'));
+        return view('pages.organization', compact('organizations', 'sidebarData', 'query'));
     }
 
     // Replace your existing show() method in OrgController with this:

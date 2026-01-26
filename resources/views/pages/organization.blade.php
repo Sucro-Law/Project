@@ -178,6 +178,11 @@
         border: 1px solid #f5c6cb;
     }
 
+    .search-container .form-control:focus {
+        box-shadow: none;
+        border-color: var(--pup-maroon);
+    }
+
     .alert-info {
         background: #d1ecf1;
         color: #0c5460;
@@ -204,6 +209,26 @@
 
 <div class="container-custom">
     <h1 class="page-title">Organizations</h1>
+
+    {{-- Search Bar --}}
+    <div class="search-container mb-4">
+        <form action="{{ route('organization') }}" method="GET" class="d-flex gap-2">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" name="q" class="form-control border-start-0" placeholder="Search organizations by name or description..." value="{{ $query ?? '' }}">
+            </div>
+            <button type="submit" class="btn btn-primary px-4" style="background: var(--pup-maroon); border-color: var(--pup-maroon);">Search</button>
+            @if(!empty($query))
+            <a href="{{ route('organization') }}" class="btn btn-outline-secondary">Clear</a>
+            @endif
+        </form>
+    </div>
+
+    @if(!empty($query))
+    <p class="text-muted mb-3">Search results for: <strong>"{{ $query }}"</strong></p>
+    @endif
 
     @if(session('success'))
     <div class="alert alert-success">
