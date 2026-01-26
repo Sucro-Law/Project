@@ -55,7 +55,7 @@ class OrgController extends Controller
                     (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count
                 FROM events e
                 INNER JOIN organizations o ON e.org_id = o.org_id
-                INNER JOIN memberships m ON e.org_id = m.org_id AND m.user_id = ? AND m.status = 'Active'
+                LEFT JOIN memberships m ON e.org_id = m.org_id AND m.user_id = ? AND m.status = 'Active'
                 WHERE e.event_date >= NOW()
                 AND e.status IN ('Pending', 'Upcoming')
                 ORDER BY e.event_date ASC
