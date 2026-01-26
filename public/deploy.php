@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // GitHub webhook deployment script
 // Receives POST from GitHub and runs git pull
 
