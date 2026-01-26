@@ -12,10 +12,6 @@
         @endif
     </div>
     <div class="top-actions">
-        <div class="search-box">
-            <i class="bi bi-search"></i>
-            <input type="text" placeholder="Search">
-        </div>
         <div class="notification-btn" onclick="toggleNotifications()">
             <i class="bi bi-bell-fill"></i>
             <span class="notification-badge" id="notifBadge" style="display: none;">0</span>
