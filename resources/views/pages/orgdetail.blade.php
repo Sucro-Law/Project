@@ -157,13 +157,13 @@
         <div class="about-section">
             <div class="section-title">Members ({{ count($organization->activeMemberships) }})</div>
             @if(count($organization->activeMemberships) > 0)
-            <div class="members-list">
+            <div class="members-grid">
                 @foreach($organization->activeMemberships as $index => $member)
-                <div class="member-item" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>{{ $index + 1 }}. {{ $member->full_name }}</span>
+                <div class="member-card">
+                    <span class="member-name">{{ $index + 1 }}. {{ $member->full_name }}</span>
                     @if($role === 'officer' || $role === 'adviser')
                     <button class="btn-edit-member" onclick="openEditModal('{{ $member->membership_id }}', '{{ $member->school_id ?? '' }}', '{{ addslashes($member->full_name) }}', '{{ $member->email ?? '' }}', '{{ $member->membership_role }}', '{{ $member->position ?? '' }}')">
-                        <i class="bi bi-pencil"></i>
+                        <i class="bi bi-box-arrow-up-right"></i>
                     </button>
                     @endif
                 </div>
@@ -1039,19 +1039,41 @@
 </script>
 
 <style>
+    .members-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+    .member-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px 20px;
+    }
+
+    .member-name {
+        font-size: 14px;
+        color: #333;
+    }
+
     .btn-edit-member {
-        background: #ffc107;
-        color: #212529;
+        background: none;
         border: none;
-        padding: 5px 10px;
-        border-radius: 4px;
+        color: #c9302c;
+        font-size: 18px;
         cursor: pointer;
         transition: all 0.3s ease;
+        padding: 5px;
     }
 
     .btn-edit-member:hover {
-        background: #e0a800;
-        transform: translateY(-1px);
+        color: #800000;
+        transform: scale(1.1);
     }
 
     .edit-modal-close-btn {
@@ -1070,6 +1092,12 @@
     .edit-modal-close-btn:hover {
         color: #ffcccc;
         transform: scale(1.2);
+    }
+
+    @media (max-width: 768px) {
+        .members-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 @endsection

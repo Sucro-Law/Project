@@ -789,13 +789,13 @@ public function createEvent(Request $request, $orgId)
 
         $user = Auth::user();
 
-        // Only advisers can approve events
+        // Only advisers or Faculty can approve events
         $isAdviser = DB::selectOne(
             "SELECT adviser_id FROM org_advisers WHERE org_id = ? AND user_id = ? LIMIT 1",
             [$orgId, $user->user_id]
         );
 
-        if (!$isAdviser) {
+        if (!$isAdviser && $user->account_type !== 'Faculty') {
             return back()->with('error', 'Only advisers can approve events');
         }
 
@@ -836,13 +836,13 @@ public function createEvent(Request $request, $orgId)
 
         $user = Auth::user();
 
-        // Only advisers can reject events
+        // Only advisers or Faculty can reject events
         $isAdviser = DB::selectOne(
             "SELECT adviser_id FROM org_advisers WHERE org_id = ? AND user_id = ? LIMIT 1",
             [$orgId, $user->user_id]
         );
 
-        if (!$isAdviser) {
+        if (!$isAdviser && $user->account_type !== 'Faculty') {
             return back()->with('error', 'Only advisers can reject events');
         }
 
