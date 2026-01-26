@@ -334,9 +334,11 @@ INSERT INTO `u739712079_somsystem`.`organizations` (`org_name`, `description`, `
 INSERT INTO `u739712079_somsystem`.`organizations` (`org_name`, `description`, `status`, `created_at`) VALUES ('Sintang Pusa', 'PUP Organization for cats', 'Active', '2015-02-14');
 
 INSERT INTO memberships (user_id, org_id, academic_year, membership_role, joined_at, status) VALUES
-('PUP-00000003', 'ORG-00000002', '2025-2026', 'Member', '2024-01-20', 'Active'),
+('PUP-00000001', 'ORG-00000002', '2025-2026', 'Member', '2024-01-20', 'Active'),
 ('PUP-00000004', 'ORG-00000001', '2025-2026', 'Member', '2024-02-20', 'Active'),
-('PUP-00000006', 'ORG-00000003', '2025-2026', 'Officer', '2024-03-20', 'Active');
+('PUP-00000005', 'ORG-00000003', '2025-2026', 'Officer', '2024-03-20', 'Active'),
+('PUP-00000001', 'ORG-00000001', '2025-2026', 'Member', '2024-01-20', 'Active'),
+('PUP-00000005', 'ORG-00000002', '2025-2026', 'Officer', '2024-03-20', 'Active');
 
 INSERT INTO org_advisers (org_id, user_id) VALUES
 ('ORG-00000001', 'PUP-00000003'),
@@ -350,23 +352,23 @@ INSERT INTO `u739712079_somsystem`.`org_officers` (`membership_id`, `org_id`, `p
 
 INSERT INTO events (org_id, title, description, event_date, event_duration, venue, created_by) VALUES 
 -- AWS PUP Events
-('ORG-00000001', 'AWS Workshop: Cloud Computing Basics', 'Introduction to AWS services and cloud infrastructure', '2026-02-15 14:00:00', 3, 'CCIS Room 301', 'PUP-00000002'),
-('ORG-00000001', 'AWS Certification Bootcamp', 'Intensive training for AWS Certified Solutions Architect', '2026-03-10 09:00:00', 8, 'CCIS Lab 1', 'PUP-00000002'),
-('ORG-00000001', 'Cloud Security Webinar', 'Best practices for securing cloud infrastructure', '2026-01-28 16:00:00', 2, 'Online - Zoom', 'PUP-00000002'),
-('ORG-00000001', 'AWS Community Day', 'Networking and knowledge sharing for AWS enthusiasts', '2026-04-05 09:00:00', 6, 'Main Auditorium', 'PUP-00000002'),
+('ORG-00000001', 'AWS Workshop: Cloud Computing Basics', 'Introduction to AWS services and cloud infrastructure', '2026-02-15 14:00:00', 3, 'CCIS Room 301', 'PUP-00000003'),
+('ORG-00000001', 'AWS Certification Bootcamp', 'Intensive training for AWS Certified Solutions Architect', '2026-03-10 09:00:00', 8, 'CCIS Lab 1', 'PUP-00000003'),
+('ORG-00000001', 'Cloud Security Webinar', 'Best practices for securing cloud infrastructure', '2026-01-28 16:00:00', 2, 'Online - Zoom', 'PUP-00000003'),
+('ORG-00000001', 'AWS Community Day', 'Networking and knowledge sharing for AWS enthusiasts', '2026-04-05 09:00:00', 6, 'Main Auditorium', 'PUP-00000003'),
 
 -- GDG PUP Events  
-('ORG-00000002', 'GDG Tech Talk: AI and Machine Learning', 'Latest trends in AI/ML and practical applications', '2026-02-20 10:00:00', 4, 'Main Auditorium', 'PUP-00000003'),
-('ORG-00000002', 'Flutter Development Workshop', 'Build your first mobile app with Flutter', '2026-03-05 13:00:00', 5, 'CCIS Room 205', 'PUP-00000003'),
-('ORG-00000002', 'Google Cloud Study Jam', 'Hands-on labs for Google Cloud Platform', '2026-01-25 15:00:00', 4, 'CCIS Lab 2', 'PUP-00000003'),
-('ORG-00000002', 'DevFest 2026 PUP', 'Annual developer festival with speakers and workshops', '2026-04-15 08:00:00', 10, 'PUP Gymnasium', 'PUP-00000003'),
-('ORG-00000002', 'Web Development Series: React', 'Build modern web apps with React', '2026-02-25 14:00:00', 4, 'CCIS Room 401', 'PUP-00000003'),
+('ORG-00000002', 'GDG Tech Talk: AI and Machine Learning', 'Latest trends in AI/ML and practical applications', '2026-02-20 10:00:00', 4, 'Main Auditorium', 'PUP-00000002'),
+('ORG-00000002', 'Flutter Development Workshop', 'Build your first mobile app with Flutter', '2026-03-05 13:00:00', 5, 'CCIS Room 205', 'PUP-00000002'),
+('ORG-00000002', 'Google Cloud Study Jam', 'Hands-on labs for Google Cloud Platform', '2026-01-25 15:00:00', 4, 'CCIS Lab 2', 'PUP-00000002'),
+('ORG-00000002', 'DevFest 2026 PUP', 'Annual developer festival with speakers and workshops', '2026-04-15 08:00:00', 10, 'PUP Gymnasium', 'PUP-00000002'),
+('ORG-00000002', 'Web Development Series: React', 'Build modern web apps with React', '2026-02-25 14:00:00', 4, 'CCIS Room 401', 'PUP-00000002'),
 
 -- Sintang Pusa Events
-('ORG-00000003', 'Cat Adoption Drive', 'Community cat adoption event with free vet check-up', '2026-03-01 09:00:00', 6, 'Campus Grounds', 'PUP-00000004'),
-('ORG-00000003', 'Feline Care Seminar', 'Proper cat care, nutrition, and health management', '2026-02-10 14:00:00', 3, 'Student Center Hall', 'PUP-00000004'),
-('ORG-00000003', 'Cat Photography Workshop', 'Learn to capture the perfect cat moments', '2026-01-30 10:00:00', 4, 'Media Arts Room', 'PUP-00000004'),
-('ORG-00000003', 'Stray Cat Feeding Program Launch', 'Initiative to feed stray cats around campus', '2026-02-05 08:00:00', 3, 'Campus Garden', 'PUP-00000004');
+('ORG-00000003', 'Cat Adoption Drive', 'Community cat adoption event with free vet check-up', '2026-03-01 09:00:00', 6, 'Campus Grounds', 'PUP-00000006'),
+('ORG-00000003', 'Feline Care Seminar', 'Proper cat care, nutrition, and health management', '2026-02-10 14:00:00', 3, 'Student Center Hall', 'PUP-00000006'),
+('ORG-00000003', 'Cat Photography Workshop', 'Learn to capture the perfect cat moments', '2026-01-30 10:00:00', 4, 'Media Arts Room', 'PUP-00000006'),
+('ORG-00000003', 'Stray Cat Feeding Program Launch', 'Initiative to feed stray cats around campus', '2026-02-05 08:00:00', 3, 'Campus Garden', 'PUP-00000006');
 
 
 -- INSERT EVENT ATTENDANCE DATA
@@ -375,86 +377,63 @@ INSERT INTO events (org_id, title, description, event_date, event_duration, venu
 -- Event 1: AWS Workshop (EVT-00000001)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000001', 'PUP-00000001', 'RSVP', 'Looking forward to learning AWS'),
-('EVT-00000001', 'PUP-00000005', 'RSVP', 'Want to get certified'),
-('EVT-00000001', 'PUP-00000006', 'RSVP', 'Interested in cloud computing');
+('EVT-00000001', 'PUP-00000004', 'RSVP', 'Want to get certified');
 
 -- Event 2: AWS Certification Bootcamp (EVT-00000002)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000002', 'PUP-00000001', 'RSVP', 'Preparing for certification exam'),
-('EVT-00000002', 'PUP-00000005', 'RSVP', 'Need this for career advancement'),
-('EVT-00000002', 'PUP-00000006', 'RSVP', NULL);
+('EVT-00000002', 'PUP-00000004', 'RSVP', 'Need this for career advancement');
 
 -- Event 3: Cloud Security Webinar (EVT-00000003) - Already happened
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000003', 'PUP-00000001', 'Present', 'Very informative session'),
-('EVT-00000003', 'PUP-00000005', 'Present', 'Learned best practices'),
-('EVT-00000003', 'PUP-00000002', 'Present', 'Great speaker'),
-('EVT-00000003', 'PUP-00000006', 'Absent', 'Had a conflicting meeting');
+('EVT-00000003', 'PUP-00000004', 'Present', 'Learned best practices');
 
 -- Event 4: AWS Community Day (EVT-00000004)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000004', 'PUP-00000001', 'RSVP', 'Excited to network'),
-('EVT-00000004', 'PUP-00000005', 'RSVP', 'Looking forward to it');
+('EVT-00000004', 'PUP-00000004', 'RSVP', 'Looking forward to it');
 
 -- Event 5: GDG Tech Talk (EVT-00000005)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000005', 'PUP-00000001', 'RSVP', 'Interested in AI/ML'),
-('EVT-00000005', 'PUP-00000005', 'RSVP', 'Want to learn more about AI'),
-('EVT-00000005', 'PUP-00000006', 'RSVP', 'First GDG event');
+('EVT-00000005', 'PUP-00000005', 'RSVP', 'Want to learn more about AI');
 
 -- Event 6: Flutter Workshop (EVT-00000006)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000006', 'PUP-00000001', 'RSVP', 'Want to build mobile apps'),
-('EVT-00000006', 'PUP-00000005', 'RSVP', 'Flutter looks interesting'),
-('EVT-00000006', 'PUP-00000006', 'RSVP', NULL);
+('EVT-00000006', 'PUP-00000005', 'RSVP', 'Flutter looks interesting');
 
 -- Event 7: Google Cloud Study Jam (EVT-00000007) - Already happened
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000007', 'PUP-00000001', 'Present', 'Completed 3 labs successfully'),
-('EVT-00000007', 'PUP-00000005', 'Present', 'Got hands-on GCP experience'),
-('EVT-00000007', 'PUP-00000006', 'Present', 'Earned badges'),
-('EVT-00000007', 'PUP-00000002', 'Excused', 'Family emergency'),
-('EVT-00000007', 'PUP-00000004', 'Absent', 'No show');
+('EVT-00000007', 'PUP-00000005', 'Present', 'Got hands-on GCP experience');
 
 -- Event 8: DevFest 2026 (EVT-00000008)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000008', 'PUP-00000001', 'RSVP', 'Cannot wait for DevFest!'),
-('EVT-00000008', 'PUP-00000005', 'RSVP', 'Registered early'),
-('EVT-00000008', 'PUP-00000006', 'RSVP', 'Looking forward to workshops');
+('EVT-00000008', 'PUP-00000005', 'RSVP', 'Registered early');
 
 -- Event 9: Web Development Series (EVT-00000009)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
 ('EVT-00000009', 'PUP-00000001', 'RSVP', 'Want to learn React'),
-('EVT-00000009', 'PUP-00000005', 'RSVP', 'Building a project with React'),
-('EVT-00000009', 'PUP-00000006', 'RSVP', 'Frontend development interest');
+('EVT-00000009', 'PUP-00000005', 'RSVP', 'Building a project with React');
 
 -- Event 10: Cat Adoption Drive (EVT-00000010)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
-('EVT-00000010', 'PUP-00000001', 'RSVP', 'Planning to adopt a kitten'),
-('EVT-00000010', 'PUP-00000005', 'RSVP', 'Love cats!'),
-('EVT-00000010', 'PUP-00000006', 'RSVP', 'Want to volunteer');
+('EVT-00000010', 'PUP-00000005', 'RSVP', 'Planning to adopt a kitten');
 
 -- Event 11: Feline Care Seminar (EVT-00000011)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
-('EVT-00000011', 'PUP-00000001', 'RSVP', 'Need to learn cat care'),
-('EVT-00000011', 'PUP-00000005', 'RSVP', 'Just adopted a cat'),
-('EVT-00000011', 'PUP-00000006', 'RSVP', NULL);
+('EVT-00000011', 'PUP-00000005', 'RSVP', NULL);
 
 -- Event 12: Cat Photography Workshop (EVT-00000012) - Already happened
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES 
-('EVT-00000012', 'PUP-00000001', 'Present', 'Got amazing shots!'),
-('EVT-00000012', 'PUP-00000005', 'Present', 'Fun and creative workshop'),
-('EVT-00000012', 'PUP-00000006', 'Walk-in', 'Decided to join last minute');
+('EVT-00000012', 'PUP-00000005', 'Present', 'Fun and creative workshop');
 
 -- Event 13: Stray Cat Feeding Program (EVT-00000013)
 INSERT INTO event_attendance (event_id, user_id, status, remarks) VALUES
-('EVT-00000013', 'PUP-00000001', 'RSVP', 'Great initiative'),
-('EVT-00000013', 'PUP-00000005', 'RSVP', 'Happy to help'),
-('EVT-00000013', 'PUP-00000006', 'RSVP', 'Supporting the cause');
-
-INSERT INTO memberships (user_id, org_id, academic_year, membership_role, joined_at, status) VALUES
-('PUP-00000001', 'ORG-00000001', '2025-2026', 'Member', '2024-09-15', 'Active'),
-('PUP-00000001', 'ORG-00000002', '2025-2026', 'Member', '2024-10-01', 'Active');
+('EVT-00000013', 'PUP-00000005', 'RSVP', 'Happy to help');
 
 -- Past event for testing events attended
 INSERT INTO events (org_id, title, description, event_date, event_duration, venue, status, created_by) VALUES
