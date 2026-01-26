@@ -1,34 +1,46 @@
 <?php
-// Simple deployment webhook for GitHub
-// This script receives POST from GitHub webhook and runs git pull
+// GitHub webhook deployment script
+// Receives POST from GitHub and runs git pull
 
-// Security: Only allow POST requests
+// Secret token - change this to something random
+$secret = 'kadaorg-deploy-secret-2026';
+
+// Only allow POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     exit('Method not allowed');
 }
 
-// Change to project root directory
+// Verify GitHub signature
+$payload = file_get_contents('php://input');
+$signature = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
+
+if ($signature) {
+    $expected = 'sha256=' . hash_hmac('sha256', $payload, $secret);
+    if (!hash_equals($expected, $signature)) {
+        http_response_code(403);
+        exit('Invalid signature');
+    }
+}
+
+// Change to project root
 $projectRoot = dirname(__FILE__);
 chdir($projectRoot);
 
 // Run git pull
 $output = [];
 $returnCode = 0;
-exec('git checkout -- . 2>&1', $output, $returnCode);
-exec('git pull origin main 2>&1', $output, $returnCode);
+exec('/usr/bin/git checkout -- . 2>&1', $output, $returnCode);
+exec('/usr/bin/git pull origin main 2>&1', $output, $returnCode);
 
-// Log the deployment
+// Log deployment
 $logFile = $projectRoot . '/storage/logs/deploy.log';
 $logEntry = date('Y-m-d H:i:s') . " - Deploy triggered\n";
 $logEntry .= "Return code: $returnCode\n";
 $logEntry .= "Output: " . implode("\n", $output) . "\n";
 $logEntry .= "---\n";
-file_put_contents($logFile, $logEntry, FILE_APPEND);
+@file_put_contents($logFile, $logEntry, FILE_APPEND);
 
-// Return response
+// Response
 http_response_code(200);
-echo json_encode([
-    'success' => $returnCode === 0,
-    'output' => $output
-]);
+echo json_encode(['success' => $returnCode === 0, 'output' => $output]);
