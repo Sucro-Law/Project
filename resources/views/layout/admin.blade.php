@@ -680,13 +680,12 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Adviser</label>
-                            <select class="form-select" name="adviser_id">
-                                <option value="">-- Select Adviser --</option>
-                                @foreach($facultyUsers as $faculty)
-                                <option value="{{ $faculty->user_id }}">{{ $faculty->full_name }} ({{ $faculty->school_id }})</option>
-                                @endforeach
-                            </select>
+                            <label class="form-label">Adviser School Number</label>
+                            <input type="text" class="form-control" name="adviser_school_number">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Adviser Name</label>
+                            <input type="text" class="form-control" name="adviser_name">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -727,13 +726,12 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Adviser</label>
-                            <select class="form-select" name="adviser_id" id="editOrgAdviser">
-                                <option value="">-- Select Adviser --</option>
-                                @foreach($facultyUsers as $faculty)
-                                <option value="{{ $faculty->user_id }}">{{ $faculty->full_name }} ({{ $faculty->school_id }})</option>
-                                @endforeach
-                            </select>
+                            <label class="form-label">Adviser School Number</label>
+                            <input type="text" class="form-control" name="adviser_school_number" id="editOrgAdviserSchoolNo">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Adviser Name</label>
+                            <input type="text" class="form-control" name="adviser_name" id="editOrgAdviserName">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -790,7 +788,8 @@
                     document.getElementById('editOrgName').value = org.name;
                     document.getElementById('editOrgDescription').value = org.description || '';
                     document.getElementById('editOrgStatus').value = org.status === 'ACTIVE' ? 'Active' : 'Inactive';
-                    document.getElementById('editOrgAdviser').value = org.adviser_user_id || '';
+                    document.getElementById('editOrgAdviserSchoolNo').value = org.adviser_school_number || '';
+                    document.getElementById('editOrgAdviserName').value = org.adviser_name || '';
                     document.getElementById('editOrgForm').action = '/admin/organization/' + org.id + '/update';
 
                     document.getElementById('editOrgModal').classList.add('show');

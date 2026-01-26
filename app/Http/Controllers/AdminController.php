@@ -38,15 +38,7 @@ class AdminController extends Controller
             $org->year = date('Y', strtotime($org->created_at));
         }
 
-        // Get all faculty users for adviser assignment
-        $facultyUsers = DB::select("
-            SELECT user_id, full_name, school_id, email
-            FROM users
-            WHERE account_type = 'Faculty'
-            ORDER BY full_name ASC
-        ");
-
-        return view('layout.admin', compact('organizations', 'facultyUsers'));
+        return view('layout.admin', compact('organizations'));
     }
 
     public function createOrganization(Request $request)
@@ -59,7 +51,8 @@ class AdminController extends Controller
             'org_name' => 'required|string|max:100',
             'description' => 'nullable|string',
             'status' => 'required|in:Active,Inactive',
-            'adviser_id' => 'nullable|string'
+            'adviser_school_number' => 'nullable|string',
+            'adviser_name' => 'nullable|string'
         ]);
 
         try {
@@ -71,12 +64,17 @@ class AdminController extends Controller
             // Get the newly created org_id
             $newOrg = DB::selectOne("SELECT org_id FROM organizations WHERE org_name = ? ORDER BY created_at DESC LIMIT 1", [$validated['org_name']]);
 
-            // Assign adviser if selected
-            if (!empty($validated['adviser_id']) && $newOrg) {
-                DB::insert("
-                    INSERT INTO org_advisers (org_id, user_id, assigned_at)
-                    VALUES (?, ?, NOW())
-                ", [$newOrg->org_id, $validated['adviser_id']]);
+            // Assign adviser if school number provided
+            if (!empty($validated['adviser_school_number']) && $newOrg) {
+                // Find the faculty user by school_id
+                $adviser = DB::selectOne("SELECT user_id FROM users WHERE school_id = ? AND account_type = 'Faculty' LIMIT 1", [$validated['adviser_school_number']]);
+
+                if ($adviser) {
+                    DB::insert("
+                        INSERT INTO org_advisers (org_id, user_id, assigned_at)
+                        VALUES (?, ?, NOW())
+                    ", [$newOrg->org_id, $adviser->user_id]);
+                }
             }
 
             return redirect()->back()->with('success', 'Organization created successfully');
@@ -95,7 +93,8 @@ class AdminController extends Controller
             'org_name' => 'required|string|max:100',
             'description' => 'nullable|string',
             'status' => 'required|in:Active,Inactive',
-            'adviser_id' => 'nullable|string'
+            'adviser_school_number' => 'nullable|string',
+            'adviser_name' => 'nullable|string'
         ]);
 
         try {
@@ -109,12 +108,17 @@ class AdminController extends Controller
             // First, remove existing adviser
             DB::delete("DELETE FROM org_advisers WHERE org_id = ?", [$orgId]);
 
-            // Then assign new adviser if selected
-            if (!empty($validated['adviser_id'])) {
-                DB::insert("
-                    INSERT INTO org_advisers (org_id, user_id, assigned_at)
-                    VALUES (?, ?, NOW())
-                ", [$orgId, $validated['adviser_id']]);
+            // Then assign new adviser if school number provided
+            if (!empty($validated['adviser_school_number'])) {
+                // Find the faculty user by school_id
+                $adviser = DB::selectOne("SELECT user_id FROM users WHERE school_id = ? AND account_type = 'Faculty' LIMIT 1", [$validated['adviser_school_number']]);
+
+                if ($adviser) {
+                    DB::insert("
+                        INSERT INTO org_advisers (org_id, user_id, assigned_at)
+                        VALUES (?, ?, NOW())
+                    ", [$orgId, $adviser->user_id]);
+                }
             }
 
             return redirect()->back()->with('success', 'Organization updated successfully');
