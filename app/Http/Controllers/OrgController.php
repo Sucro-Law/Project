@@ -44,20 +44,26 @@ class OrgController extends Controller
             $org->year = date('Y', strtotime($org->created_at));
         }
 
-        // Get upcoming events for dashboard
-        $events = DB::select("
-            SELECT 
-                e.*,
-                o.org_name,
-                o.org_id,
-                (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count
-            FROM events e
-            INNER JOIN organizations o ON e.org_id = o.org_id
-            WHERE e.event_date >= NOW() 
-            AND e.status IN ('Pending', 'Upcoming')
-            ORDER BY e.event_date ASC
-            LIMIT 2
-        ");
+        // Get upcoming events for dashboard (only from user's organizations)
+        if (Auth::check()) {
+            $user = Auth::user();
+            $events = DB::select("
+                SELECT
+                    e.*,
+                    o.org_name,
+                    o.org_id,
+                    (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count
+                FROM events e
+                INNER JOIN organizations o ON e.org_id = o.org_id
+                INNER JOIN memberships m ON e.org_id = m.org_id AND m.user_id = ? AND m.status = 'Active'
+                WHERE e.event_date >= NOW()
+                AND e.status IN ('Pending', 'Upcoming')
+                ORDER BY e.event_date ASC
+                LIMIT 2
+            ", [$user->user_id]);
+        } else {
+            $events = [];
+        }
 
         // Format events
         foreach ($events as $event) {

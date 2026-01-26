@@ -57,38 +57,52 @@ class EventController extends Controller
         }
 
         // Get all upcoming events (include Pending for officers/advisers)
+        // Only show events from organizations the user is a member of
         $statusFilter = $isOfficerOrAdviser ? "IN ('Pending', 'Upcoming')" : "= 'Upcoming'";
-        $upcomingEvents = DB::select("
-            SELECT
-                e.*,
-                o.org_name,
-                o.org_id,
-                u.full_name as creator_name,
-                (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count,
-                (SELECT COUNT(*) FROM event_likes el WHERE el.event_id = e.event_id) as likes_count
-            FROM events e
-            INNER JOIN organizations o ON e.org_id = o.org_id
-            LEFT JOIN users u ON e.created_by = u.user_id
-            WHERE e.event_date >= NOW()
-            AND e.status {$statusFilter}
-            ORDER BY e.event_date ASC
-        ");
 
-        // Get past events
-        $pastEvents = DB::select("
-            SELECT 
-                e.*,
-                o.org_name,
-                o.org_id,
-                u.full_name as creator_name,
-                (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status IN ('RSVP', 'Present')) as rsvp_count
-            FROM events e
-            INNER JOIN organizations o ON e.org_id = o.org_id
-            LEFT JOIN users u ON e.created_by = u.user_id
-            WHERE e.status IN ('Done', 'Cancelled')
-            ORDER BY e.event_date DESC
-            LIMIT 10
-        ");
+        if (Auth::check()) {
+            $user = Auth::user();
+            $upcomingEvents = DB::select("
+                SELECT
+                    e.*,
+                    o.org_name,
+                    o.org_id,
+                    u.full_name as creator_name,
+                    (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count,
+                    (SELECT COUNT(*) FROM event_likes el WHERE el.event_id = e.event_id) as likes_count
+                FROM events e
+                INNER JOIN organizations o ON e.org_id = o.org_id
+                LEFT JOIN users u ON e.created_by = u.user_id
+                INNER JOIN memberships m ON e.org_id = m.org_id AND m.user_id = ? AND m.status = 'Active'
+                WHERE e.event_date >= NOW()
+                AND e.status {$statusFilter}
+                ORDER BY e.event_date ASC
+            ", [$user->user_id]);
+        } else {
+            $upcomingEvents = [];
+        }
+
+        // Get past events (only from user's organizations)
+        if (Auth::check()) {
+            $user = Auth::user();
+            $pastEvents = DB::select("
+                SELECT
+                    e.*,
+                    o.org_name,
+                    o.org_id,
+                    u.full_name as creator_name,
+                    (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status IN ('RSVP', 'Present')) as rsvp_count
+                FROM events e
+                INNER JOIN organizations o ON e.org_id = o.org_id
+                LEFT JOIN users u ON e.created_by = u.user_id
+                INNER JOIN memberships m ON e.org_id = m.org_id AND m.user_id = ? AND m.status = 'Active'
+                WHERE e.status IN ('Done', 'Cancelled')
+                ORDER BY e.event_date DESC
+                LIMIT 10
+            ", [$user->user_id]);
+        } else {
+            $pastEvents = [];
+        }
 
         // Format events
         foreach (array_merge($upcomingEvents, $pastEvents) as $event) {
@@ -509,22 +523,29 @@ class EventController extends Controller
 
         $statusFilter = $isOfficerOrAdviser ? "IN ('Pending', 'Upcoming')" : "= 'Upcoming'";
 
-        $upcomingEvents = DB::select("
-            SELECT
-                e.*,
-                o.org_name,
-                o.org_id,
-                u.full_name as creator_name,
-                (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count,
-                (SELECT COUNT(*) FROM event_likes el WHERE el.event_id = e.event_id) as likes_count
-            FROM events e
-            INNER JOIN organizations o ON e.org_id = o.org_id
-            LEFT JOIN users u ON e.created_by = u.user_id
-            WHERE e.event_date >= NOW()
-            AND e.status {$statusFilter}
-            AND (e.title LIKE ? OR e.description LIKE ? OR o.org_name LIKE ?)
-            ORDER BY e.event_date ASC
-        ", ["%{$query}%", "%{$query}%", "%{$query}%"]);
+        // Only show events from organizations the user is a member of
+        if (Auth::check()) {
+            $user = Auth::user();
+            $upcomingEvents = DB::select("
+                SELECT
+                    e.*,
+                    o.org_name,
+                    o.org_id,
+                    u.full_name as creator_name,
+                    (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count,
+                    (SELECT COUNT(*) FROM event_likes el WHERE el.event_id = e.event_id) as likes_count
+                FROM events e
+                INNER JOIN organizations o ON e.org_id = o.org_id
+                LEFT JOIN users u ON e.created_by = u.user_id
+                INNER JOIN memberships m ON e.org_id = m.org_id AND m.user_id = ? AND m.status = 'Active'
+                WHERE e.event_date >= NOW()
+                AND e.status {$statusFilter}
+                AND (e.title LIKE ? OR e.description LIKE ? OR o.org_name LIKE ?)
+                ORDER BY e.event_date ASC
+            ", [$user->user_id, "%{$query}%", "%{$query}%", "%{$query}%"]);
+        } else {
+            $upcomingEvents = [];
+        }
 
         // Format events
         foreach ($upcomingEvents as $event) {
