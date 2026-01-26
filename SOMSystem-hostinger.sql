@@ -298,15 +298,17 @@ SELECT * FROM officer_history;
 
 
 
--- Passwords are bcrypt hashed (use plain text password when logging in)
--- Kelia: kelikelihey123 | Josef: aqtosijosef | Franzel: zellyzel
--- Evans: chrisevans | Siska: siskasiska | Ken: kjvmon
-INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('SN-00000123', 'Kelia Gamayo', 'kagamayow@gmail.com', '$2y$12$/7S4FPsschkWOobdKjKdIODYED8JogholKsJ9MvTFdXl1rFXwIILe', 'Student');
-INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('FN-00001010', 'Josef Velayo', 'jkvelayo@gmail.com', '$2y$12$l61GS4/R82DWH1SERzMPyOBzWhnTSVeCx1YIP7rVBz25/.FT4VUtK', 'Faculty');
-INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('FN-00022121', 'Franzel Cayona', 'cfcayona@gmail.com', '$2y$12$2bQDGxKMdKLRkYJ.jiZ9d.QKN6B4e.mj7xG6v1eOpxRKGIm7XiAwi', 'Faculty');
-INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('SN-00000101', 'Evans Gutierrez', 'evansg@gmail.com', '$2y$12$xKvuaX8OL/NJKbBn.AvqIesKFe9ptZBitMpwD7u02EyTqRbJs7pIW', 'Student');
-INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('SN-00001110', 'Siska Ramirez', 'sisramiez@gmail.com', '$2y$12$iySQTN.S3DOGi/ANOQCOeO/FVBgyCGuYlm0Wxlh8Dux.xb6fWf3TO', 'Student');
-INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('FN-00022322', 'Ken Mondragon', 'kennyken@gmail.com', '$2y$12$vIK2JPamyFIoxV3ZymEVzecFDmlfn6A9jB/WU5Cj3g58Znp.dW2HK', 'Faculty');
+-- All passwords are: password123
+-- Students: kagamayow@gmail.com (SN-00000123), evansg@gmail.com (SN-00000101), sisramiez@gmail.com (SN-00001110)
+-- Faculty: jkvelayo@gmail.com (FN-00001010), cfcayona@gmail.com (FN-00022121), kennyken@gmail.com (FN-00022322)
+-- Admin: admin@admin.com (ADMIN-001)
+INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('SN-00000123', 'Kelia Gamayo', 'kagamayow@gmail.com', '$2y$12$EfZ9H7saMVGKl8E/0aEt9.NYaYglF3CPSlU.iM.6AH21LIpUPyJpW', 'Student');
+INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('FN-00001010', 'Josef Velayo', 'jkvelayo@gmail.com', '$2y$12$EfZ9H7saMVGKl8E/0aEt9.NYaYglF3CPSlU.iM.6AH21LIpUPyJpW', 'Faculty');
+INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('FN-00022121', 'Franzel Cayona', 'cfcayona@gmail.com', '$2y$12$EfZ9H7saMVGKl8E/0aEt9.NYaYglF3CPSlU.iM.6AH21LIpUPyJpW', 'Faculty');
+INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('SN-00000101', 'Evans Gutierrez', 'evansg@gmail.com', '$2y$12$EfZ9H7saMVGKl8E/0aEt9.NYaYglF3CPSlU.iM.6AH21LIpUPyJpW', 'Student');
+INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('SN-00001110', 'Siska Ramirez', 'sisramiez@gmail.com', '$2y$12$EfZ9H7saMVGKl8E/0aEt9.NYaYglF3CPSlU.iM.6AH21LIpUPyJpW', 'Student');
+INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('FN-00022322', 'Ken Mondragon', 'kennyken@gmail.com', '$2y$12$EfZ9H7saMVGKl8E/0aEt9.NYaYglF3CPSlU.iM.6AH21LIpUPyJpW', 'Faculty');
+INSERT INTO `u739712079_somsystem`.`users` (`school_id`, `full_name`, `email`, `password`, `account_type`) VALUES ('ADMIN-001', 'System Admin', 'admin@admin.com', '$2y$12$EfZ9H7saMVGKl8E/0aEt9.NYaYglF3CPSlU.iM.6AH21LIpUPyJpW', 'Admin');
 
 INSERT INTO `u739712079_somsystem`.`organizations` (`org_name`, `description`, `status`, `created_at`) VALUES ('AWS PUP', 'CCIS Students are welcome', 'Active', '2020-01-20');
 INSERT INTO `u739712079_somsystem`.`organizations` (`org_name`, `description`, `status`, `created_at`) VALUES ('GDG PUP', 'CCIS Students are welcome', 'Active', '2021-05-12');
