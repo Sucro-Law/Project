@@ -810,10 +810,10 @@
 
 <!-- Edit Member Modal -->
 <div class="modal-overlay" id="editMemberModal">
-    <div class="modal-content" style="padding: 0; max-width: 500px; border-radius: 8px; overflow: hidden;">
-        <div style="background: #500000; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;">
+    <div class="modal-content" style="padding: 0; max-width: 500px; border-radius: 8px; overflow: visible;">
+        <div style="background: #500000; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; position: relative;">
             <h4 style="margin: 0;">{{ $organization->org_name }}</h4>
-            <button type="button" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 5px 10px;" onclick="closeModal('editMemberModal')">×</button>
+            <button type="button" class="edit-modal-close-btn" onclick="closeModal('editMemberModal')">×</button>
         </div>
         <div style="padding: 20px;">
             <h2 class="modal-title" style="text-align: center; margin-bottom: 20px;">EDIT MEMBER</h2>
@@ -1050,6 +1050,24 @@
     .btn-edit-member:hover {
         background: #e0a800;
         transform: translateY(-1px);
+    }
+
+    .edit-modal-close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 5px 15px;
+        line-height: 1;
+        z-index: 9999;
+        position: relative;
+    }
+
+    .edit-modal-close-btn:hover {
+        color: #ffcccc;
+        transform: scale(1.2);
     }
 </style>
 @endsection
