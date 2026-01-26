@@ -71,10 +71,11 @@
                 <span class="btn-primary-custom" style="background: #28a745; cursor: default;">
                     <i class="bi bi-check-circle me-1"></i> MEMBER
                 </span>
-                @else
+                @elseif($account_type !== 'Faculty')
                 <button class="btn-primary-custom" onclick="openModal('membershipModal')">
                     MEMBERSHIP FORM
                 </button>
+
                 @endif
                 <button class="btn-secondary-custom" onclick="shareOrganization()">
                     <i class="bi bi-share me-1"></i> Share
@@ -253,7 +254,7 @@
                         <i class="bi bi-eye-fill"></i>
                     </button>
                     @endif
-                    @if($role !== 'officer' && $role !== 'adviser')
+                    @if($role !== 'officer' && $role !== 'adviser' && $account_type !== 'Faculty')
                     <form action="{{ route('events.rsvp', $event->event_id) }}" method="POST" style="display: inline;">
                         @csrf
                         <button type="submit" class="btn-rsvp">RSVP</button>
@@ -285,8 +286,10 @@
     const eventAttendees = {
         @foreach($organizationEvents as $event)
         '{{ $event->event_id }}': [
-            @foreach($event->attendees as $attendee)
-            { name: '{{ $attendee->full_name }}', status: '{{ $attendee->attendance_status }}' },
+            @foreach($event -> attendees as $attendee) {
+                name: '{{ $attendee->full_name }}',
+                status: '{{ $attendee->attendance_status }}'
+            },
             @endforeach
         ],
         @endforeach
@@ -574,14 +577,14 @@
                                 <div class="event-visual-column">
                                     <div class="event-image-preview">
                                         @php
-                                            $imageSrc = !empty($event->event_image ?? $event->image_path)
-                                                ? asset($event->event_image ?? $event->image_path)
-                                                : asset('image/computer.jpg');
-                                            $defaultImage = asset('image/computer.jpg');
+                                        $imageSrc = !empty($event->event_image ?? $event->image_path)
+                                        ? asset($event->event_image ?? $event->image_path)
+                                        : asset('image/computer.jpg');
+                                        $defaultImage = asset('image/computer.jpg');
                                         @endphp
                                         <img src="{{ $imageSrc }}" alt="Event Image"
-                                             onerror="this.onerror=null; this.src='{{ $defaultImage }}';"
-                                             style="width: 100%; height: auto; display: block;">
+                                            onerror="this.onerror=null; this.src='{{ $defaultImage }}';"
+                                            style="width: 100%; height: auto; display: block;">
                                     </div>
 
                                     <div class="event-details-inputs">
@@ -999,7 +1002,9 @@
     function openEditModal(membershipId, schoolId, fullName, email, memberRole, position) {
         // Parse full name into parts
         const nameParts = fullName.replace(/\\'/g, "'").split(' ');
-        let firstName = '', middleName = '', lastName = '';
+        let firstName = '',
+            middleName = '',
+            lastName = '';
 
         if (nameParts.length === 1) {
             firstName = nameParts[0];

@@ -234,6 +234,8 @@ class OrgController extends Controller
         $user = Auth::user();
         $role = 'guest';
 
+        $account_type = $user ? $user->account_type : null;
+
         if ($user) {
             $isAdviser = DB::selectOne(
                 "SELECT adviser_id FROM org_advisers WHERE org_id = ? AND user_id = ? LIMIT 1",
@@ -325,6 +327,7 @@ class OrgController extends Controller
         return view('pages.orgdetail', compact(
             'organization',
             'role',
+            'account_type',
             'isMember',
             'userMembership',
             'isOfficer',
@@ -744,57 +747,57 @@ class OrgController extends Controller
         }
     }
 
-public function createEvent(Request $request, $orgId)
-{
-    if (!Auth::check()) {
-        return back()->with('error', 'Please login first');
-    }
-
-    try {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'event_date' => 'required|date',
-            'venue' => 'required|string|max:255',
-            'event_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
-
-        $user = Auth::user();
-        $eventId = 'EVT-' . str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
-        $status = 'Pending';
-        $imagePath = null;
-
-        if ($request->hasFile('event_image')) {
-            $image = $request->file('event_image');
-            $filename = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('uploads/events'), $filename);
-            $imagePath = 'uploads/events/' . $filename;
+    public function createEvent(Request $request, $orgId)
+    {
+        if (!Auth::check()) {
+            return back()->with('error', 'Please login first');
         }
 
-        // INSERT with image_path included
-        DB::insert(
-            "INSERT INTO events 
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'event_date' => 'required|date',
+                'venue' => 'required|string|max:255',
+                'event_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            ]);
+
+            $user = Auth::user();
+            $eventId = 'EVT-' . str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+            $status = 'Pending';
+            $imagePath = null;
+
+            if ($request->hasFile('event_image')) {
+                $image = $request->file('event_image');
+                $filename = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('uploads/events'), $filename);
+                $imagePath = 'uploads/events/' . $filename;
+            }
+
+            // INSERT with image_path included
+            DB::insert(
+                "INSERT INTO events 
             (event_id, org_id, title, description, event_date, event_duration, venue, status, image_path, created_by, created_at) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
-            [
-                $eventId,
-                $orgId,
-                $validated['title'],
-                $validated['description'],
-                $validated['event_date'],
-                4,
-                $validated['venue'],
-                $status,
-                $imagePath,  // Include image path in initial insert
-                $user->user_id
-            ]
-        );
+                [
+                    $eventId,
+                    $orgId,
+                    $validated['title'],
+                    $validated['description'],
+                    $validated['event_date'],
+                    4,
+                    $validated['venue'],
+                    $status,
+                    $imagePath,  // Include image path in initial insert
+                    $user->user_id
+                ]
+            );
 
-        return back()->with('success', 'Event submitted successfully and is pending approval.');
-    } catch (\Exception $e) {
-        return back()->with('error', 'Failed to create event: ' . $e->getMessage());
+            return back()->with('success', 'Event submitted successfully and is pending approval.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to create event: ' . $e->getMessage());
+        }
     }
-}
 
 
     public function approveEvent($orgId, $eventId)
@@ -890,97 +893,97 @@ public function createEvent(Request $request, $orgId)
     }
 
     public function cancelEvent($orgId, $eventId)
-{
-    if (!Auth::check()) {
-        return back()->with('error', 'Please login first');
-    }
-
-    $user = Auth::user();
-
-    // Get the event details
-    $event = DB::selectOne(
-        "SELECT * FROM events WHERE event_id = ? AND org_id = ?",
-        [$eventId, $orgId]
-    );
-
-    if (!$event) {
-        return back()->with('error', 'Event not found');
-    }
-
-    // Check if user is the creator of the event
-    if ($event->created_by !== $user->user_id) {
-        return back()->with('error', 'You can only cancel events you created');
-    }
-
-    // Check if event is still pending
-    if ($event->status !== 'Pending') {
-        return back()->with('error', 'Only pending events can be cancelled');
-    }
-
-    try {
-        // Delete the event from database
-        DB::delete(
-            "DELETE FROM events WHERE event_id = ?",
-            [$eventId]
-        );
-
-        // Optionally delete the event image if it exists
-        if (!empty($event->image_path) && file_exists(public_path($event->image_path))) {
-            unlink(public_path($event->image_path));
+    {
+        if (!Auth::check()) {
+            return back()->with('error', 'Please login first');
         }
 
-        return back()->with('success', 'Event submission cancelled successfully!');
-    } catch (\Exception $e) {
-        return back()->with('error', 'Failed to cancel event: ' . $e->getMessage());
+        $user = Auth::user();
+
+        // Get the event details
+        $event = DB::selectOne(
+            "SELECT * FROM events WHERE event_id = ? AND org_id = ?",
+            [$eventId, $orgId]
+        );
+
+        if (!$event) {
+            return back()->with('error', 'Event not found');
+        }
+
+        // Check if user is the creator of the event
+        if ($event->created_by !== $user->user_id) {
+            return back()->with('error', 'You can only cancel events you created');
+        }
+
+        // Check if event is still pending
+        if ($event->status !== 'Pending') {
+            return back()->with('error', 'Only pending events can be cancelled');
+        }
+
+        try {
+            // Delete the event from database
+            DB::delete(
+                "DELETE FROM events WHERE event_id = ?",
+                [$eventId]
+            );
+
+            // Optionally delete the event image if it exists
+            if (!empty($event->image_path) && file_exists(public_path($event->image_path))) {
+                unlink(public_path($event->image_path));
+            }
+
+            return back()->with('success', 'Event submission cancelled successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to cancel event: ' . $e->getMessage());
+        }
     }
-}
 
-public function updateMember(Request $request, $orgId, $membershipId)
-{
-    if (!Auth::check()) {
-        return redirect()->route('login')->with('error', 'Please login first');
-    }
+    public function updateMember(Request $request, $orgId, $membershipId)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Please login first');
+        }
 
-    $validated = $request->validate([
-        'member_type' => 'required|in:Member,Officer',
-        'position' => 'nullable|string|required_if:member_type,Officer'
-    ]);
+        $validated = $request->validate([
+            'member_type' => 'required|in:Member,Officer',
+            'position' => 'nullable|string|required_if:member_type,Officer'
+        ]);
 
-    try {
-        DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-        DB::update(
-            "UPDATE memberships
+            DB::update(
+                "UPDATE memberships
              SET membership_role = ?,
                  status = 'Active'
              WHERE membership_id = ? AND org_id = ?",
-            [$validated['member_type'], $membershipId, $orgId]
-        );
+                [$validated['member_type'], $membershipId, $orgId]
+            );
 
-        if ($validated['member_type'] === 'Officer') {
-            $existingOfficer = DB::selectOne("SELECT * FROM org_officers WHERE membership_id = ?", [$membershipId]);
+            if ($validated['member_type'] === 'Officer') {
+                $existingOfficer = DB::selectOne("SELECT * FROM org_officers WHERE membership_id = ?", [$membershipId]);
 
-            if ($existingOfficer) {
-                DB::update(
-                    "UPDATE org_officers SET position = ? WHERE membership_id = ?",
-                    [$validated['position'], $membershipId]
-                );
-            } else {
-                DB::insert(
-                    "INSERT INTO org_officers (membership_id, org_id, position, term_start)
+                if ($existingOfficer) {
+                    DB::update(
+                        "UPDATE org_officers SET position = ? WHERE membership_id = ?",
+                        [$validated['position'], $membershipId]
+                    );
+                } else {
+                    DB::insert(
+                        "INSERT INTO org_officers (membership_id, org_id, position, term_start)
                      VALUES (?, ?, ?, CURRENT_DATE)",
-                    [$membershipId, $orgId, $validated['position']]
-                );
+                        [$membershipId, $orgId, $validated['position']]
+                    );
+                }
+            } else {
+                DB::delete("DELETE FROM org_officers WHERE membership_id = ?", [$membershipId]);
             }
-        } else {
-            DB::delete("DELETE FROM org_officers WHERE membership_id = ?", [$membershipId]);
-        }
 
-        DB::commit();
-        return back()->with('success', 'Member updated successfully!');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->with('error', 'Failed to update member: ' . $e->getMessage());
+            DB::commit();
+            return back()->with('success', 'Member updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to update member: ' . $e->getMessage());
+        }
     }
-}
 }
