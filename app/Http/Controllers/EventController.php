@@ -40,9 +40,26 @@ class EventController extends Controller
 
     public function index()
     {
-        // Get all upcoming events
+        // Check if user is officer or adviser
+        $isOfficerOrAdviser = false;
+        if (Auth::check()) {
+            $user = Auth::user();
+            $isOfficer = DB::selectOne(
+                "SELECT m.membership_id FROM memberships m
+                 WHERE m.user_id = ? AND m.membership_role = 'Officer' AND m.status = 'Active' LIMIT 1",
+                [$user->user_id]
+            );
+            $isAdviser = DB::selectOne(
+                "SELECT adviser_id FROM org_advisers WHERE user_id = ? LIMIT 1",
+                [$user->user_id]
+            );
+            $isOfficerOrAdviser = $isOfficer || $isAdviser || $user->account_type === 'Faculty';
+        }
+
+        // Get all upcoming events (include Pending for officers/advisers)
+        $statusFilter = $isOfficerOrAdviser ? "IN ('Pending', 'Upcoming')" : "= 'Upcoming'";
         $upcomingEvents = DB::select("
-            SELECT 
+            SELECT
                 e.*,
                 o.org_name,
                 o.org_id,
@@ -52,7 +69,7 @@ class EventController extends Controller
             INNER JOIN organizations o ON e.org_id = o.org_id
             LEFT JOIN users u ON e.created_by = u.user_id
             WHERE e.event_date >= NOW()
-            AND e.status = 'Upcoming'
+            AND e.status {$statusFilter}
             ORDER BY e.event_date ASC
         ");
 
