@@ -308,6 +308,7 @@
             @endif
         </div>
     </div>
+    
     <!-- Attendees Modal -->
     <div class="modal-overlay" id="attendeesModal">
         <div class="modal-content" style="padding: 0; width: 400px; border: 3px solid #500000; background: white; border-radius: 8px;">
@@ -350,8 +351,7 @@
                     <div class="col-md-4"><input type="text" name="last_name" class="form-control" placeholder="Last Name" required></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-6"><input type="email" name="email" class="form-control" placeholder="Email@gmail.com" required></div>
-                    <div class="col-md-6"><input type="text" name="position" class="form-control" placeholder="Role (IF OFFICER)"></div>
+                    <div class="col-md-12"><input type="email" name="email" class="form-control" placeholder="Email@gmail.com" required></div>
                 </div>
                 <button type="submit" class="btn-primary-custom" style="width: 100%; background: #800000; height: 50px;">ADD MEMBER</button>
             </form>

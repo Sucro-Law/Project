@@ -8,7 +8,7 @@
         <div class="pup-logo">
             <span>PUP</span>
         </div>
-        <div class="sidebar-title">SOM System</div>
+        <div class="sidebar-title">KadaOrg System</div>
     </div>
 
     @if(Auth::check() && isset($sidebarData))

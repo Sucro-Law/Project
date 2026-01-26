@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard - Student Organization Management')</title>
+    <title>@yield('title', 'KadaOrg - Student Organization Management')</title>
 
     @vite(['resources/css/app.css', 'resources/css/dashboard.css', 'resources/css/orgdesc.css', 'resources/js/app.js'])
     @stack('styles')

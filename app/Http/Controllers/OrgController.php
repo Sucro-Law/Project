@@ -341,39 +341,37 @@ class OrgController extends Controller
 
 
     public function toggleLike($eventId)
-    {
-        if (!Auth::check()) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
-        }
-
-        $userId = Auth::id();
-
-        // Check if like exists
-        $like = DB::selectOne("SELECT * FROM event_likes WHERE event_id = ? AND user_id = ?", [$eventId, $userId]);
-
-        if ($like) {
-            // Unlike
-            DB::delete("DELETE FROM event_likes WHERE event_id = ? AND user_id = ?", [$eventId, $userId]);
-            $liked = false;
-        } else {
-            // Like
-            $likeId = 'LIKE-' . str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
-            DB::insert("INSERT INTO event_likes (like_id, event_id, user_id, created_at) VALUES (?, ?, ?, NOW())", [
-                $likeId,
-                $eventId,
-                $userId
-            ]);
-            $liked = true;
-        }
-
-        $count = DB::selectOne("SELECT COUNT(*) as total FROM event_likes WHERE event_id = ?", [$eventId])->total;
-
-        return response()->json([
-            'success' => true,
-            'liked' => $liked,
-            'likes_count' => $count
-        ]);
+{
+    if (!Auth::check()) {
+        return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
     }
+
+    $userId = Auth::id();
+    
+    // Check if like exists
+    $like = DB::selectOne("SELECT * FROM event_likes WHERE event_id = ? AND user_id = ?", [$eventId, $userId]);
+
+    if ($like) {
+        // Unlike
+        DB::delete("DELETE FROM event_likes WHERE event_id = ? AND user_id = ?", [$eventId, $userId]);
+        $liked = false;
+    } else {
+        // Like
+        $likeId = 'LIKE-' . str_pad(rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+        DB::insert("INSERT INTO event_likes (like_id, event_id, user_id, created_at) VALUES (?, ?, ?, NOW())", [
+            $likeId, $eventId, $userId
+        ]);
+        $liked = true;
+    }
+
+    $count = DB::selectOne("SELECT COUNT(*) as total FROM event_likes WHERE event_id = ?", [$eventId])->total;
+
+    return response()->json([
+        'success' => true,
+        'liked' => $liked,
+        'likes_count' => $count
+    ]);
+}
     public function joinOrganization(Request $request, $id)
     {
         if (!Auth::check()) {
