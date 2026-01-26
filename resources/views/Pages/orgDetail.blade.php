@@ -246,7 +246,10 @@
                         <i class="bi bi-eye-fill"></i>
                     </button>
                     @endif
-                    <button class="btn-rsvp" onclick="openModal('rsvpModal')">RSVP</button>
+                    <form action="{{ route('events.rsvp', $event->event_id) }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn-rsvp">RSVP</button>
+                    </form>
                 </div>
                 @endif
             </div>
