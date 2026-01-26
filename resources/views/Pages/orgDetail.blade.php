@@ -67,6 +67,10 @@
                 <button class="btn-add-member" onclick="openModal('memberAdmissionModal')">
                     <i class="bi bi-person-plus"></i> ADD MEMBER
                 </button>
+                @elseif($role === 'member')
+                <span class="btn-primary-custom" style="background: #28a745; cursor: default;">
+                    <i class="bi bi-check-circle me-1"></i> MEMBER
+                </span>
                 @else
                 <button class="btn-primary-custom" onclick="openModal('membershipModal')">
                     MEMBERSHIP FORM
