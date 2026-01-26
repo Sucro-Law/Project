@@ -918,4 +918,53 @@ public function createEvent(Request $request, $orgId)
         return back()->with('error', 'Failed to cancel event: ' . $e->getMessage());
     }
 }
+
+public function updateMember(Request $request, $orgId, $membershipId)
+{
+    if (!Auth::check()) {
+        return redirect()->route('login')->with('error', 'Please login first');
+    }
+
+    $validated = $request->validate([
+        'member_type' => 'required|in:Member,Officer',
+        'position' => 'nullable|string|required_if:member_type,Officer'
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        DB::update(
+            "UPDATE memberships
+             SET membership_role = ?,
+                 status = 'Active'
+             WHERE membership_id = ? AND org_id = ?",
+            [$validated['member_type'], $membershipId, $orgId]
+        );
+
+        if ($validated['member_type'] === 'Officer') {
+            $existingOfficer = DB::selectOne("SELECT * FROM org_officers WHERE membership_id = ?", [$membershipId]);
+
+            if ($existingOfficer) {
+                DB::update(
+                    "UPDATE org_officers SET position = ? WHERE membership_id = ?",
+                    [$validated['position'], $membershipId]
+                );
+            } else {
+                DB::insert(
+                    "INSERT INTO org_officers (membership_id, org_id, position, term_start)
+                     VALUES (?, ?, ?, CURRENT_DATE)",
+                    [$membershipId, $orgId, $validated['position']]
+                );
+            }
+        } else {
+            DB::delete("DELETE FROM org_officers WHERE membership_id = ?", [$membershipId]);
+        }
+
+        DB::commit();
+        return back()->with('success', 'Member updated successfully!');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->with('error', 'Failed to update member: ' . $e->getMessage());
+    }
+}
 }

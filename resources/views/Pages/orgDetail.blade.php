@@ -159,7 +159,14 @@
             @if(count($organization->activeMemberships) > 0)
             <div class="members-list">
                 @foreach($organization->activeMemberships as $index => $member)
-                <div class="member-item">{{ $index + 1 }}. {{ $member->full_name }}</div>
+                <div class="member-item" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>{{ $index + 1 }}. {{ $member->full_name }}</span>
+                    @if($role === 'officer' || $role === 'adviser')
+                    <button class="btn-edit-member" onclick="openEditModal('{{ $member->membership_id }}', '{{ $member->school_id ?? '' }}', '{{ addslashes($member->full_name) }}', '{{ $member->email ?? '' }}', '{{ $member->membership_role }}', '{{ $member->position ?? '' }}')">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    @endif
+                </div>
                 @endforeach
             </div>
             @else
@@ -801,6 +808,58 @@
     </div>
 </div>
 
+<!-- Edit Member Modal -->
+<div class="modal-overlay" id="editMemberModal">
+    <div class="modal-content" style="padding: 0; max-width: 500px; border-radius: 8px; overflow: hidden;">
+        <div style="background: #500000; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;">
+            <h4 style="margin: 0;">{{ $organization->org_name }}</h4>
+            <button type="button" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 5px 10px;" onclick="closeModal('editMemberModal')">×</button>
+        </div>
+        <div style="padding: 20px;">
+            <h2 class="modal-title" style="text-align: center; margin-bottom: 20px;">EDIT MEMBER</h2>
+
+            <form id="editMemberForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input type="text" id="editSchoolId" class="form-control" placeholder="School Number" readonly style="background: #f5f5f5;">
+                    </div>
+                    <div class="col-md-6">
+                        <select name="member_type" id="editMemberType" class="form-select" required onchange="togglePositionField()">
+                            <option value="Member">Member</option>
+                            <option value="Officer">Officer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <input type="text" id="editFirstName" class="form-control" placeholder="First Name" readonly style="background: #f5f5f5;">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="editMiddleName" class="form-control" placeholder="Middle Name" readonly style="background: #f5f5f5;">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="editLastName" class="form-control" placeholder="Last Name" readonly style="background: #f5f5f5;">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input type="email" id="editEmail" class="form-control" placeholder="Email@gmail.com" readonly style="background: #f5f5f5;">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="position" id="editMemberPosition" class="form-control" placeholder="Role (IF OFFICER)">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary-custom" style="width: 100%; background: #800000; height: 45px;">
+                    UPDATE RECORD
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- RSVP Modal -->
 <div class="modal-overlay" id="rsvpModal">
     <div class="modal-content">
@@ -933,5 +992,64 @@
             });
         }
     }
+
+    // Edit Member Modal Functions
+    function openEditModal(membershipId, schoolId, fullName, email, memberRole, position) {
+        // Parse full name into parts
+        const nameParts = fullName.replace(/\\'/g, "'").split(' ');
+        let firstName = '', middleName = '', lastName = '';
+
+        if (nameParts.length === 1) {
+            firstName = nameParts[0];
+        } else if (nameParts.length === 2) {
+            firstName = nameParts[0];
+            lastName = nameParts[1];
+        } else {
+            firstName = nameParts[0];
+            lastName = nameParts[nameParts.length - 1];
+            middleName = nameParts.slice(1, -1).join(' ');
+        }
+
+        document.getElementById('editSchoolId').value = schoolId || '';
+        document.getElementById('editFirstName').value = firstName;
+        document.getElementById('editMiddleName').value = middleName;
+        document.getElementById('editLastName').value = lastName;
+        document.getElementById('editEmail').value = email || '';
+        document.getElementById('editMemberType').value = memberRole;
+        document.getElementById('editMemberPosition').value = position || '';
+        document.getElementById('editMemberForm').action = '/organization/{{ $organization->org_id }}/membership/' + membershipId + '/update';
+        openModal('editMemberModal');
+    }
+
+    function togglePositionField() {
+        // Position field is always visible now, just enable/disable based on role
+        const memberType = document.getElementById('editMemberType').value;
+        const positionInput = document.getElementById('editMemberPosition');
+
+        if (memberType === 'Officer') {
+            positionInput.required = true;
+            positionInput.placeholder = 'Role (Required for Officer)';
+        } else {
+            positionInput.required = false;
+            positionInput.placeholder = 'Role (IF OFFICER)';
+        }
+    }
 </script>
+
+<style>
+    .btn-edit-member {
+        background: #ffc107;
+        color: #212529;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit-member:hover {
+        background: #e0a800;
+        transform: translateY(-1px);
+    }
+</style>
 @endsection
