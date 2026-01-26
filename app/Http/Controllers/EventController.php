@@ -51,8 +51,8 @@ class EventController extends Controller
             FROM events e
             INNER JOIN organizations o ON e.org_id = o.org_id
             LEFT JOIN users u ON e.created_by = u.user_id
-            WHERE e.event_date >= NOW() 
-            AND e.status IN ('Pending', 'Upcoming')
+            WHERE e.event_date >= NOW()
+            AND e.status = 'Upcoming'
             ORDER BY e.event_date ASC
         ");
 

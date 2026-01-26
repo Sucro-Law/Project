@@ -253,10 +253,12 @@
                         <i class="bi bi-eye-fill"></i>
                     </button>
                     @endif
+                    @if($role !== 'officer' && $role !== 'adviser')
                     <form action="{{ route('events.rsvp', $event->event_id) }}" method="POST" style="display: inline;">
                         @csrf
                         <button type="submit" class="btn-rsvp">RSVP</button>
                     </form>
+                    @endif
                 </div>
                 @endif
             </div>
