@@ -351,7 +351,8 @@
                     <div class="col-md-4"><input type="text" name="last_name" class="form-control" placeholder="Last Name" required></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-12"><input type="email" name="email" class="form-control" placeholder="Email@gmail.com" required></div>
+                    <div class="col-md-6"><input type="email" name="email" class="form-control" placeholder="Email@gmail.com" required></div>
+                    <div class="col-md-6"><input type="text" name="position" class="form-control" placeholder="Role (IF OFFICER)"></div>
                 </div>
                 <button type="submit" class="btn-primary-custom" style="width: 100%; background: #800000; height: 50px;">ADD MEMBER</button>
             </form>
@@ -691,10 +692,6 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Role (IF OFFICER)</label>
-                <input type="text" name="role" class="form-control" placeholder="e.g., Secretary, Treasurer">
-            </div>
 
             <div class="certification-text">
                 I hereby certify that the information provided in this form is true, complete,

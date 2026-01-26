@@ -31,7 +31,7 @@ class OrgController extends Controller
             WHERE o.status = 'Active'
             GROUP BY o.org_id, o.org_name, o.description, o.status, o.created_at, o.updated_at
             ORDER BY o.created_at DESC
-            LIMIT 2
+            LIMIT 3
         ");
 
         foreach ($organizations as $org) {
@@ -59,7 +59,7 @@ class OrgController extends Controller
                 WHERE e.event_date >= NOW()
                 AND e.status IN ('Pending', 'Upcoming')
                 ORDER BY e.event_date ASC
-                LIMIT 2
+                LIMIT 3
             ", [$user->user_id]);
         } else {
             $events = [];
