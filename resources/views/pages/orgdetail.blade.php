@@ -371,7 +371,6 @@
 
         <form action="{{ route('organization.createEvent', $organization->org_id) }}"
             method="POST"
-            enctype="multipart/form-data"
             id="eventPostingForm">
             @csrf
             <div class="posting-grid">

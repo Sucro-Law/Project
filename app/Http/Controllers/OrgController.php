@@ -307,7 +307,7 @@ class OrgController extends Controller
     LEFT JOIN users u ON e.created_by = u.user_id
     WHERE e.org_id = ?
     AND e.status IN ('Upcoming', 'Ongoing', 'Done')
-    ORDER BY e.event_date DESC
+    ORDER BY e.event_date ASC
 ", [Auth::id(), $id]);
 
         foreach ($organizationEvents as $event) {
@@ -795,7 +795,6 @@ class OrgController extends Controller
                 'description' => 'required|string',
                 'event_date' => 'required|date',
                 'venue' => 'required|string|max:255',
-                'event_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             ]);
 
             $user = Auth::user();
@@ -803,18 +802,10 @@ class OrgController extends Controller
             $status = 'Pending';
             $imagePath = null;
 
-            if ($request->hasFile('event_image')) {
-                $image = $request->file('event_image');
-                $filename = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('uploads/events'), $filename);
-                $imagePath = 'uploads/events/' . $filename;
-            }
-
-            // INSERT with image_path included
             DB::insert(
                 "INSERT INTO events 
-            (event_id, org_id, title, description, event_date, event_duration, venue, status, image_path, created_by, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
+            (event_id, org_id, title, description, event_date, event_duration, venue, status, created_by, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
                 [
                     $eventId,
                     $orgId,
@@ -824,7 +815,6 @@ class OrgController extends Controller
                     4,
                     $validated['venue'],
                     $status,
-                    $imagePath,  // Include image path in initial insert
                     $user->user_id
                 ]
             );
