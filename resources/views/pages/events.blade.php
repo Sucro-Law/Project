@@ -105,7 +105,7 @@
                         </div>
 
                         @auth
-                        @if(!$event->is_officer_of_org && !$event->is_adviser_of_org)
+                        @if(!$event->is_officer_of_org && !$event->is_adviser_of_org && Auth::user()->account_type !== 'Faculty')
                             @if($event->user_rsvp_status === 'RSVP')
                             <button class="btn btn-success w-100" disabled>
                                 <i class="bi bi-check-circle me-2"></i> Already RSVP'd
