@@ -97,7 +97,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Adviser School Number</label>
-                            <input type="text" class="form-control" name="adviser_school_number">
+                            <input type="text" class="form-control" name="adviser_school_number" id="createAdviserSchoolNo" oninput="validateAdviserInput(this, 'createAdviserWarning')">
+                            <small id="createAdviserWarning" class="text-danger" style="display:none;">This is not a Faculty number. Only Faculty (FN-) can be assigned as adviser.</small>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Adviser Name</label>
@@ -145,7 +146,8 @@
 
                         <div class="form-group">
                             <label class="form-label">Adviser School Number</label>
-                            <input type="text" class="form-control" name="adviser_school_number" id="editOrgAdviserSchoolNo">
+                            <input type="text" class="form-control" name="adviser_school_number" id="editOrgAdviserSchoolNo" oninput="validateAdviserInput(this, 'editAdviserWarning')">
+                            <small id="editAdviserWarning" class="text-danger" style="display:none;">This is not a Faculty number. Only Faculty (FN-) can be assigned as adviser.</small>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Adviser Name</label>
@@ -283,6 +285,17 @@
                 if (e.target === this) this.classList.remove('show');
             });
         });
+        function validateAdviserInput(input, warningId) {
+            const val = input.value.trim().toUpperCase();
+            const warning = document.getElementById(warningId);
+            if (val.length > 0 && !val.startsWith('FN-')) {
+                warning.style.display = 'block';
+                input.style.borderColor = '#dc3545';
+            } else {
+                warning.style.display = 'none';
+                input.style.borderColor = '';
+            }
+        }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
