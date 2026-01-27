@@ -707,12 +707,12 @@
 
 <!-- Edit Member Modal -->
 <div class="modal-overlay" id="editMemberModal">
-    <div class="modal-content" style="padding: 0; max-width: 500px; border-radius: 8px; overflow: visible;">
+    <div class="modal-content" style="padding: 0; max-width: 500px; border-radius: 8px; overflow: visible; background: white;">
         <div style="background: #500000; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; position: relative;">
             <h4 style="margin: 0;">{{ $organization->org_name }}</h4>
             <button type="button" class="edit-modal-close-btn" onclick="closeModal('editMemberModal')">×</button>
         </div>
-        <div style="padding: 20px;">
+        <div style="padding: 20px; background: white; border-radius: 0 0 8px 8px;">
             <h2 class="modal-title" style="text-align: center; margin-bottom: 20px;">EDIT MEMBER</h2>
 
             <form id="editMemberForm" method="POST">
