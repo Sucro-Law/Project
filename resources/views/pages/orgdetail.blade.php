@@ -1035,8 +1035,7 @@
             const data = await response.json();
 
             if (data.success) {
-                btn.textContent = 'RSVP\'d';
-                btn.classList.add('btn-success');
+                alert(data.message || 'Successfully RSVP\'d to the event!');
                 location.reload();
             } else if (data.redirect) {
                 alert(data.message);
