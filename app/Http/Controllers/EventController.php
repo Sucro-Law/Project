@@ -214,7 +214,11 @@ class EventController extends Controller
         ", [$user->user_id, $event->org_id]);
 
         if (!$isMember) {
-            return response()->json(['success' => false, 'message' => 'You must be a member of this organization to RSVP'], 403);
+            return response()->json([
+                'success' => false,
+                'message' => 'You must be a member of this organization to RSVP. Redirecting to membership form...',
+                'redirect' => route('orgDetail', ['id' => $event->org_id])
+            ], 403);
         }
 
         try {
