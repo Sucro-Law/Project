@@ -191,16 +191,16 @@ class EventController extends Controller
     public function rsvp(Request $request, $eventId)
     {
         if (!Auth::check()) {
-            return back()->with('error', 'Please login to RSVP for this event');
+            return response()->json(['success' => false, 'message' => 'Please login to RSVP', 'redirect' => route('login')], 401);
         }
 
         $event = Event::findById($eventId);
         if (!$event) {
-            return back()->with('error', 'Event not found');
+            return response()->json(['success' => false, 'message' => 'Event not found'], 404);
         }
 
         if (!in_array($event->status, ['Pending', 'Upcoming'])) {
-            return back()->with('error', 'Cannot RSVP to this event. Event has already started or ended.');
+            return response()->json(['success' => false, 'message' => 'Cannot RSVP to this event. Event has already started or ended.'], 400);
         }
 
         $user = Auth::user();
@@ -211,14 +211,14 @@ class EventController extends Controller
         ", [$user->user_id, $event->org_id]);
 
         if (!$isMember) {
-            return back()->with('error', 'You must be a member of this organization to RSVP');
+            return response()->json(['success' => false, 'message' => 'You must be a member of this organization to RSVP'], 403);
         }
 
         try {
             EventAttendance::createRSVP($eventId, $user->user_id, 'RSVP');
-            return back()->with('success', 'Successfully RSVP\'d to the event!');
+            return response()->json(['success' => true, 'message' => 'Successfully RSVP\'d to the event!']);
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to RSVP: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to RSVP: ' . $e->getMessage()], 500);
         }
     }
 
