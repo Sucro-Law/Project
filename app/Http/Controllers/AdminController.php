@@ -127,6 +127,23 @@ class AdminController extends Controller
         }
     }
 
+    public function lookupFaculty(Request $request)
+    {
+        $schoolId = $request->query('school_id');
+
+        if (empty($schoolId)) {
+            return response()->json(['found' => false]);
+        }
+
+        $faculty = DB::selectOne("SELECT full_name FROM users WHERE school_id = ? AND account_type = 'Faculty' LIMIT 1", [$schoolId]);
+
+        if ($faculty) {
+            return response()->json(['found' => true, 'name' => $faculty->full_name]);
+        }
+
+        return response()->json(['found' => false]);
+    }
+
     public function deleteOrganization($orgId)
     {
         if (!Auth::check() || Auth::user()->account_type !== 'Admin') {

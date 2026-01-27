@@ -97,12 +97,12 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Adviser School Number</label>
-                            <input type="text" class="form-control" name="adviser_school_number" id="createAdviserSchoolNo" oninput="validateAdviserInput(this, 'createAdviserWarning')">
+                            <input type="text" class="form-control" name="adviser_school_number" id="createAdviserSchoolNo" oninput="validateAdviserInput(this, 'createAdviserWarning'); lookupFaculty(this.value, 'createAdviserName')">
                             <small id="createAdviserWarning" class="text-danger" style="display:none;">This is not a Faculty number. Only Faculty (FN-) can be assigned as adviser.</small>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Adviser Name</label>
-                            <input type="text" class="form-control" name="adviser_name">
+                            <input type="text" class="form-control" name="adviser_name" id="createAdviserName" readonly placeholder="Auto-filled from school number">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Status *</label>
@@ -146,12 +146,12 @@
 
                         <div class="form-group">
                             <label class="form-label">Adviser School Number</label>
-                            <input type="text" class="form-control" name="adviser_school_number" id="editOrgAdviserSchoolNo" oninput="validateAdviserInput(this, 'editAdviserWarning')">
+                            <input type="text" class="form-control" name="adviser_school_number" id="editOrgAdviserSchoolNo" oninput="validateAdviserInput(this, 'editAdviserWarning'); lookupFaculty(this.value, 'editOrgAdviserName')">
                             <small id="editAdviserWarning" class="text-danger" style="display:none;">This is not a Faculty number. Only Faculty (FN-) can be assigned as adviser.</small>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Adviser Name</label>
-                            <input type="text" class="form-control" name="adviser_name" id="editOrgAdviserName">
+                            <input type="text" class="form-control" name="adviser_name" id="editOrgAdviserName" readonly placeholder="Auto-filled from school number">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Status *</label>
@@ -299,6 +299,37 @@
                 if (e.target === this) this.classList.remove('show');
             });
         });
+        let lookupTimeout = null;
+        function lookupFaculty(schoolId, nameFieldId) {
+            const nameField = document.getElementById(nameFieldId);
+            clearTimeout(lookupTimeout);
+
+            const val = schoolId.trim().toUpperCase();
+            if (val.length === 0) {
+                nameField.value = '';
+                return;
+            }
+            if (!val.startsWith('FN-')) {
+                nameField.value = '';
+                return;
+            }
+
+            nameField.value = 'Looking up...';
+            lookupTimeout = setTimeout(async () => {
+                try {
+                    const response = await fetch(`/admin/faculty/lookup?school_id=${encodeURIComponent(val)}`);
+                    const data = await response.json();
+                    if (data.found) {
+                        nameField.value = data.name;
+                    } else {
+                        nameField.value = 'Faculty not found';
+                    }
+                } catch (err) {
+                    nameField.value = '';
+                }
+            }, 400);
+        }
+
         function validateAdviserInput(input, warningId) {
             const val = input.value.trim().toUpperCase();
             const warning = document.getElementById(warningId);

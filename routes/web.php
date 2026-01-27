@@ -94,6 +94,7 @@ Route::get('/admin', [AdminController::class, 'index'])->name('admin');
 Route::post('/admin/organization/create', [AdminController::class, 'createOrganization'])->name('admin.organization.create');
 Route::put('/admin/organization/{orgId}/update', [AdminController::class, 'updateOrganization'])->name('admin.organization.update');
 Route::delete('/admin/organization/{orgId}/delete', [AdminController::class, 'deleteOrganization'])->name('admin.organization.delete');
+Route::get('/admin/faculty/lookup', [AdminController::class, 'lookupFaculty'])->name('admin.faculty.lookup');
 
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::post('/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
