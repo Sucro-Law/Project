@@ -263,6 +263,13 @@
         }
 
         function submitCreateOrg() {
+            const adviserInput = document.getElementById('createAdviserSchoolNo');
+            const val = adviserInput.value.trim().toUpperCase();
+            if (val.length > 0 && !val.startsWith('FN-')) {
+                closeModal('confirmCreateModal');
+                alert('Adviser must be a Faculty member (FN- number). Please correct or leave blank.');
+                return;
+            }
             closeModal('confirmCreateModal');
             document.getElementById('createOrgForm').removeEventListener('submit', confirmCreateOrg);
             document.getElementById('createOrgForm').submit();
@@ -274,6 +281,13 @@
         }
 
         function submitUpdateOrg() {
+            const adviserInput = document.getElementById('editOrgAdviserSchoolNo');
+            const val = adviserInput.value.trim().toUpperCase();
+            if (val.length > 0 && !val.startsWith('FN-')) {
+                closeModal('confirmUpdateModal');
+                alert('Adviser must be a Faculty member (FN- number). Please correct or leave blank.');
+                return;
+            }
             closeModal('confirmUpdateModal');
             document.getElementById('editOrgForm').removeEventListener('submit', confirmUpdateOrg);
             document.getElementById('editOrgForm').submit();
