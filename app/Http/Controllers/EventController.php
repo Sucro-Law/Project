@@ -70,15 +70,18 @@ class EventController extends Controller
                     u.full_name as creator_name,
                     (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count,
                     (SELECT COUNT(*) FROM event_likes el WHERE el.event_id = e.event_id) as likes_count,
-                    m.membership_id as is_member_of_org
+                    m.membership_id as is_member_of_org,
+                    CASE WHEN m.membership_role = 'Officer' THEN 1 ELSE 0 END as is_officer_of_org,
+                    CASE WHEN oa.adviser_id IS NOT NULL THEN 1 ELSE 0 END as is_adviser_of_org
                 FROM events e
                 INNER JOIN organizations o ON e.org_id = o.org_id
                 LEFT JOIN users u ON e.created_by = u.user_id
                 LEFT JOIN memberships m ON e.org_id = m.org_id AND m.user_id = ? AND m.status = 'Active'
+                LEFT JOIN org_advisers oa ON e.org_id = oa.org_id AND oa.user_id = ?
                 WHERE e.event_date >= NOW()
                 AND e.status {$statusFilter}
                 ORDER BY e.created_at ASC
-            ", [$user->user_id]);
+            ", [$user->user_id, $user->user_id]);
         } else {
             $upcomingEvents = [];
         }
@@ -534,16 +537,20 @@ class EventController extends Controller
                     o.org_id,
                     u.full_name as creator_name,
                     (SELECT COUNT(*) FROM event_attendance ea WHERE ea.event_id = e.event_id AND ea.status = 'RSVP') as rsvp_count,
-                    (SELECT COUNT(*) FROM event_likes el WHERE el.event_id = e.event_id) as likes_count
+                    (SELECT COUNT(*) FROM event_likes el WHERE el.event_id = e.event_id) as likes_count,
+                    m.membership_id as is_member_of_org,
+                    CASE WHEN m.membership_role = 'Officer' THEN 1 ELSE 0 END as is_officer_of_org,
+                    CASE WHEN oa.adviser_id IS NOT NULL THEN 1 ELSE 0 END as is_adviser_of_org
                 FROM events e
                 INNER JOIN organizations o ON e.org_id = o.org_id
                 LEFT JOIN users u ON e.created_by = u.user_id
                 INNER JOIN memberships m ON e.org_id = m.org_id AND m.user_id = ? AND m.status = 'Active'
+                LEFT JOIN org_advisers oa ON e.org_id = oa.org_id AND oa.user_id = ?
                 WHERE e.event_date >= NOW()
                 AND e.status {$statusFilter}
                 AND (e.title LIKE ? OR e.description LIKE ? OR o.org_name LIKE ?)
                 ORDER BY e.event_date ASC
-            ", [$user->user_id, "%{$query}%", "%{$query}%", "%{$query}%"]);
+            ", [$user->user_id, $user->user_id, "%{$query}%", "%{$query}%", "%{$query}%"]);
         } else {
             $upcomingEvents = [];
         }
