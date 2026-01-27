@@ -294,10 +294,7 @@
                     </button>
                     @endif
                     @if($role !== 'officer' && $role !== 'adviser' && $account_type !== 'Faculty')
-                    <form action="{{ route('events.rsvp', $event->event_id) }}" method="POST" style="display: inline;">
-                        @csrf
-                        <button type="submit" class="btn-rsvp">RSVP</button>
-                    </form>
+                    <button class="btn-rsvp" onclick="submitRsvp('{{ $event->event_id }}', this)">RSVP</button>
                     @endif
                 </div>
                 @endif
@@ -1020,6 +1017,41 @@
         return confirm("Are you sure you want to permanently delete " + name + " from this organization? This action cannot be undone.");
     }
 
+
+    async function submitRsvp(eventId, btn) {
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        try {
+            const response = await fetch(`/events/${eventId}/rsvp`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                btn.textContent = 'RSVP\'d';
+                btn.classList.add('btn-success');
+                location.reload();
+            } else if (data.redirect) {
+                alert(data.message);
+                window.location.href = data.redirect;
+            } else {
+                alert(data.message || 'Failed to RSVP');
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        } catch (err) {
+            alert('An error occurred. Please try again.');
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
 
     function toggleLike(eventId, button) {
         fetch(`/events/${eventId}/like`, {
